@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name              = "gemfury"
-  s.version           = "0.1.0"
+  s.version           = "0.1.1"
   s.date              = Time.now.strftime('%Y-%m-%d')
   s.summary           = "Client library and command-line tool to manage your gems on Gemfury"
   s.homepage          = "http://gemfury.com"
@@ -21,8 +21,7 @@ Gem::Specification.new do |s|
   s.add_dependency    "faraday_middleware", "~> 0.6.3"
 
   s.description = <<DESCRIPTION
-Client library and command-line tool to manage your gems on Gemfury
-See gemfury.com for more details
+Client library and command-line tool to manage your gems on http://gemfury.com
 DESCRIPTION
 
   s.post_install_message =<<POSTINSTALL
