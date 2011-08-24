@@ -1,6 +1,9 @@
+$LOAD_PATH.unshift 'lib'
+require 'gemfury/version'
+
 Gem::Specification.new do |s|
   s.name              = "gemfury"
-  s.version           = "0.1.1"
+  s.version           = Gemfury::VERSION
   s.date              = Time.now.strftime('%Y-%m-%d')
   s.summary           = "Client library and command-line tool to manage your gems on Gemfury"
   s.homepage          = "http://gemfury.com"

@@ -6,6 +6,11 @@ module Gemfury
   class Command < Thor
     include Gemfury::Client
 
+    desc "version" ,"Check whether the gem is up-to-date"
+    def version
+      check_version
+    end
+
     desc "push GEM" ,"upload a new version of a gem"
     def push(*gems)
       if gems.empty?
