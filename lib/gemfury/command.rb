@@ -1,9 +1,12 @@
 require 'thor'
+require 'yaml'
 require 'launchy'
 require 'highline'
 
 module Gemfury
   class Command < Thor
+    include Gemfury::Platform
+
     desc "version" ,"Check whether the gem is up-to-date"
     def version
       client.check_version
@@ -11,37 +14,35 @@ module Gemfury
 
     desc "push GEM" ,"upload a new version of a gem"
     def push(*gems)
-      if gems.empty?
-        shell.say "Problem: No gems specified", :red
+      gem_files = gems.map do |g|
+        File.exists?(g) ? File.new(g) : nil
+      end.compact
+
+      if gem_files.empty?
+        shell.say "Problem: No valid gems specified", :red
         help(:push)
         return
       end
 
-      # Collect registration info
-      term = HighLine.new
-      term.say(Const.welcome)
-      email = term.ask("Email: ") do |q|
-        q.responses[:not_valid] = Const.email_error
-        q.validate = Const.email_regex
-      end
-
-      # Send the registration request
-      conn = client.send(:connection) # From Gemfury::Client
-      resp = conn.post('/invites.json', :invite => { :email => email })
-
-      # Handle the registration
-      if resp.success?
-        body = resp.body
-        term.say "Thanks! Gemfury is almost ready. Please stay tuned."
-        Launchy.open("http://#{Const.host}/invites/#{body['slug']}")
-      else
-        term.say "Oops! Something went wrong. Please try again", :red
+      # Let's get uploading
+      gem_files.each do |gem_file|
+        shell.say "Uploading #{File.basename(gem_file)}"
+        client.push_gem(gem_file)
       end
     end
 
   private
     def client
-      Gemfury::Client.new
+      options = { :endpoint => 'http://localhost:3000/1/' }
+
+      # Load up the credentials
+      config_path = File.expand_path('.gem/gemfury', home_directory)
+      if File.exist?(config_path)
+        config = YAML.load_file(config_path)
+        options[:user_api_key] = config[:gemfury_api_key]
+      end
+
+      Gemfury::Client.new(options)
     end
   end
 end

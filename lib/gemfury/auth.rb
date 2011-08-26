@@ -3,7 +3,7 @@ module Gemfury
 
   private
     def authenticated?
-      !self.user_api_key.blank?
+      self.user_api_key && !self.user_api_key.empty?
     end
 
     def with_authentication(&block)

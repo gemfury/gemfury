@@ -62,6 +62,7 @@ module Gemfury
       unless response.success?
         raise(case response.status
           when 401 then Gemfury::Unauthorized
+          else          Gemfury::Error
         end)
       end
     end
