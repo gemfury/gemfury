@@ -33,7 +33,7 @@ module Gemfury
 
   private
     def client
-      options = { :endpoint => 'http://localhost:3000/1/' }
+      options = {}
 
       # Load up the credentials
       config_path = File.expand_path('.gem/gemfury', home_directory)
