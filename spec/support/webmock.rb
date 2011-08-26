@@ -1,37 +1,17 @@
-def a_delete(path)
-  a_request(:delete, Gemfury.endpoint + path)
+# Define a_get, a_post, etc and stub_get, stub_post, etc
+[:delete, :get, :post, :put].each do |method|
+  self.class.send(:define_method, "a_#{method}") do |path|
+    a_request(method, Gemfury.endpoint + path)
+  end
+
+  self.class.send(:define_method, "stub_#{method}") do |path|
+    stub_request(method, Gemfury.endpoint + path)
+  end
 end
 
-def a_get(path)
-  a_request(:get, Gemfury.endpoint + path)
-end
-
-def a_post(path)
-  a_request(:post, Gemfury.endpoint + path)
-end
-
-def a_put(path)
-  a_request(:put, Gemfury.endpoint + path)
-end
-
-def stub_delete(path)
-  stub_request(:delete, Gemfury.endpoint + path)
-end
-
-def stub_get(path)
-  stub_request(:get, Gemfury.endpoint + path)
-end
-
-def stub_post(path)
-  stub_request(:post, Gemfury.endpoint + path)
-end
-
-def stub_put(path)
-  stub_request(:put, Gemfury.endpoint + path)
-end
-
+# Fixture helpers
 def fixture_path
-  File.expand_path("../fixtures", __FILE__)
+  File.expand_path("../../fixtures", __FILE__)
 end
 
 def fixture(file)

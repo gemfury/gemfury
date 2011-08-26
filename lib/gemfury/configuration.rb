@@ -1,10 +1,9 @@
-require 'gemfury/version'
-
 module Gemfury
   # Defines constants and methods related to configuration
   module Configuration
     # An array of valid keys in the options hash when configuring
     VALID_OPTIONS_KEYS = [
+      :user_api_key,
       :adapter,
       :endpoint,
       :user_agent].freeze
@@ -14,10 +13,13 @@ module Gemfury
 
     # The endpoint that will be used to connect if none is set
     #
-    DEFAULT_ENDPOINT = 'http://www.gemfury.com/1/'.freeze
+    DEFAULT_ENDPOINT = 'https://www.gemfury.com/1/'.freeze
 
     # The value sent in the 'User-Agent' header if none is set
     DEFAULT_USER_AGENT = "Gemfury RubyGem #{Gemfury::VERSION}".freeze
+
+    # Default user API key
+    DEFAULT_API_KEY = nil
 
     # @private
     attr_accessor *VALID_OPTIONS_KEYS
@@ -41,6 +43,7 @@ module Gemfury
 
     # Reset all configuration options to defaults
     def reset
+      self.user_api_key       = DEFAULT_API_KEY
       self.adapter            = DEFAULT_ADAPTER
       self.endpoint           = DEFAULT_ENDPOINT
       self.user_agent         = DEFAULT_USER_AGENT

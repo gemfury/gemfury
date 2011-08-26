@@ -4,11 +4,9 @@ require 'highline'
 
 module Gemfury
   class Command < Thor
-    include Gemfury::Client
-
     desc "version" ,"Check whether the gem is up-to-date"
     def version
-      check_version
+      client.check_version
     end
 
     desc "push GEM" ,"upload a new version of a gem"
@@ -28,7 +26,7 @@ module Gemfury
       end
 
       # Send the registration request
-      conn = client # From Gemfury::Client
+      conn = client.send(:connection) # From Gemfury::Client
       resp = conn.post('/invites.json', :invite => { :email => email })
 
       # Handle the registration
@@ -39,6 +37,11 @@ module Gemfury
       else
         term.say "Oops! Something went wrong. Please try again", :red
       end
+    end
+
+  private
+    def client
+      Gemfury::Client.new
     end
   end
 end

@@ -1,8 +1,14 @@
-require 'gemfury/const'
-require 'gemfury/configuration'
-require 'gemfury/platform'
-require 'gemfury/client'
+require 'multi_json'
+require 'faraday_middleware'
+require 'faraday/request/multipart_with_file'
+
 require 'gemfury/version'
+require 'gemfury/const'
+require 'gemfury/error'
+require 'gemfury/platform'
+require 'gemfury/auth'
+require 'gemfury/configuration'
+require 'gemfury/client'
 
 module Gemfury
   extend Configuration

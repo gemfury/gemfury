@@ -1,41 +1,68 @@
-require 'multi_json'
-require 'faraday_middleware'
-
 module Gemfury
-  module Client
-    ::Faraday::Request::JSON.adapter = ::MultiJson
+  class Client
+    include Gemfury::Auth
+    attr_accessor *Configuration::VALID_OPTIONS_KEYS
+
+    # Creates a new API
+    def initialize(options={})
+      options = Gemfury.options.merge(options)
+      Configuration::VALID_OPTIONS_KEYS.each do |key|
+        send("#{key}=", options[key])
+      end
+    end
 
     def check_version
-      resp = client.get('/1/status/version')
+      response = connection.get('status/version')
+      ensure_successful_response(response)
 
-      if resp.success?
-        current = Gem::Version.new(Gemfury::VERSION)
-        latest = Gem::Version.new(resp.body['version'])
+      current = Gem::Version.new(Gemfury::VERSION)
+      latest = Gem::Version.new(response.body['version'])
 
-        unless latest.eql?(current)
-          raise StandardError.new('Please update your gem')
-        end
-      else
-        raise StandardError.new('Problem contacting GemFury')
+      unless latest.eql?(current)
+        raise InvalidGemVersion.new('Please update your gem')
+      end
+    end
+
+    def push_gem(gem_file, options = {})
+      with_authentication do
+        response = connection.post('gems', options.merge(
+          :gem_file => gem_file
+        ))
+
+        ensure_successful_response(response)
       end
     end
 
   private
-    def client(raw = false)
+    def connection(options = {})
       options = {
-        :url => "http://#{Const.host}",
+        :url => self.endpoint,
         :ssl => { :verify => false },
         :headers => {
-          'Accept' => 'application/json',
-          'Content-Type' => 'application/json; charset=utf-8'
+          :accept => 'application/json',
+          :user_agent => user_agent
         }
-      }
+      }.merge(options)
+
+      if self.user_api_key
+        options[:headers][:authorization] = self.user_api_key
+      end
 
       Faraday.new(options) do |builder|
-        builder.use Faraday::Request::JSON
+        builder.use Faraday::Request::MultipartWithFile
+        builder.use Faraday::Request::Multipart
+        builder.use Faraday::Request::UrlEncoded
         #builder.use Faraday::Response::Logger
         builder.use Faraday::Response::ParseJson
         builder.adapter :net_http
+      end
+    end
+
+    def ensure_successful_response(response)
+      unless response.success?
+        raise(case response.status
+          when 401 then Gemfury::Unauthorized
+        end)
       end
     end
   end
