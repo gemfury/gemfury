@@ -34,6 +34,22 @@ module Gemfury
       ensure_successful_response!(response)
     end
 
+    # List available gems
+    def list(options = {})
+      ensure_authorization!
+      response = connection.get('gems', options)
+      ensure_successful_response!(response)
+      response.body
+    end
+
+    # List versions for a gem
+    def versions(name, options = {})
+      ensure_authorization!
+      response = connection.get("gems/#{name}/versions", options)
+      ensure_successful_response!(response)
+      response.body
+    end
+
     # Get Authentication token via email/password
     def get_access_token(email, password, options = {})
       response = connection.post('access_token', options.merge(

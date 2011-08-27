@@ -1,0 +1,17 @@
+[{
+  "id":5,
+  "slug":"example-0.0.1",
+  "version":"0.0.1",
+  "platform":"ruby",
+  "prerelease":false,
+  "created_at":"2011-05-27T00:38:57+00:00",
+  "updated_at":"2011-05-27T00:38:57+00:00"
+},{
+  "id":6,
+  "slug":"example-0.0.2",
+  "version":"0.0.2",
+  "platform":"ruby",
+  "prerelease":false,
+  "created_at":"2011-05-27T00:38:57+00:00",
+  "updated_at":"2011-05-27T00:38:57+00:00"
+}]

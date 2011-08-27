@@ -33,6 +33,9 @@ DESCRIPTION
   Upload your first gem to start using Gemfury:
   fury push my-gem-1.0.gem
 
+  Find out what else you can do:
+  fury help
+
   Follow @gemfury on Twitter for announcements, updates, and news.
   https://twitter.com/gemfury
 

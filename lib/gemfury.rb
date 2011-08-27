@@ -31,3 +31,12 @@ module Gemfury
     end
   end
 end
+
+class Hash
+  # Access nested hashes as a period-separated path
+  def path(path, separator = '.')
+    path.split(separator).inject(self) do |hash, part|
+      hash.is_a?(Hash) ? hash[part] : nil
+    end
+  end
+end
