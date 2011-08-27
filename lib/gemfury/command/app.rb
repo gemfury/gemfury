@@ -48,7 +48,7 @@ class Gemfury::Command::App < Thor
 
 private
   def client
-    options = {}
+    options = { :check_gem_version => true }
     options[:user_api_key] = @user_api_key if @user_api_key
     Gemfury::Client.new(options)
   end
