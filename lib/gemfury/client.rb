@@ -1,6 +1,6 @@
 module Gemfury
   class Client
-    include Gemfury::Auth
+    include Gemfury::Client::Filters
     attr_accessor *Configuration::VALID_OPTIONS_KEYS
 
     # Creates a new API
@@ -26,7 +26,7 @@ module Gemfury
 
     # Uploading a gem file
     def push_gem(gem_file, options = {})
-      ensure_authorization!
+      ensure_ready!(:authorization)
       response = connection.post('gems', options.merge(
         :gem_file => gem_file
       ))
@@ -36,7 +36,7 @@ module Gemfury
 
     # List available gems
     def list(options = {})
-      ensure_authorization!
+      ensure_ready!(:authorization)
       response = connection.get('gems', options)
       ensure_successful_response!(response)
       response.body
@@ -44,7 +44,7 @@ module Gemfury
 
     # List versions for a gem
     def versions(name, options = {})
-      ensure_authorization!
+      ensure_ready!(:authorization)
       response = connection.get("gems/#{name}/versions", options)
       ensure_successful_response!(response)
       response.body
@@ -52,6 +52,7 @@ module Gemfury
 
     # Get Authentication token via email/password
     def get_access_token(email, password, options = {})
+      ensure_ready!
       response = connection.post('access_token', options.merge(
         :email => email, :password => password
       ))

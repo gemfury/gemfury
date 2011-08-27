@@ -4,24 +4,7 @@ require 'json'
 describe Gemfury::Client do
   before do
     @client = Gemfury::Client.new
-  end
-
-  describe '#check_version' do
-    it 'should pass a correct version check' do
-      stub_get("status/version").
-      to_return(:body => version_fixture)
-
-      @client.check_version
-    end
-
-    it 'should fail a future version check' do
-      lambda do
-        stub_get("status/version").
-        to_return(:body => version_fixture('99.0.0'))
-
-        @client.check_version
-      end.should raise_error(StandardError, /update/i)
-    end
+    stub_version_request
   end
 
   describe '#get_access_token' do
@@ -124,10 +107,6 @@ describe Gemfury::Client do
         versions.first['slug'].should eq('example-0.0.1')
       end
     end
-  end
-
-  def version_fixture(version = Gemfury::VERSION)
-    ::MultiJson.encode(:version => version)
   end
 
   def access_token_fixture

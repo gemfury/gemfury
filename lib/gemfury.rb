@@ -6,8 +6,9 @@ require 'gemfury/version'
 require 'gemfury/const'
 require 'gemfury/error'
 require 'gemfury/platform'
-require 'gemfury/auth'
 require 'gemfury/configuration'
+
+require 'gemfury/client/filters'
 require 'gemfury/client'
 
 module Gemfury
