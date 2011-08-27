@@ -11,9 +11,10 @@ module Gemfury
       end
     end
 
+    # Verify gem version
     def check_version
       response = connection.get('status/version')
-      ensure_successful_response(response)
+      ensure_successful_response!(response)
 
       current = Gem::Version.new(Gemfury::VERSION)
       latest = Gem::Version.new(response.body['version'])
@@ -23,14 +24,24 @@ module Gemfury
       end
     end
 
+    # Uploading a gem file
     def push_gem(gem_file, options = {})
-      with_authentication do
-        response = connection.post('gems', options.merge(
-          :gem_file => gem_file
-        ))
+      ensure_authorization!
+      response = connection.post('gems', options.merge(
+        :gem_file => gem_file
+      ))
 
-        ensure_successful_response(response)
-      end
+      ensure_successful_response!(response)
+    end
+
+    # Get Authentication token via email/password
+    def get_access_token(email, password, options = {})
+      response = connection.post('access_token', options.merge(
+        :email => email, :password => password
+      ))
+
+      ensure_successful_response!(response)
+      response.body['access_token']
     end
 
   private
@@ -58,7 +69,7 @@ module Gemfury
       end
     end
 
-    def ensure_successful_response(response)
+    def ensure_successful_response!(response)
       unless response.success?
         raise(case response.status
           when 401 then Gemfury::Unauthorized

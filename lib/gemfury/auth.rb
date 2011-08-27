@@ -6,10 +6,8 @@ module Gemfury
       self.user_api_key && !self.user_api_key.empty?
     end
 
-    def with_authentication(&block)
+    def ensure_authorization!
       raise Unauthorized unless authenticated?
-      block.call
-      # TODO: Catch 401 errors and wrap them w/ NotAuthenticated
     end
   end
 end

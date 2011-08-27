@@ -24,6 +24,27 @@ describe Gemfury::Client do
     end
   end
 
+  describe '#get_access_token' do
+    it 'should return the access token for correct' do
+      stub_post("access_token").to_return(:body => access_token_fixture)
+
+      token = @client.get_access_token('test@test.com', '123')
+      token.should eq('TestToken')
+
+      a_post("access_token").with(
+        :body => { :email => 'test@test.com', :password => '123' }
+      ).should have_been_made.once
+    end
+
+    it 'should raise an unauthorized error for bad credentials' do
+      stub_post("access_token").to_return(:status => 401)
+
+      lambda do
+        @client.get_access_token('test@test.com', '123')
+      end.should raise_error(Gemfury::Unauthorized)
+    end
+  end
+
   describe '#push_gems' do
     before do
       stub_post("gems")
@@ -59,5 +80,9 @@ describe Gemfury::Client do
 
   def version_fixture(version = Gemfury::VERSION)
     ::MultiJson.encode(:version => version)
+  end
+
+  def access_token_fixture
+    ::MultiJson.encode(:access_token => 'TestToken')
   end
 end
