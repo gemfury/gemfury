@@ -17,11 +17,11 @@ Gem::Specification.new do |s|
                         Dir.glob("lib/**/*")
 
   s.add_dependency    "highline", "~> 1.6.0"
-  s.add_dependency    "thor", "~> 0.14.5"
+  s.add_dependency    "thor", "~> 0.14.0"
   s.add_dependency    "launchy", "~> 0.4.0"
   s.add_dependency    "multi_json", "~> 1.0.2"
-  s.add_dependency    "faraday", "~> 0.6.1"
-  s.add_dependency    "faraday_middleware", "~> 0.6.3"
+  s.add_dependency    "faraday", "~> 0.7.4"
+  s.add_dependency    "faraday_middleware", "~> 0.7.0"
 
   s.description = <<DESCRIPTION
 Client library and command-line tool to manage your gems on http://gemfury.com
