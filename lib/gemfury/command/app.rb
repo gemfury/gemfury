@@ -9,7 +9,7 @@ class Gemfury::Command::App < Thor
 
   desc "push GEM" ,"Upload a new version of a gem"
   def push(*gems)
-    with_authorization do
+    with_checks_and_rescues do
       gem_files = gems.map do |g|
         File.exists?(g) ? File.new(g) : nil
       end.compact
@@ -30,7 +30,7 @@ class Gemfury::Command::App < Thor
 
   desc "list" ,"List your gems on Gemfury"
   def list
-    with_authorization do
+    with_checks_and_rescues do
       gems = client.list
       shell.say "\n*** GEMFURY GEMS ***\n\n"
       gems.each do |g|
@@ -43,7 +43,7 @@ class Gemfury::Command::App < Thor
 
   desc "versions GEM" ,"List all the available gem versions"
   def versions(gem_name)
-    with_authorization do
+    with_checks_and_rescues do
       versions = client.versions(gem_name)
       shell.say "\n*** #{gem_name.capitalize} Versions ***\n\n"
       versions.each do |v|
@@ -57,5 +57,16 @@ private
     options = { :check_gem_version => true }
     options[:user_api_key] = @user_api_key if @user_api_key
     Gemfury::Client.new(options)
+  end
+
+  def with_checks_and_rescues(&block)
+    with_authorization(&block)
+  rescue Gemfury::InvalidGemVersion => e
+    shell.say "You have a deprecated Gemfury gem", :red
+    if shell.yes? "Would you like to update this gem now? [yN]"
+      exec("gem update gemfury")
+    else
+      shell.say %q(No problem. You can also run "gem update gemfury")
+    end
   end
 end
