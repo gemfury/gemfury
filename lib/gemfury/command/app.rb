@@ -1,6 +1,12 @@
 class Gemfury::Command::App < Thor
   include Gemfury::Command::Authorization
 
+  map "-v" => :version
+  desc "version" ,"Show Gemfury version", :hide => true
+  def version
+    shell.say Gemfury::VERSION
+  end
+
   desc "push GEM" ,"Upload a new version of a gem"
   def push(*gems)
     with_authorization do
