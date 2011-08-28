@@ -16,31 +16,25 @@ describe Gemfury::Client::Filters do
     end
   end
 
-  describe "with version check (#{Gemfury::VERSION})" do
+  describe %Q(with version check against "#{Gemfury::VERSION}") do
     before { @client.check_gem_version = true }
 
     after do
       a_get("status/version").should have_been_made
     end
 
-    it 'should pass an exact version check' do
-      stub_version_request
-      lambda { @client.list }.should_not raise_error
+    [Gemfury::VERSION, "~> #{Gemfury::VERSION}", '>= 0.0.1'].each do |version|
+      it %Q(should pass a version check for "#{version}") do
+        stub_version_request(version)
+        lambda { @client.list }.should_not raise_error
+      end
     end
 
-    it 'should pass a spermy version check' do
-      stub_version_request("~> #{Gemfury::VERSION}")
-      lambda { @client.list }.should_not raise_error
-    end
-
-    it 'should fail a higher version check' do
-      stub_version_request(Gemfury::VERSION.gsub(/^(\d+)(.*)$/) do
-        "~> #{$1.to_i + 1}#{$2}"
-      end)
-
-      lambda {
-        @client.list
-      }.should raise_error(Gemfury::InvalidGemVersion)
+    ['~> 99999.0.0', '~> 0.0.1', '0.0.1'].each do |version|
+      it %Q(should fail a version check for "#{version}") do
+        stub_version_request(version)
+        lambda { @client.list }.should raise_error(Gemfury::InvalidGemVersion)
+      end
     end
   end
 end
