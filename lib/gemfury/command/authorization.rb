@@ -39,6 +39,7 @@ private
 
   def write_credentials!
     config = read_config_file.merge(:gemfury_api_key => @user_api_key)
+    FileUtils.mkdir_p(File.dirname(config_path))
     File.open(config_path, 'w') { |f| f.write(YAML.dump(config)) }
   end
 

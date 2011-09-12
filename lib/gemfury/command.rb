@@ -2,6 +2,7 @@ require 'thor'
 require 'yaml'
 require 'launchy'
 require 'highline'
+require 'fileutils'
 
 module Gemfury::Command; end
 
