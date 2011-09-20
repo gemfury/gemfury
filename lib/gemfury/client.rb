@@ -50,6 +50,14 @@ module Gemfury
       response.body
     end
 
+    # Delete a gem version
+    def yank_version(name, version, options = {})
+      ensure_ready!(:authorization)
+      response = connection.delete("gems/#{name}/versions/#{version}", options)
+      ensure_successful_response!(response)
+      response.body
+    end
+
     # Get Authentication token via email/password
     def get_access_token(email, password, options = {})
       ensure_ready!

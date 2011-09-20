@@ -109,6 +109,25 @@ describe Gemfury::Client do
     end
   end
 
+  describe '#yank_version' do
+    let(:stub_api_method)  { stub_delete("gems/example/versions/0.0.1") }
+    let(:send_api_request) { @client.yank_version('example', '0.0.1') }
+
+    it_should_behave_like 'API without authentication'
+
+    describe 'while authenticated' do
+      before do
+        @client.user_api_key = 'MyAuthKey'
+        stub_api_method
+      end
+
+      it 'should upload valid gems' do
+        send_api_request
+        a_delete("gems/example/versions/0.0.1").should have_been_made
+      end
+    end
+  end
+
   def access_token_fixture
     ::MultiJson.encode(:access_token => 'TestToken')
   end

@@ -7,7 +7,7 @@ class Gemfury::Command::App < Thor
     shell.say Gemfury::VERSION
   end
 
-  desc "push GEM" ,"Upload a new version of a gem"
+  desc "push GEM", "Upload a new version of a gem"
   def push(*gems)
     with_checks_and_rescues do
       gem_files = gems.map do |g|
@@ -28,7 +28,7 @@ class Gemfury::Command::App < Thor
     end
   end
 
-  desc "list" ,"List your gems on Gemfury"
+  desc "list", "List your gems on Gemfury"
   def list
     with_checks_and_rescues do
       gems = client.list
@@ -41,7 +41,7 @@ class Gemfury::Command::App < Thor
     end
   end
 
-  desc "versions GEM" ,"List all the available gem versions"
+  desc "versions GEM", "List all the available gem versions"
   def versions(gem_name)
     with_checks_and_rescues do
       versions = client.versions(gem_name)
@@ -49,6 +49,16 @@ class Gemfury::Command::App < Thor
       versions.each do |v|
         shell.say v['version']
       end
+    end
+  end
+
+  desc "yank GEM", "Delete a gem version"
+  method_options %w(version -v) => :required
+  def yank(gem_name)
+    with_checks_and_rescues do
+      version = options[:version]
+      client.yank_version(gem_name, version)
+      shell.say "\n*** Yanked #{gem_name}-#{version} ***\n\n"
     end
   end
 
@@ -68,5 +78,7 @@ private
     else
       shell.say %q(No problem. You can also run "gem update gemfury")
     end
+  rescue Exception => e
+    shell.say "Oops! Something went wrong. We will look into it ASAP."
   end
 end
