@@ -1,0 +1,30 @@
+*0.3.0*
+
+* Added 'yank' command for deleting gems
+* Added CHANGELOG
+
+
+*0.2.0*
+
+* No changes (just graduating out of beta)
+
+
+*0.2.0.beta2*
+
+* Added 'list' command for listing gems
+* Added 'versions' command to list versions for a gem
+* Added 'version' to output version for this gem
+* Version check for this gem is now implicit and prompts auto-update
+
+
+*0.2.0.beta1*
+
+* Added specs
+* Added 'push' command for uploading gems
+* Added gem version compatibility check with the server
+* Added command line authentication
+
+
+*0.1.1*
+
+* First release
