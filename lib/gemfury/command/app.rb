@@ -78,7 +78,9 @@ private
     else
       shell.say %q(No problem. You can also run "gem update gemfury")
     end
+  rescue Gemfury::NotFound => e
+    shell.say "Oops! Doesn't look like this exists", :red
   rescue Exception => e
-    shell.say "Oops! Something went wrong. We will look into it ASAP."
+    shell.say "Oops! Something went wrong. Looking into it ASAP!", :red
   end
 end
