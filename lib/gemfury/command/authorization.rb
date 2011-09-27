@@ -1,6 +1,14 @@
 module Gemfury::Command::Authorization
   include Gemfury::Platform
 
+  def wipe_credentials!
+    FileUtils.rm(config_path, :force => true) # never raises exception
+  end
+
+  def has_credentials?
+    read_config_file.key?(:gemfury_api_key)
+  end
+
 private
   def with_authorization(&block)
     # Load up the credentials

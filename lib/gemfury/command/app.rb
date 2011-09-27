@@ -62,6 +62,16 @@ class Gemfury::Command::App < Thor
     end
   end
 
+  desc "logout", "Remove Gemfury credentials"
+  def logout
+    if !has_credentials?
+      shell.say "You are logged out"
+    elsif shell.yes? "Are you sure you want to log out? [yN]"
+      wipe_credentials!
+      shell.say "You have been logged out"
+    end
+  end
+
 private
   def client
     options = { :check_gem_version => true }
