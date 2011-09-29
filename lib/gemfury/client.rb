@@ -76,7 +76,8 @@ module Gemfury
         :ssl => { :verify => false },
         :headers => {
           :accept => 'application/json',
-          :user_agent => user_agent
+          :user_agent => user_agent,
+          :x_gem_version => Gemfury::VERSION
         }
       }.merge(options)
 
