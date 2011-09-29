@@ -97,11 +97,20 @@ module Gemfury
 
     def ensure_successful_response!(response)
       unless response.success?
-        raise(case response.status
-          when 401 then Gemfury::Unauthorized
-          when 404 then Gemfury::NotFound
-          else          Gemfury::Error
-        end)
+        error = (response.body || {})['error'] || {}
+        error_class = case response.status
+        when 401 then Gemfury::Unauthorized
+        when 404 then Gemfury::NotFound
+        when 400
+          case error['type']
+          when 'GemVersionError' then Gemfury::InvalidGemVersion
+          else                        Gemfury::Error
+          end
+        else
+          Gemfury::Error
+        end
+
+        raise(error_class, error['message'])
       end
     end
   end

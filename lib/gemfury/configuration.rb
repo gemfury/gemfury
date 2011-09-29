@@ -6,8 +6,7 @@ module Gemfury
       :user_api_key,
       :adapter,
       :endpoint,
-      :user_agent,
-      :check_gem_version].freeze
+      :user_agent].freeze
 
     # The adapter that will be used to connect if none is set
     DEFAULT_ADAPTER = :net_http
@@ -21,9 +20,6 @@ module Gemfury
 
     # Default user API key
     DEFAULT_API_KEY = nil
-
-    # Default to skip the gem version check on API calls
-    DEFAULT_VERSION_CHECK = false
 
     # @private
     attr_accessor *VALID_OPTIONS_KEYS
@@ -51,7 +47,6 @@ module Gemfury
       self.adapter            = DEFAULT_ADAPTER
       self.endpoint           = DEFAULT_ENDPOINT
       self.user_agent         = DEFAULT_USER_AGENT
-      self.check_gem_version  = DEFAULT_VERSION_CHECK
       self
     end
   end
