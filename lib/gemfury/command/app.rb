@@ -1,6 +1,9 @@
 class Gemfury::Command::App < Thor
   include Gemfury::Command::Authorization
 
+  # Impersonation
+  class_option :as, :desc => 'Access an account other than your own'
+
   map "-v" => :version
   desc "version" ,"Show Gemfury version", :hide => true
   def version
@@ -110,9 +113,10 @@ class Gemfury::Command::App < Thor
 
 private
   def client
-    options = {}
-    options[:user_api_key] = @user_api_key if @user_api_key
-    Gemfury::Client.new(options)
+    opts = {}
+    opts[:user_api_key] = @user_api_key if @user_api_key
+    opts[:account] = options[:as] if options[:as]
+    Gemfury::Client.new(opts)
   end
 
   def with_checks_and_rescues(&block)

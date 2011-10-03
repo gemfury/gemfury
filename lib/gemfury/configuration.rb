@@ -6,13 +6,13 @@ module Gemfury
       :user_api_key,
       :adapter,
       :endpoint,
-      :user_agent].freeze
+      :user_agent,
+      :account].freeze
 
     # The adapter that will be used to connect if none is set
     DEFAULT_ADAPTER = :net_http
 
     # The endpoint that will be used to connect if none is set
-    #
     DEFAULT_ENDPOINT = 'https://www.gemfury.com/1/'.freeze
 
     # The value sent in the 'User-Agent' header if none is set
@@ -20,6 +20,9 @@ module Gemfury
 
     # Default user API key
     DEFAULT_API_KEY = nil
+
+    # Use the current account (no impersonation)
+    DEFAULT_ACCOUNT = nil
 
     # @private
     attr_accessor *VALID_OPTIONS_KEYS
@@ -47,6 +50,7 @@ module Gemfury
       self.adapter            = DEFAULT_ADAPTER
       self.endpoint           = DEFAULT_ENDPOINT
       self.user_agent         = DEFAULT_USER_AGENT
+      self.account            = DEFAULT_ACCOUNT
       self
     end
   end

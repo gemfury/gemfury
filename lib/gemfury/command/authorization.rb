@@ -20,9 +20,13 @@ private
       prompt_credentials! if @user_api_key.nil?
       block.call
     rescue Gemfury::Unauthorized
-      shell.say "Oops! Authentication failure.", :red
-      @user_api_key = nil
-      retry
+      if acct = client.account
+        shell.say %Q(Oops! You don't have access to "#{acct}"), :red
+      else
+        shell.say "Oops! Authentication failure.", :red
+        @user_api_key = nil
+        retry
+      end
     end
   end
 

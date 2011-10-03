@@ -107,6 +107,10 @@ module Gemfury
         options[:headers][:authorization] = self.user_api_key
       end
 
+      if self.account
+        options[:params] = { :as => self.account }
+      end
+
       Faraday.new(options) do |builder|
         builder.use Faraday::Request::MultipartWithFile
         builder.use Faraday::Request::Multipart
@@ -125,6 +129,7 @@ module Gemfury
         when 404 then Gemfury::NotFound
         when 400
           case error['type']
+          when 'Unauthorized'    then Gemfury::Unauthorized
           when 'GemVersionError' then Gemfury::InvalidGemVersion
           else                        Gemfury::Error
           end
