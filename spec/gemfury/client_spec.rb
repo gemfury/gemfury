@@ -46,6 +46,15 @@ describe Gemfury::Client do
     end
   end
 
+  shared_examples 'graceful handler of errors' do
+    it 'should raise NotFound error for a non-existent user' do
+      stub_api_method.to_return(:status => 404)
+      lambda {
+        send_api_request
+      }.should raise_exception(Gemfury::NotFound)
+    end
+  end
+
   describe '#push_gems' do
     let(:stub_api_method)  { stub_post("gems") }
 
@@ -125,6 +134,65 @@ describe Gemfury::Client do
         send_api_request
         a_delete("gems/example/versions/0.0.1").should have_been_made
       end
+    end
+  end
+
+  describe '#list_collaborators' do
+    let(:stub_api_method)  { stub_get("collaborators") }
+    let(:send_api_request) { @client.list_collaborators }
+
+    it_should_behave_like 'API without authentication'
+
+    describe 'while authenticated' do
+      before do
+        stub_api_method.to_return(:body => fixture('collaborators.json'))
+        @client.user_api_key = 'MyAuthKey'
+      end
+
+      it 'should list account collaborators' do
+        gems_list = send_api_request
+        a_get("collaborators").should have_been_made
+        gems_list.size.should eq(2)
+        gems_list.first['username'].should eq('user1')
+      end
+    end
+  end
+
+  describe '#add_collaborators' do
+    let(:stub_api_method)  { stub_put("collaborators/user1") }
+    let(:send_api_request) { @client.add_collaborator('user1') }
+
+    it_should_behave_like 'API without authentication'
+
+    describe 'while authenticated' do
+      before { @client.user_api_key = 'MyAuthKey' }
+
+      it 'should add a collaborator' do
+        stub_api_method
+        send_api_request
+        a_put("collaborators/user1").should have_been_made
+      end
+
+      it_should_behave_like 'graceful handler of errors'
+    end
+  end
+
+  describe '#remove_collaborators' do
+    let(:stub_api_method)  { stub_delete("collaborators/user1") }
+    let(:send_api_request) { @client.remove_collaborator('user1') }
+
+    it_should_behave_like 'API without authentication'
+
+    describe 'while authenticated' do
+      before { @client.user_api_key = 'MyAuthKey' }
+
+      it 'should remove an existing collaborator' do
+        stub_api_method
+        send_api_request
+        a_delete("collaborators/user1").should have_been_made
+      end
+
+      it_should_behave_like 'graceful handler of errors'
     end
   end
 

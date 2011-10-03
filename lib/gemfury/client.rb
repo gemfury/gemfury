@@ -69,6 +69,28 @@ module Gemfury
       response.body['access_token']
     end
 
+    # List collaborators for this account
+    def list_collaborators(options = {})
+      ensure_ready!(:authorization)
+      response = connection.get('collaborators', options)
+      ensure_successful_response!(response)
+      response.body
+    end
+
+    # Add a collaborator to the account
+    def add_collaborator(login, options = {})
+      ensure_ready!(:authorization)
+      response = connection.put("collaborators/#{login}", options)
+      ensure_successful_response!(response)
+    end
+
+    # Remove a collaborator to the account
+    def remove_collaborator(login, options = {})
+      ensure_ready!(:authorization)
+      response = connection.delete("collaborators/#{login}", options)
+      ensure_successful_response!(response)
+    end
+
   private
     def connection(options = {})
       options = {

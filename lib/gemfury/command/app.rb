@@ -72,6 +72,42 @@ class Gemfury::Command::App < Thor
     end
   end
 
+  ### COLLABORATION MANAGEMENT ###
+  map "sharing:add" => 'sharing_add'
+  map "sharing:remove" => 'sharing_remove'
+
+  desc "sharing", "List collaborators"
+  def sharing
+    with_checks_and_rescues do
+      collaborators = client.list_collaborators
+      if collaborators.empty?
+        shell.say "You are the only collaborator", :green
+      else
+        shell.say "\n*** Collaborators ***\n", :green
+        collaborators.each do |user|
+          shell.say user['username']
+        end
+      end
+      shell.say "\n"
+    end
+  end
+
+  desc "sharing:add USERNAME", "Add a collaborator"
+  def sharing_add(username)
+    with_checks_and_rescues do
+      client.add_collaborator(username)
+      shell.say "Added #{username} as a collaborator"
+    end
+  end
+
+  desc "sharing:remove USERNAME", "Remove a collaborator"
+  def sharing_remove(username)
+    with_checks_and_rescues do
+      client.remove_collaborator(username)
+      shell.say "Removed #{username} as a collaborator"
+    end
+  end
+
 private
   def client
     options = {}
