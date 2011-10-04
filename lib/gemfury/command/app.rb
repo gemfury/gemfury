@@ -38,7 +38,7 @@ class Gemfury::Command::App < Thor
       shell.say "\n*** GEMFURY GEMS ***\n\n"
       gems.each do |g|
         desc, version = g['name'], g.path('latest_version.version')
-        desc << " (#{version})" if version
+        desc << " (#{version ? version : 'beta'})"
         shell.say desc
       end
     end
