@@ -128,6 +128,8 @@ private
     else
       shell.say %q(No problem. You can also run "gem update gemfury")
     end
+  rescue Gemfury::Forbidden => e
+    shell.say "Oops! You're not allowed to access this", :red
   rescue Gemfury::NotFound => e
     shell.say "Oops! Doesn't look like this exists", :red
   rescue Exception => e

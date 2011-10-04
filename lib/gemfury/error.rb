@@ -1,13 +1,16 @@
 module Gemfury
   # Base Error class
-  class Error < StandardError; end
+  Error = Class.new(StandardError)
 
   # The Gemfury gem version doesn't match the one on the server
-  class InvalidGemVersion < Error; end
+  InvalidGemVersion = Class.new(Error)
 
   # Client#user_api_key is not defined or Gemfury returns 401
-  class Unauthorized < Error; end
+  Unauthorized = Class.new(Error)
+
+  # Client is not allowed to perform this operation
+  Forbidden = Class.new(Error)
 
   # Returned if something is not found
-  class NotFound < Error; end
+  NotFound = Class.new(Error)
 end

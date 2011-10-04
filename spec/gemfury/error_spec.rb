@@ -21,7 +21,7 @@ describe Gemfury::Error do
     }.should raise_exception(Gemfury::NotFound)
   end
 
-  it 'should throw Error for any other response' do
+  it 'should throw Error for any other non-success response' do
     @req_stub.to_return(:body => "{}", :status => 302)
     lambda {
       @client.list
@@ -30,7 +30,9 @@ describe Gemfury::Error do
 
   describe 'bad request error' do
     {
-      'GemVersionError' => Gemfury::InvalidGemVersion
+      'GemVersionError' => Gemfury::InvalidGemVersion,
+      'Forbidden'       => Gemfury::Forbidden,
+      'RandomError'     => Gemfury::Error
     }.each do |type, klass|
       it "#{type} should raise #{klass.name}" do
         @req_stub.to_return(bad_request(type))

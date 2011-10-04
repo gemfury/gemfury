@@ -129,7 +129,7 @@ module Gemfury
         when 404 then Gemfury::NotFound
         when 400
           case error['type']
-          when 'Unauthorized'    then Gemfury::Unauthorized
+          when 'Forbidden'       then Gemfury::Forbidden
           when 'GemVersionError' then Gemfury::InvalidGemVersion
           else                        Gemfury::Error
           end
