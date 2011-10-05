@@ -11,17 +11,12 @@ module Gemfury
       end
     end
 
-    # Verify gem version
-    def check_version
-      response = connection.get('status/version')
+    # Get the information for the current account
+    def account_info
+      ensure_ready!(:authorization)
+      response = connection.get('users/me')
       ensure_successful_response!(response)
-
-      current = Gem::Version.new(Gemfury::VERSION)
-      latest = Gem::Version.new(response.body['version'])
-
-      unless latest.eql?(current)
-        raise InvalidGemVersion.new('Please update your gem')
-      end
+      response.body
     end
 
     # Uploading a gem file

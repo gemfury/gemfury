@@ -4,7 +4,6 @@ require 'json'
 describe Gemfury::Client do
   before do
     @client = Gemfury::Client.new
-    stub_version_request
   end
 
   describe '#get_access_token' do
@@ -52,6 +51,26 @@ describe Gemfury::Client do
       lambda {
         send_api_request
       }.should raise_exception(Gemfury::NotFound)
+    end
+  end
+
+  describe '#account_info' do
+    let(:stub_api_method)  { stub_get("users/me") }
+    let(:send_api_request) { @client.account_info }
+
+    it_should_behave_like 'API without authentication'
+
+    describe 'while authenticated' do
+      before do
+        @client.user_api_key = 'MyAuthKey'
+        stub_api_method.to_return(:body => fixture('me.json'))
+      end
+
+      it 'should return valid account info' do
+        out = @client.account_info
+        out['username'].should eq('user1')
+        a_get("users/me").should have_been_made
+      end
     end
   end
 

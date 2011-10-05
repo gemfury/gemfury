@@ -82,14 +82,14 @@ class Gemfury::Command::App < Thor
   desc "sharing", "List collaborators"
   def sharing
     with_checks_and_rescues do
+      me = client.account_info['username']
       collaborators = client.list_collaborators
       if collaborators.empty?
-        shell.say "You are the only collaborator", :green
+        shell.say "You (#{me}) are the only collaborator", :green
       else
-        shell.say "\n*** Collaborators ***\n", :green
-        collaborators.each do |user|
-          shell.say user['username']
-        end
+        shell.say %Q(\n*** Collaborators for "#{me}" ***\n), :green
+        usernames = [me] + collaborators.map { |c| c['username'] }
+        shell.say usernames.join("\n")
       end
       shell.say "\n"
     end
