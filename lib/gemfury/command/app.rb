@@ -10,6 +10,18 @@ class Gemfury::Command::App < Thor
     shell.say Gemfury::VERSION
   end
 
+  desc "whoami" ,"Show currently logged-in user", :hide => true
+  def whoami
+    if !has_credentials?
+      shell.say %Q(You are not logged in), :green
+    else
+      with_checks_and_rescues do
+        me = client.account_info['username']
+        shell.say %Q(You are logged in as "#{me}"), :green
+      end
+    end
+  end
+
   desc "push GEM", "Upload a new version of a gem"
   def push(*gems)
     with_checks_and_rescues do
