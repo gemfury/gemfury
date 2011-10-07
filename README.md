@@ -49,12 +49,19 @@ Gemfile:
 
     source 'https://gems.gemfury.com/j8e6n7n5n3y09/'
 
-Collaboration
--------------
+Collaboration (beta)
+--------------------
 
 You can share your Gemfury account with other Gemfury users.  Your
 collaborators will be able to upload and remove RubyGems without
 access to your Secret-URL or the content of previously uploaded gems.
+
+### Enable collaboration
+
+Collaboration is currently only available via the prerelease
+command-line tool.  To get started, you'll need to install it:
+
+    $ sudo gem install gemfury --pre
 
 ### Managing collaborators
 
