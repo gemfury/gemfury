@@ -1,6 +1,5 @@
 require 'thor'
 require 'yaml'
-require 'launchy'
 require 'highline'
 require 'fileutils'
 
