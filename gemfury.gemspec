@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.has_rdoc          = false
 
   s.executables       = %w(gemfury fury)
-  s.files             = %w(README) +
+  s.files             = %w(README.md) +
                         Dir.glob("bin/**/*") +
                         Dir.glob("lib/**/*")
 
