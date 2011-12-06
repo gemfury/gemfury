@@ -107,15 +107,15 @@ class Gemfury::Command::App < Thor
     end
   end
 
-  desc "sharing:add USERNAME", "Add a collaborator"
+  desc "sharing:add EMAIL", "Add a collaborator"
   def sharing_add(username)
     with_checks_and_rescues do
       client.add_collaborator(username)
-      shell.say "Added #{username} as a collaborator"
+      shell.say "Invited #{username} as a collaborator"
     end
   end
 
-  desc "sharing:remove USERNAME", "Remove a collaborator"
+  desc "sharing:remove EMAIL", "Remove a collaborator"
   def sharing_remove(username)
     with_checks_and_rescues do
       client.remove_collaborator(username)

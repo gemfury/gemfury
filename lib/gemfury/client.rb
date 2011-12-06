@@ -75,6 +75,7 @@ module Gemfury
     # Add a collaborator to the account
     def add_collaborator(login, options = {})
       ensure_ready!(:authorization)
+      login = URI.escape(login, '@.')
       response = connection.put("collaborators/#{login}", options)
       ensure_successful_response!(response)
     end
@@ -82,6 +83,7 @@ module Gemfury
     # Remove a collaborator to the account
     def remove_collaborator(login, options = {})
       ensure_ready!(:authorization)
+      login = URI.escape(login, '@.')
       response = connection.delete("collaborators/#{login}", options)
       ensure_successful_response!(response)
     end
