@@ -146,5 +146,6 @@ private
     shell.say "Oops! Doesn't look like this exists", :red
   rescue Exception => e
     shell.say "Oops! Something went wrong. Looking into it ASAP!", :red
+    shell.say %Q(#{e.class.name}: #{e}\n#{e.backtrace.join("\n")}) if ENV['DEBUG']
   end
 end

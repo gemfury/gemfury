@@ -5,7 +5,7 @@ Gem::Specification.new do |s|
   s.name              = "gemfury"
   s.version           = Gemfury::VERSION
   s.date              = Time.now.strftime('%Y-%m-%d')
-  s.summary           = "Client library and command-line tool to manage your gems on Gemfury"
+  s.summary           = "Cloud Gem Server for your private RubyGems"
   s.homepage          = "http://gemfury.com"
   s.email             = "mrykov@gmail.com"
   s.authors           = [ "Michael Rykov" ]
