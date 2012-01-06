@@ -32,6 +32,7 @@ describe Gemfury::Error do
     {
       'GemVersionError' => Gemfury::InvalidGemVersion,
       'Forbidden'       => Gemfury::Forbidden,
+      'InvalidGemFile'  => Gemfury::CorruptGemFile,
       'RandomError'     => Gemfury::Error
     }.each do |type, klass|
       it "#{type} should raise #{klass.name}" do
