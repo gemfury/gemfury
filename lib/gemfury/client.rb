@@ -128,6 +128,7 @@ module Gemfury
           case error['type']
           when 'Forbidden'       then Gemfury::Forbidden
           when 'GemVersionError' then Gemfury::InvalidGemVersion
+          when 'InvalidGemFile'  then Gemfury::CorruptGemFile
           else                        Gemfury::Error
           end
         else

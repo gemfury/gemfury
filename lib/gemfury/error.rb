@@ -13,4 +13,7 @@ module Gemfury
 
   # Returned if something is not found
   NotFound = Class.new(Error)
+
+  # Corrupt Gem File
+  CorruptGemFile = Class.new(Error)
 end

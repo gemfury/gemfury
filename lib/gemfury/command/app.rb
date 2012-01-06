@@ -25,21 +25,7 @@ class Gemfury::Command::App < Thor
   desc "push GEM", "Upload a new version of a gem"
   def push(*gems)
     with_checks_and_rescues do
-      gem_files = gems.map do |g|
-        File.exists?(g) ? File.new(g) : nil
-      end.compact
-
-      if gem_files.empty?
-        shell.say "Problem: No valid gems specified", :red
-        help(:push)
-        return
-      end
-
-      # Let's get uploading
-      gem_files.each do |gem_file|
-        shell.say "Uploading #{File.basename(gem_file)}"
-        client.push_gem(gem_file)
-      end
+      push_files(:push, gems)
     end
   end
 
@@ -123,6 +109,33 @@ class Gemfury::Command::App < Thor
     end
   end
 
+  ### MIGRATION (Pushing directories) ###
+  desc "migrate DIR", "Upload all gems within a directory"
+  def migrate(*paths)
+    with_checks_and_rescues do
+      gem_paths = Dir[*(paths.map do |p|
+        if File.directory?(p)
+          "#{p}/**/*.gem"
+        elsif File.file?(p)
+          p
+        else
+          nil
+        end
+      end.compact)]
+
+      if gem_paths.empty?
+        shell.say "Problem: No valid gems found", :red
+        help(:migrate)
+      else
+        shell.say "Found the following RubyGems:"
+        gem_paths.each { |p| shell.say "  #{File.basename(p)}" }
+        if shell.yes? "Upload these files to Gemfury? [yN]", :green
+          push_files(:migrate, gem_paths)
+        end
+      end
+    end
+  end
+
 private
   def client
     opts = {}
@@ -147,5 +160,31 @@ private
   rescue Exception => e
     shell.say "Oops! Something went wrong. Looking into it ASAP!", :red
     shell.say %Q(#{e.class.name}: #{e}\n#{e.backtrace.join("\n")}) if ENV['DEBUG']
+  end
+
+  def push_files(command, gem_paths)
+    gem_files = gem_paths.map do |g|
+      File.exists?(g) ? File.new(g) : nil
+    end.compact
+
+    if gem_files.empty?
+      shell.say "Problem: No valid gems found", :red
+      help(command)
+      return
+    end
+
+    # Let's get uploading
+    gem_files.each do |gem_file|
+      begin
+        shell.say "Uploading #{File.basename(gem_file)} "
+        client.push_gem(gem_file)
+        shell.say "- done"
+      rescue Gemfury::CorruptGemFile
+        shell.say "- problem processing this gem", :red
+      rescue => e
+        shell.say "- oops", :red
+        throw e
+      end
+    end
   end
 end
