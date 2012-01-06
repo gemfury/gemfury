@@ -1,3 +1,37 @@
+*0.4.3*
+
+* Add 'migrate' command to mass-upload gems in a directory
+
+
+*0.4.2*
+
+* Add instrumentation to help debugging
+
+
+*0.4.1*
+
+* Graduate collaboration management from beta
+* Support adding/removing collaborators by email
+
+
+*0.4.0*
+
+* Add collaboration management via 'sharing'
+* Add impersonation of shared accounts with '--as'
+* Show latest gem version '(beta)' for beta-only gems
+* Add 'whoami' to identify the current account
+
+
+*0.3.2*
+
+* Internal updates to manage client versions
+
+
+*0.3.1*
+
+* Added 'logout' to wipe locally-stored credentials
+
+
 *0.3.0*
 
 * Added 'yank' command for deleting gems

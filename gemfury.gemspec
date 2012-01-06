@@ -32,6 +32,9 @@ DESCRIPTION
   Upload your first gem to start using Gemfury:
   fury push my-gem-1.0.gem
 
+  If you have a directory with gems, you can use:
+  fury migrate ./path/to/gems
+
   Find out what else you can do:
   fury help
 
