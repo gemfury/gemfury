@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'json'
 
 describe Gemfury::Client do
   before do
@@ -88,8 +87,7 @@ describe Gemfury::Client do
       end
 
       it 'should upload valid gems' do
-        gem_file = File.new(fixture('fury-0.0.2.gem'))
-        @client.push_gem(gem_file)
+        @client.push_gem(fixture('fury-0.0.2.gem'))
         a_post("gems").should have_been_made
       end
     end

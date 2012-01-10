@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.version           = Gemfury::VERSION
   s.date              = Time.now.strftime('%Y-%m-%d')
   s.summary           = "Cloud Gem Server for your private RubyGems"
-  s.homepage          = "http://gemfury.com"
+  s.homepage          = "http://www.gemfury.com"
   s.email             = "mrykov@gmail.com"
   s.authors           = [ "Michael Rykov" ]
   s.has_rdoc          = false
@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
   s.add_dependency    "faraday_middleware", "~> 0.7.0"
 
   s.description = <<DESCRIPTION
-Client library and command-line tool to manage your gems on http://gemfury.com
+Cloud Gem Server for your private RubyGems at http://gemfury.com
 DESCRIPTION
 
   s.post_install_message =<<POSTINSTALL

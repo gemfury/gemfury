@@ -163,21 +163,21 @@ private
   end
 
   def push_files(command, gem_paths)
-    gem_files = gem_paths.map do |g|
-      File.exists?(g) ? File.new(g) : nil
+    files = gem_paths.map do |g|
+      g.is_a?(String) ? File.new(g) : g rescue nil
     end.compact
 
-    if gem_files.empty?
+    if files.empty?
       shell.say "Problem: No valid gems found", :red
       help(command)
       return
     end
 
     # Let's get uploading
-    gem_files.each do |gem_file|
+    files.each do |file|
       begin
-        shell.say "Uploading #{File.basename(gem_file)} "
-        client.push_gem(gem_file)
+        shell.say "Uploading #{File.basename(file.path)} "
+        client.push_gem(file)
         shell.say "- done"
       rescue Gemfury::CorruptGemFile
         shell.say "- problem processing this gem", :red

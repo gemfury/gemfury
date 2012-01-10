@@ -1,6 +1,7 @@
 *0.4.3*
 
 * Add 'migrate' command to mass-upload gems in a directory
+* Ruby 1.8 compatibility fixes
 
 
 *0.4.2*

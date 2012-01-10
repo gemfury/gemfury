@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'json'
 
 describe Gemfury::Command::App do
   MyApp = Gemfury::Command::App
@@ -55,7 +54,7 @@ describe Gemfury::Command::App do
       out.should =~ /bar.*/
       out.should =~ /fury.*/
     end
-    
+
     it 'should upload gems after confirmation' do
       stub_post("gems")
       $stdin.should_receive(:gets).and_return('y')
