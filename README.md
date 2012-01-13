@@ -22,6 +22,20 @@ And subsequently uploading your first Gem:
 
 That's it!
 
+Uploading Gems
+--------------
+
+Uploading your gems is easy.  Once you've installed the _gemfury_ gem,
+upload gems to your account with:
+
+    $ fury push private-gem-1.0.0.gem
+
+If you are migrating from another gem server, or just have many gems
+lying around, you can specify a directory path and we will upload
+all the gems found in that directory:
+
+    $ fury migrate ./path/to/gems
+
 Deployment
 ----------
 
@@ -33,12 +47,12 @@ Source-URL from your Gemfury Dashboard.  It will look like this:
 ### Use it with RubyGems command-line
 
 To use it with the regular RubyGems commands, you can add it as a source
-with the following command:
+with the following command.  This command will store your Gemfury source
+in your _~/.gemrc_ file for future use.
 
     $ gem sources -a https://gems.gemfury.com/j8e6n7n5n3y09/
 
-This command will store your Gemfury source in your _~/.gemrc_ file
-for future use.  You can also do a one-time install with:
+You can also do a one-time install with:
 
     $ gem install private-gem --source https://gems.gemfury.com/j8e6n7n5n3y09/
 
