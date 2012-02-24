@@ -1,3 +1,13 @@
+*0.4.5*
+
+* Add 'fury whoami' command to the help menu
+
+
+*0.4.4*
+
+* Add 'gem fury' command as a RubyGems plugin
+
+
 *0.4.3*
 
 * Add 'migrate' command to mass-upload gems in a directory

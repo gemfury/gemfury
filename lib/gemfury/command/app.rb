@@ -5,12 +5,12 @@ class Gemfury::Command::App < Thor
   class_option :as, :desc => 'Access an account other than your own'
 
   map "-v" => :version
-  desc "version" ,"Show Gemfury version", :hide => true
+  desc "version", "Show Gemfury version", :hide => true
   def version
     shell.say Gemfury::VERSION
   end
 
-  desc "whoami" ,"Show currently logged-in user", :hide => true
+  desc "whoami", "Show current user"
   def whoami
     if !has_credentials?
       shell.say %Q(You are not logged in), :green
