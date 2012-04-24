@@ -146,6 +146,16 @@ exercise of figuring out the rest of the library and API :)
 Stay tuned...
 
 
+Contribution and Improvements
+-----------------------------
+
+Please email us at support@gemfury.com if we've missed some key functionality or if this gem causes conflicts.  Better yet, fork the code, make the changes (specs too), and submit a pull request to speed things along.
+
+### Dependency conflicts
+
+Over time, dependencies for this gem will get stale and may interfere with your other gems.  Please let us know if you run into this and we will re-test our gem with the new version of the dependency and update the _gemspec_.
+
+
 Questions
 ---------
 
