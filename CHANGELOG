@@ -1,3 +1,8 @@
+*0.4.9*
+
+* Allow Thor 0.15
+* Update to RSpec 2.10.0
+
 *0.4.8*
 
 * Allow MultiJSON 1.3
