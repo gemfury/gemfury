@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
                         Dir.glob("lib/**/*")
 
   s.add_dependency    "highline", "~> 1.6.0"
-  s.add_dependency    "thor", ">= 0.14.0", "< 0.16.0"
+  s.add_dependency    "thor", ">= 0.15", "< 2.0"
   s.add_dependency    "multi_json", ">= 1.0.2", "< 1.4"
   s.add_dependency    "faraday", ">= 0.7.4", "< 0.9"
   s.add_dependency    "faraday_middleware", ">= 0.7", "< 0.9"
