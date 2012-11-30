@@ -1,8 +1,12 @@
 require 'spec_helper'
 
 describe Gemfury::Command::App do
-  MyApp = Gemfury::Command::App
   Endpoint = "www.gemfury.com"
+  class MyApp < Gemfury::Command::App
+    def read_config_file
+      { :gemfury_api_key => 'DEADBEEF' }
+    end
+  end
 
   describe '#push' do
     it 'should cause errors for no gems specified' do

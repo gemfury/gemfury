@@ -4,11 +4,17 @@ source "http://rubygems.org"
 gemspec
 
 # Lock rake
-gem 'rake', '~> 0.8.7'
+gem 'rake', '~> 10.0.0'
 
 # Development dependencies
 group :development do
-  gem "rspec", "~> 2.10.0"
+  gem "rspec", "~> 2.12.0"
   gem "webmock", "~> 1.8.7"
   gem "multi_json"
+
+  # For testing on Ruby 1.8
+  platforms :mri_18 do
+    gem "system_timer"
+    gem "json"
+  end
 end

@@ -1,6 +1,9 @@
 Gemfury
 =======
 
+[![RubyGem Version](https://fury-badge.herokuapp.com/rb/gemfury.png)](http://badge.fury.io/rb/gemfury)
+[![Build Status](https://secure.travis-ci.org/gemfury/gemfury.png?branch=master)](https://travis-ci.org/gemfury/gemfury)
+
 Gemfury is your personal cloud for your private and custom RubyGems.
 Once you upload your RubyGem and enable Gemfury as a source, you can
 securely deploy any gem to any host. It's simple, reliable, and
