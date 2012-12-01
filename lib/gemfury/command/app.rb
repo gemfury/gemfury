@@ -113,7 +113,7 @@ class Gemfury::Command::App < Thor
   desc "migrate DIR", "Upload all gems within a directory"
   def migrate(*paths)
     with_checks_and_rescues do
-      gem_paths = Dir[*(paths.map do |p|
+      gem_paths = Dir.glob(paths.map do |p|
         if File.directory?(p)
           "#{p}/**/*.gem"
         elsif File.file?(p)
@@ -121,7 +121,7 @@ class Gemfury::Command::App < Thor
         else
           nil
         end
-      end.compact)]
+      end.compact)
 
       if gem_paths.empty?
         shell.say "Problem: No valid gems found", :red
