@@ -1,5 +1,5 @@
-Gemfury
-=======
+Gemfury CLI
+===========
 
 [![RubyGem Version](https://fury-badge.herokuapp.com/rb/gemfury.png)](http://badge.fury.io/rb/gemfury)
 [![Build Status](https://secure.travis-ci.org/gemfury/gemfury.png?branch=master)](https://travis-ci.org/gemfury/gemfury)
