@@ -11,10 +11,10 @@ group :development do
   gem "rspec", "~> 2.12.0"
   gem "webmock", "~> 1.8.7"
   gem "multi_json"
+  gem "json"
 
   # For testing on Ruby 1.8
   platforms :mri_18 do
     gem "system_timer"
-    gem "json"
   end
 end
