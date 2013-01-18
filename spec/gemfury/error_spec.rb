@@ -21,6 +21,13 @@ describe Gemfury::Error do
     }.should raise_exception(Gemfury::NotFound)
   end
 
+  it 'should throw TimeoutError for a 503 response' do
+    @req_stub.to_return(:body => "{}", :status => 503)
+    lambda {
+      @client.list
+    }.should raise_exception(Gemfury::TimeoutError)
+  end
+
   it 'should throw Error for any other non-success response' do
     @req_stub.to_return(:body => "{}", :status => 302)
     lambda {

@@ -114,6 +114,7 @@ module Gemfury
         builder.use Faraday::Request::UrlEncoded
         #builder.use Faraday::Response::Logger
         builder.use Faraday::Response::ParseJson
+        builder.use Handle503
         builder.adapter :net_http
       end
     end
@@ -124,6 +125,7 @@ module Gemfury
         error_class = case response.status
         when 401 then Gemfury::Unauthorized
         when 404 then Gemfury::NotFound
+        when 503 then Gemfury::TimeoutError
         when 400
           case error['type']
           when 'Forbidden'       then Gemfury::Forbidden

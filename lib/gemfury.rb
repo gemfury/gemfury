@@ -10,6 +10,7 @@ require 'gemfury/platform'
 require 'gemfury/configuration'
 
 require 'gemfury/client/filters'
+require 'gemfury/client/middleware'
 require 'gemfury/client'
 
 module Gemfury
