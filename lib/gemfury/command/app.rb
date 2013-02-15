@@ -1,5 +1,6 @@
 class Gemfury::Command::App < Thor
   include Gemfury::Command::Authorization
+  PackageExtensions = %w(gem egg tar.gz tgz)
 
   # Impersonation
   class_option :as, :desc => 'Access an account other than your own'
@@ -22,18 +23,18 @@ class Gemfury::Command::App < Thor
     end
   end
 
-  desc "push GEM", "Upload a new version of a gem"
+  desc "push FILE", "Upload a new version of a package"
   def push(*gems)
     with_checks_and_rescues do
       push_files(:push, gems)
     end
   end
 
-  desc "list", "List your gems on Gemfury"
+  desc "list", "List your packages"
   def list
     with_checks_and_rescues do
       gems = client.list
-      shell.say "\n*** GEMFURY GEMS ***\n\n"
+      shell.say "\n*** GEMFURY PACKAGES ***\n\n"
       gems.each do |g|
         desc, version = g['name'], g.path('latest_version.version')
         desc << " (#{version ? version : 'beta'})"
@@ -42,7 +43,7 @@ class Gemfury::Command::App < Thor
     end
   end
 
-  desc "versions GEM", "List all the available gem versions"
+  desc "versions NAME", "List all the package versions"
   def versions(gem_name)
     with_checks_and_rescues do
       versions = client.versions(gem_name)
@@ -53,7 +54,7 @@ class Gemfury::Command::App < Thor
     end
   end
 
-  desc "yank GEM", "Delete a gem version"
+  desc "yank NAME", "Delete a package version"
   method_options %w(version -v) => :required
   def yank(gem_name)
     with_checks_and_rescues do
@@ -110,24 +111,24 @@ class Gemfury::Command::App < Thor
   end
 
   ### MIGRATION (Pushing directories) ###
-  desc "migrate DIR", "Upload all gems within a directory"
+  desc "migrate DIR", "Upload all packages within a directory"
   def migrate(*paths)
     with_checks_and_rescues do
       gem_paths = Dir.glob(paths.map do |p|
         if File.directory?(p)
-          "#{p}/**/*.gem"
+          PackageExtensions.map { |ext| "#{p}/**/*.#{ext}" }
         elsif File.file?(p)
           p
         else
           nil
         end
-      end.compact)
+      end.flatten.compact)
 
       if gem_paths.empty?
-        shell.say "Problem: No valid gems found", :red
+        shell.say "Problem: No valid packages found", :red
         help(:migrate)
       else
-        shell.say "Found the following RubyGems:"
+        shell.say "Found the following packages:"
         gem_paths.each { |p| shell.say "  #{File.basename(p)}" }
         if shell.yes? "Upload these files to Gemfury? [yN]", :green
           push_files(:migrate, gem_paths)
@@ -147,8 +148,8 @@ private
   def with_checks_and_rescues(&block)
     with_authorization(&block)
   rescue Gemfury::InvalidGemVersion => e
-    shell.say "You have a deprecated Gemfury gem", :red
-    if shell.yes? "Would you like to update this gem now? [yN]"
+    shell.say "You have a deprecated Gemfury client", :red
+    if shell.yes? "Would you like to update it now? [yN]"
       exec("gem update gemfury")
     else
       shell.say %q(No problem. You can also run "gem update gemfury")
@@ -168,7 +169,7 @@ private
     end.compact
 
     if files.empty?
-      shell.say "Problem: No valid gems found", :red
+      shell.say "Problem: No valid packages found", :red
       help(command)
       return
     end
@@ -180,7 +181,7 @@ private
         client.push_gem(file)
         shell.say "- done"
       rescue Gemfury::CorruptGemFile
-        shell.say "- problem processing this gem", :red
+        shell.say "- problem processing this package", :red
       rescue Gemfury::TimeoutError, Errno::EPIPE
         shell.say "- this file is too much to handle", :red
         shell.say "  Visit http://www.gemfury.com/large-package for more info"
