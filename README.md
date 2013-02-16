@@ -26,7 +26,7 @@ any package to any host. It's simple, reliable, and hassle-free.
 * [Install private RubyGems](http://devcenter.gemfury.com/articles/install-gems.html)
 * [Install private Python packages](http://devcenter.gemfury.com/articles/pypi-server.html)
 * [Install private NPM modules](http://devcenter.gemfury.com/articles/npm-registry.html)
-* [Private Gems on Heroku](http://devcenter.gemfury.com/articles/private-gems-on-heroku.html)
+* [Private RubyGems on Heroku](http://devcenter.gemfury.com/articles/private-gems-on-heroku.html)
 
 
 ## Contribution and Improvements

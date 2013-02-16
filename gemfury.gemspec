@@ -29,11 +29,11 @@ DESCRIPTION
   s.post_install_message =<<POSTINSTALL
 ************************************************************************
 
-  Upload your first gem to start using Gemfury:
-  fury push my-gem-1.0.gem
+  Upload your first package to start using Gemfury:
+  fury push my-package-1.0.0.gem
 
-  If you have a directory with gems, you can use:
-  fury migrate ./path/to/gems
+  If you have a directory with packages, you can use:
+  fury migrate ./path/to/codez
 
   Find out what else you can do:
   fury help
