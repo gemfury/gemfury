@@ -1,3 +1,8 @@
+*0.4.12*
+
+* Generalize messaging and help to all package formats
+* Expand globs for 'fury migrate' to include egg, tgz, and tar.gz
+
 *0.4.11*
 
 * Handle errors on large package uploads
