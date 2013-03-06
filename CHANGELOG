@@ -1,3 +1,7 @@
+*0.4.13*
+
+* Fix URL escaping for package names and versions
+
 *0.4.12*
 
 * Generalize messaging and help to all package formats

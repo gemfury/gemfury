@@ -40,7 +40,8 @@ module Gemfury
     # List versions for a gem
     def versions(name, options = {})
       ensure_ready!(:authorization)
-      response = connection.get("gems/#{name}/versions", options)
+      url = "gems/#{escape(name)}/versions"
+      response = connection.get(url, options)
       ensure_successful_response!(response)
       response.body
     end
@@ -48,7 +49,8 @@ module Gemfury
     # Delete a gem version
     def yank_version(name, version, options = {})
       ensure_ready!(:authorization)
-      response = connection.delete("gems/#{name}/versions/#{version}", options)
+      url = "gems/#{escape(name)}/versions/#{escape(version)}"
+      response = connection.delete(url, options)
       ensure_successful_response!(response)
       response.body
     end
@@ -75,20 +77,24 @@ module Gemfury
     # Add a collaborator to the account
     def add_collaborator(login, options = {})
       ensure_ready!(:authorization)
-      login = URI.escape(login, '@.')
-      response = connection.put("collaborators/#{login}", options)
+      url = "collaborators/#{escape(login)}"
+      response = connection.put(url, options)
       ensure_successful_response!(response)
     end
 
     # Remove a collaborator to the account
     def remove_collaborator(login, options = {})
       ensure_ready!(:authorization)
-      login = URI.escape(login, '@.')
-      response = connection.delete("collaborators/#{login}", options)
+      url = "collaborators/#{escape(login)}"
+      response = connection.delete(url, options)
       ensure_successful_response!(response)
     end
 
   private
+    def escape(str)
+      CGI.escape(str)
+    end
+
     def connection(options = {})
       options = {
         :url => self.endpoint,

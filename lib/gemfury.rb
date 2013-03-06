@@ -1,4 +1,4 @@
-require 'uri'
+require 'cgi'
 require 'multi_json'
 require 'faraday_middleware'
 require 'faraday/request/multipart_with_file'
