@@ -1,3 +1,7 @@
+*0.4.14*
+
+* Bump multi_json and faraday_middleware dependencies
+
 *0.4.13*
 
 * Fix URL escaping for package names and versions
