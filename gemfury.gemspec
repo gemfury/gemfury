@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency    "highline", "~> 1.6.0"
   s.add_dependency    "thor", ">= 0.14.0", "< 1.0"
-  s.add_dependency    "multi_json", ">= 1.0.2", "< 1.7"
+  s.add_dependency    "multi_json", "~> 1.0"
   s.add_dependency    "faraday", ">= 0.7.4", "< 0.9"
   s.add_dependency    "faraday_middleware", ">= 0.7", "< 0.10"
 
