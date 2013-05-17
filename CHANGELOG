@@ -1,3 +1,7 @@
+*0.4.15*
+
+* Change multi_json dependency to "~> 1.0"
+
 *0.4.14*
 
 * Bump multi_json and faraday_middleware dependencies
