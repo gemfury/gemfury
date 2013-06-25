@@ -1,7 +1,7 @@
 Gemfury CLI
 ===========
 
-[![RubyGem Version](https://badge.fury.io/rb/gemfury.png)](http://badge.fury.io/rb/gemfury)
+<a href="http://badge.fury.io/rb/gemfury"><img src="https://badge.fury.io/rb/gemfury@2x.png" alt="Gem Version" height="18"></a>
 [![Build Status](https://secure.travis-ci.org/gemfury/gemfury.png?branch=master)](https://travis-ci.org/gemfury/gemfury)
 
 This is the Gemfury CLI used to manage your Gemfury packages from the command line.  If you're
