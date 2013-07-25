@@ -1,3 +1,7 @@
+*0.4.17*
+
+* Fix service error handling and messaging
+
 *0.4.16*
 
 * Change multi_json dependency to "~> 1.0"

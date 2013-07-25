@@ -187,7 +187,7 @@ private
         shell.say "  Visit http://www.gemfury.com/large-package for more info"
       rescue => e
         shell.say "- oops", :red
-        throw e
+        raise e
       end
     end
   end
