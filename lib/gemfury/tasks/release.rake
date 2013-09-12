@@ -1,4 +1,4 @@
-require 'rubygems/builder'
+require 'rubygems/package'
 require 'gemfury'
 require 'gemfury/command'
 
@@ -13,7 +13,14 @@ namespace 'fury' do
     else
       puts "Building #{File.basename(gemspec)}"
       spec = Gem::Specification.load(gemspec)
-      Gem::Builder.new(spec).build
+
+      if Gem::Package.respond_to?(:build)
+        Gem::Package.build(spec)
+      else
+        require 'rubygems/builder'
+        Gem::Builder.new(spec).build
+      end
+
       gemfile = File.basename(spec.cache_file)
       Gemfury::Command::App.start(['push', gemfile])
     end
