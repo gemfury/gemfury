@@ -1,3 +1,7 @@
+gem "multi_json",         "~> 1.0"
+gem "faraday",            ">= 0.7.4", "< 0.9.0.pre"
+gem "faraday_middleware", ">= 0.7",   "< 0.10.0.pre"
+
 require 'cgi'
 require 'multi_json'
 require 'faraday_middleware'
