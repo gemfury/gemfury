@@ -22,10 +22,20 @@ module Gemfury
     # Uploading a gem file
     def push_gem(gem_file, options = {})
       ensure_ready!(:authorization)
-      response = connection.post('gems', options.merge(
-        :gem_file => gem_file
-      ))
 
+      # Generate upload link
+      api2 = connection(:url => self.endpoint2)
+      response = api2.post('uploads')
+      ensure_successful_response!(response)
+
+      # Upload to S3
+      upload = response.body['upload']
+      id, s3url = upload['id'], upload['blob']['put']
+      response = s3_put_file(s3url, gem_file)
+      ensure_successful_response!(response)
+
+      # Notify Gemfury that the upload is ready
+      response = api2.put("uploads/#{id}")
       ensure_successful_response!(response)
     end
 
@@ -145,6 +155,15 @@ module Gemfury
 
         raise(error_class, error['message'])
       end
+    end
+
+    def s3_put_file(uri, file)
+      Faraday::Connection.new(uri) do |f|
+        f.adapter :net_http
+      end.put(uri, file, {
+        :content_length => file.stat.size.to_s,
+        :content_type => ''
+      })
     end
   end
 end

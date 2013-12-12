@@ -74,7 +74,10 @@ describe Gemfury::Client do
   end
 
   describe '#push_gems' do
-    let(:stub_api_method)  { stub_post("gems") }
+    let(:stub_api_method)  do
+      stub_put("uploads/WTFBBQ123", 2).to_return(:body => fixture('upload.json'))
+      stub_post("uploads", 2) # Do this last so we can extend it
+    end
 
     it_should_behave_like 'API without authentication' do
       let(:send_api_request) { @client.push_gem(['gemfile']) }
@@ -83,12 +86,12 @@ describe Gemfury::Client do
     describe 'while authenticated' do
       before do
         @client.user_api_key = 'MyAuthKey'
-        stub_api_method
+        stub_api_method.to_return(:body => fixture('upload.json'))
       end
 
       it 'should upload valid gems' do
         @client.push_gem(fixture('fury-0.0.2.gem'))
-        a_post("gems").should have_been_made
+        a_post("uploads", 2).should have_been_made
       end
     end
   end

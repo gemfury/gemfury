@@ -6,6 +6,7 @@ module Gemfury
       :user_api_key,
       :adapter,
       :endpoint,
+      :endpoint2,
       :user_agent,
       :account].freeze
 
@@ -14,6 +15,7 @@ module Gemfury
 
     # The endpoint that will be used to connect if none is set
     DEFAULT_ENDPOINT = 'https://www.gemfury.com/1/'.freeze
+    DEFAULT_ENDPOINT2 = 'https://www.gemfury.com/2/'.freeze
 
     # The value sent in the 'User-Agent' header if none is set
     DEFAULT_USER_AGENT = "Gemfury RubyGem #{Gemfury::VERSION}".freeze
@@ -49,6 +51,7 @@ module Gemfury
       self.user_api_key       = DEFAULT_API_KEY
       self.adapter            = DEFAULT_ADAPTER
       self.endpoint           = DEFAULT_ENDPOINT
+      self.endpoint2          = DEFAULT_ENDPOINT2
       self.user_agent         = DEFAULT_USER_AGENT
       self.account            = DEFAULT_ACCOUNT
       self

@@ -22,14 +22,14 @@ describe Gemfury::Command::App do
     end
 
     it 'should upload a valid gem' do
-      stub_post("gems")
+      stub_uploads
       args = ['push', fixture('fury-0.0.2.gem')]
       out = capture(:stdout) { MyApp.start(args) }
       ensure_gem_uploads(out, 'fury')
     end
 
     it 'should upload multiple packages' do
-      stub_post("gems")
+      stub_uploads
       args = ['push', fixture('fury-0.0.2.gem'), fixture('bar-0.0.2.gem')]
       out = capture(:stdout) { MyApp.start(args) }
       ensure_gem_uploads(out, 'bar', 'fury')
@@ -50,7 +50,7 @@ describe Gemfury::Command::App do
     end
 
     it 'should not upload gems without confirmation' do
-      stub_post("gems")
+      stub_uploads
       $stdin.should_receive(:gets).and_return('n')
       args = ['migrate', fixture_path]
       out = capture(:stdout) { MyApp.start(args) }
@@ -60,7 +60,7 @@ describe Gemfury::Command::App do
     end
 
     it 'should upload gems after confirmation' do
-      stub_post("gems")
+      stub_uploads
       $stdin.should_receive(:gets).and_return('y')
       args = ['migrate', fixture_path]
       out = capture(:stdout) { MyApp.start(args) }
@@ -69,8 +69,15 @@ describe Gemfury::Command::App do
   end
 
 private
+  def stub_uploads
+    body = fixture('upload.json').read
+    stub_post("uploads", 2).to_return(:body => body)
+    stub_put("uploads/WTFBBQ123", 2).to_return(:body => body)
+  end
+
   def ensure_gem_uploads(out, *gems)
-    a_post("gems").should have_been_made.times(gems.size)
+    a_post("uploads", 2).should have_been_made.times(gems.size)
+    a_put("uploads/WTFBBQ123", 2).should have_been_made.times(gems.size)
     gems.each do |g|
       out.should =~ /Uploading #{g}.*done/
     end

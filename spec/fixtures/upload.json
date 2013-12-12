@@ -1,0 +1,8 @@
+{ 
+  "upload": {
+    "id": "WTFBBQ123",
+    "blob" : {
+      "put": "https://s3.amazonaws.com:443/WTFBBQ"
+    }
+  }
+}
