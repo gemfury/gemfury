@@ -137,6 +137,11 @@ class Gemfury::Command::App < Thor
     end
   end
 
+  # Ensure that errors cause a non-zero exit code to be propagated
+  def self.exit_on_failure?
+    true
+  end
+
 private
   def client
     opts = {}
