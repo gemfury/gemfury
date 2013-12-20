@@ -1,8 +1,10 @@
+gem "netrc",              "~> 0.7.7"
 gem "multi_json",         "~> 1.0"
 gem "faraday",            ">= 0.7.4", "< 0.9.0.pre"
 gem "faraday_middleware", ">= 0.7",   "< 0.10.0.pre"
 
 require 'cgi'
+require 'netrc'
 require 'multi_json'
 require 'faraday_middleware'
 require 'faraday/request/multipart_with_file'
