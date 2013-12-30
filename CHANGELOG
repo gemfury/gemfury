@@ -1,3 +1,8 @@
+*0.4.20*
+
+* Upload packages directly to storage
+* Store API credentials in ~/.netrc
+
 *0.4.19*
 
 * Add version specifiers for RubyGems dependencies
