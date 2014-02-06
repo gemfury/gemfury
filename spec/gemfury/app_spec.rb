@@ -3,22 +3,24 @@ require 'spec_helper'
 describe Gemfury::Command::App do
   Endpoint = "www.gemfury.com"
   class MyApp < Gemfury::Command::App
-    def read_config_file
-      { :gemfury_api_key => 'DEADBEEF' }
+    no_commands do
+      def read_config_file
+        { :gemfury_api_key => 'DEADBEEF' }
+      end
     end
   end
 
   describe '#push' do
     it 'should cause errors for no gems specified' do
-      out = capture(:stdout) { MyApp.start(['push']) }
+      app_should_die(/No valid packages/, nil, :push)
+      MyApp.start(['push'])
       a_request(:any, Endpoint).should_not have_been_made
-      out.should =~ /No valid packages/
     end
 
     it 'should cause errors for an invalid gem path' do
-      out = capture(:stdout) { MyApp.start(['push', 'bad.gem']) }
+      app_should_die(/No valid packages/, nil, :push)
+      MyApp.start(['push', 'bad.gem'])
       a_request(:any, Endpoint).should_not have_been_made
-      out.should =~ /No valid packages/
     end
 
     it 'should upload a valid gem' do
@@ -38,15 +40,15 @@ describe Gemfury::Command::App do
 
   describe '#migrate' do
     it 'should cause errors for no gems specified' do
-      out = capture(:stdout) { MyApp.start(['migrate']) }
+      app_should_die(/No valid packages/, nil, :migrate)
+      MyApp.start(['migrate'])
       a_request(:any, Endpoint).should_not have_been_made
-      out.should =~ /No valid packages/
     end
 
     it 'should cause errors for an invalid path' do
-      out = capture(:stdout) { MyApp.start(['migrate', 'deadbeef']) }
+      app_should_die(/No valid packages/, nil, :migrate)
+      MyApp.start(['migrate', 'deadbeef'])
       a_request(:any, Endpoint).should_not have_been_made
-      out.should =~ /No valid packages/
     end
 
     it 'should not upload gems without confirmation' do
@@ -69,6 +71,10 @@ describe Gemfury::Command::App do
   end
 
 private
+  def app_should_die(*args)
+    MyApp.any_instance.should_receive(:die!).with(*args)
+  end
+
   def stub_uploads
     body = fixture('upload.json').read
     stub_post("uploads", 2).to_return(:body => body)

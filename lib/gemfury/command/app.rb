@@ -125,8 +125,7 @@ class Gemfury::Command::App < Thor
       end.flatten.compact)
 
       if gem_paths.empty?
-        shell.say "Problem: No valid packages found", :red
-        help(:migrate)
+        die!("Problem: No valid packages found", nil, :migrate)
       else
         shell.say "Found the following packages:"
         gem_paths.each { |p| shell.say "  #{File.basename(p)}" }
@@ -155,12 +154,11 @@ private
       shell.say %q(No problem. You can also run "gem update gemfury")
     end
   rescue Gemfury::Forbidden => e
-    shell.say "Oops! You're not allowed to access this", :red
+    die!("Oops! You're not allowed to access this", e)
   rescue Gemfury::NotFound => e
-    shell.say "Oops! Doesn't look like this exists", :red
-  rescue Exception => e
-    shell.say "Oops! Something went wrong. Looking into it ASAP!", :red
-    shell.say %Q(#{e.class.name}: #{e}\n#{e.backtrace.join("\n")}) if ENV['DEBUG']
+    die!("Oops! Doesn't look like this exists", e)
+  rescue StandardError => e
+    die!("Oops! Something went wrong. Please contact support.", e)
   end
 
   def push_files(command, gem_paths)
@@ -169,9 +167,7 @@ private
     end.compact
 
     if files.empty?
-      shell.say "Problem: No valid packages found", :red
-      help(command)
-      return
+      die!("Problem: No valid packages found", nil, command)
     end
 
     # Let's get uploading
@@ -190,5 +186,12 @@ private
         raise e
       end
     end
+  end
+
+  def die!(msg, err = nil, command = nil)
+    shell.say msg, :red
+    help(command) if command
+    shell.say %Q(#{err.class.name}: #{err}\n#{err.backtrace.join("\n")}) if err && ENV['DEBUG']
+    exit(1)
   end
 end
