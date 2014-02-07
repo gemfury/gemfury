@@ -9,6 +9,7 @@ Gem::Specification.new do |s|
   s.homepage          = "http://www.gemfury.com"
   s.email             = "mrykov@gmail.com"
   s.authors           = [ "Michael Rykov" ]
+  s.license           = 'MIT'
   s.has_rdoc          = false
 
   s.executables       = %w(gemfury fury)
