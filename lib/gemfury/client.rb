@@ -35,8 +35,8 @@ module Gemfury
       ensure_successful_response!(response)
 
       # Notify Gemfury that the upload is ready
-      data = { :name => File.basename(gem_file.path) }
-      response = api2.put("uploads/#{id}", data)
+      options[:name] ||= File.basename(gem_file.path)
+      response = api2.put("uploads/#{id}", options)
       ensure_successful_response!(response)
     end
 
