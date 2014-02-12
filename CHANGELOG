@@ -1,3 +1,12 @@
+*0.4.22*
+
+* Fix the ability to pass options to Client#push_gem
+* Use non-zero exit status for CLI problems
+
+*0.4.21*
+
+* Fix thor and faraday version requirements
+
 *0.4.20*
 
 * Upload packages directly to storage
