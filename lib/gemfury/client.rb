@@ -148,6 +148,7 @@ module Gemfury
           when 'Forbidden'       then Gemfury::Forbidden
           when 'GemVersionError' then Gemfury::InvalidGemVersion
           when 'InvalidGemFile'  then Gemfury::CorruptGemFile
+          when 'DupeVersion'     then Gemfury::DupeVersion
           else                        Gemfury::Error
           end
         else

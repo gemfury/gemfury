@@ -1,3 +1,8 @@
+*0.4.23*
+
+* Fix uninitialized constant URI::Parser::Generic error
+* Gracefully handle DupeVersion errors
+
 *0.4.22*
 
 * Fix the ability to pass options to Client#push_gem

@@ -17,6 +17,9 @@ module Gemfury
   # Corrupt Gem File
   CorruptGemFile = Class.new(Error)
 
+  # Version already exists
+  DupeVersion = Class.new(Error)
+
   # TimeoutError for 503s
   TimeoutError = Class.new(Error)
 end

@@ -178,6 +178,8 @@ private
         shell.say "- done"
       rescue Gemfury::CorruptGemFile
         shell.say "- problem processing this package", :red
+      rescue Gemfury::DupeVersion
+        shell.say "- this version already exists", :red
       rescue Gemfury::TimeoutError, Errno::EPIPE
         shell.say "- this file is too much to handle", :red
         shell.say "  Visit http://www.gemfury.com/large-package for more info"
