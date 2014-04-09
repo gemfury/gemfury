@@ -141,6 +141,7 @@ private
     opts = {}
     opts[:user_api_key] = @user_api_key if @user_api_key
     opts[:account] = options[:as] if options[:as]
+    opts[:account] ||= account if account
     Gemfury::Client.new(opts)
   end
 

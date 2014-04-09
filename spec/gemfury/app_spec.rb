@@ -7,6 +7,10 @@ describe Gemfury::Command::App do
       def read_config_file
         { :gemfury_api_key => 'DEADBEEF' }
       end
+
+      def account
+        nil
+      end
     end
   end
 
@@ -69,6 +73,54 @@ describe Gemfury::Command::App do
       args = ['migrate', fixture_path]
       out = capture(:stdout) { MyApp.start(args, :shell => sh) }
       ensure_gem_uploads(out, 'bar', 'fury')
+    end
+  end
+
+  describe 'impersonation' do
+    before do
+      stub_uploads
+      @args = ['push', fixture('fury-0.0.2.gem')]
+      @client = Gemfury::Client.new :user_api_key => 'DEADBEEF'
+    end
+
+    context 'when :as option is provided to the command' do
+      before do
+        MyApp.any_instance.stub(:options).and_return({as: 'useraccount'})
+      end
+
+      it 'should send an :account to the client' do
+        Gemfury::Client.should_receive(:new).with(hash_including(account: 'useraccount')).at_least(:once).and_return(@client)
+        capture(:stdout) { MyApp.start(@args) }
+      end
+    end
+
+    context 'when @account is set in authorization' do
+      before do
+        MyApp.any_instance.stub(:account).and_return('useraccount')
+      end
+
+      it 'should send an :account to the client' do
+        Gemfury::Client.should_receive(:new).with(hash_including(account: 'useraccount')).at_least(:once).and_return(@client)
+        capture(:stdout) { MyApp.start(@args) }
+      end
+
+      context 'when :as is also provided' do
+        before do
+          MyApp.any_instance.stub(:options).and_return({as: 'as-account'})
+        end
+
+        it 'should send the :as account to the client' do
+          Gemfury::Client.should_receive(:new).with(hash_including(account: 'as-account')).at_least(:once).and_return(@client)
+          capture(:stdout) { MyApp.start(@args) }
+        end
+      end
+    end
+
+    context 'when no impersonation exists' do
+      it 'should NOT send an :account to the client' do
+        Gemfury::Client.should_receive(:new).with(hash_excluding(:account)).at_least(:once).and_return(@client)
+        capture(:stdout) { MyApp.start(@args) }
+      end
     end
   end
 
