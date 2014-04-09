@@ -51,7 +51,7 @@ private
   def load_credentials!
     # Get credentials from ~/.netrc
     email_or_account, @user_api_key = netrc_conf[netrc_host]
-    @account = email_or_account unless email_or_account.include? '@'
+    @account = email_or_account unless email_or_account && email_or_account.include?('@')
     # Legacy loading from ~/.gem/gemfury
     conf = read_config_file
     @user_api_key = conf[:gemfury_api_key] if conf[:gemfury_api_key]
