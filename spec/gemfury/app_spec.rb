@@ -53,9 +53,10 @@ describe Gemfury::Command::App do
 
     it 'should not upload gems without confirmation' do
       stub_uploads
-      $stdin.should_receive(:gets).and_return('n')
+      sh = Thor::Base.shell.new
+      sh.should_receive(:yes?).and_return(false)
       args = ['migrate', fixture_path]
-      out = capture(:stdout) { MyApp.start(args) }
+      out = capture(:stdout) { MyApp.start(args, :shell => sh) }
       a_post("gems").should_not have_been_made
       out.should =~ /bar.*/
       out.should =~ /fury.*/
@@ -63,9 +64,10 @@ describe Gemfury::Command::App do
 
     it 'should upload gems after confirmation' do
       stub_uploads
-      $stdin.should_receive(:gets).and_return('y')
+      sh = Thor::Base.shell.new
+      sh.should_receive(:yes?).and_return(true)
       args = ['migrate', fixture_path]
-      out = capture(:stdout) { MyApp.start(args) }
+      out = capture(:stdout) { MyApp.start(args, :shell => sh) }
       ensure_gem_uploads(out, 'bar', 'fury')
     end
   end
