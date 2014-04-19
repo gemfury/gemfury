@@ -129,8 +129,7 @@ module Gemfury
         builder.use Faraday::Request::MultipartWithFile
         builder.use Faraday::Request::Multipart
         builder.use Faraday::Request::UrlEncoded
-        #builder.use Faraday::Response::Logger
-        builder.use Faraday::Response::ParseJson
+        builder.use ParseJson
         builder.use Handle503
         builder.adapter :net_http
       end
