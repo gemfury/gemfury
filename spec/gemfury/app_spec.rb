@@ -85,7 +85,7 @@ describe Gemfury::Command::App do
 
     context 'when :as option is provided to the command' do
       before do
-        MyApp.any_instance.stub(:options).and_return(:as => 'useraccount'})
+        MyApp.any_instance.stub(:options).and_return({:as => 'useraccount'})
       end
 
       it 'should send an :account to the client' do
