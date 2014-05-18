@@ -85,11 +85,11 @@ describe Gemfury::Command::App do
 
     context 'when :as option is provided to the command' do
       before do
-        MyApp.any_instance.stub(:options).and_return({as: 'useraccount'})
+        MyApp.any_instance.stub(:options).and_return(:as => 'useraccount'})
       end
 
       it 'should send an :account to the client' do
-        Gemfury::Client.should_receive(:new).with(hash_including(account: 'useraccount')).at_least(:once).and_return(@client)
+        Gemfury::Client.should_receive(:new).with(hash_including(:account => 'useraccount')).at_least(:once).and_return(@client)
         capture(:stdout) { MyApp.start(@args) }
       end
     end
@@ -100,17 +100,17 @@ describe Gemfury::Command::App do
       end
 
       it 'should send an :account to the client' do
-        Gemfury::Client.should_receive(:new).with(hash_including(account: 'useraccount')).at_least(:once).and_return(@client)
+        Gemfury::Client.should_receive(:new).with(hash_including(:account => 'useraccount')).at_least(:once).and_return(@client)
         capture(:stdout) { MyApp.start(@args) }
       end
 
       context 'when :as is also provided' do
         before do
-          MyApp.any_instance.stub(:options).and_return({as: 'as-account'})
+          MyApp.any_instance.stub(:options).and_return({:as => 'as-account'})
         end
 
         it 'should send the :as account to the client' do
-          Gemfury::Client.should_receive(:new).with(hash_including(account: 'as-account')).at_least(:once).and_return(@client)
+          Gemfury::Client.should_receive(:new).with(hash_including(:account => 'as-account')).at_least(:once).and_return(@client)
           capture(:stdout) { MyApp.start(@args) }
         end
       end
