@@ -3,7 +3,11 @@ require 'gemfury'
 require 'gemfury/command'
 
 namespace 'fury' do
-  desc "Build gem and push it to Gemfury"
+  desc <<-desc
+  Build gem and push it to Gemfury
+
+  You can use a different account by setting AS=account
+  desc
   task :release, :gemspec do |t, args|
     gemspec = args[:gemspec] ||
               FileList["#{Dir.pwd}/*.gemspec"][0]
@@ -21,8 +25,13 @@ namespace 'fury' do
         Gem::Builder.new(spec).build
       end
 
+      options = {}
+      options[:as] = ENV['AS'] if ENV['AS']
+
       gemfile = File.basename(spec.cache_file)
-      Gemfury::Command::App.start(['push', gemfile])
+
+      script = Gemfury::Command::App.new(['push', gemfile], options)
+      script.invoke(:push, gemfile)
     end
   end
 end
