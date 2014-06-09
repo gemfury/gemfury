@@ -52,7 +52,8 @@ private
     email, @user_api_key = netrc_conf[netrc_host]
     # Legacy loading from ~/.gem/gemfury
     conf = read_config_file
-    @user_api_key = conf[:gemfury_api_key] if conf[:gemfury_api_key]
+    api_key = conf[:gemfury_api_key] || conf["gemfury_api_key"]
+    @user_api_key = api_key if api_key
   end
 
   def write_credentials!(email)
