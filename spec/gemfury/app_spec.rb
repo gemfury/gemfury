@@ -30,6 +30,22 @@ describe Gemfury::Command::App do
       ensure_gem_uploads(out, 'fury')
     end
 
+    context 'when config keys are strings' do
+      class MyAppStringConfig < Gemfury::Command::App
+        no_commands do
+          def read_config_file
+            { "gemfury_api_key" => 'DEADBEEF' }
+          end
+        end
+      end
+      it 'should upload a valid gem ' do
+        stub_uploads
+        args = ['push', fixture('fury-0.0.2.gem')]
+        out = capture(:stdout) { MyAppStringConfig.start(args) }
+        ensure_gem_uploads(out, 'fury')
+      end
+    end
+
     it 'should upload multiple packages' do
       stub_uploads
       args = ['push', fixture('fury-0.0.2.gem'), fixture('bar-0.0.2.gem')]
