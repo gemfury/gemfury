@@ -110,6 +110,7 @@ module Gemfury
       options = {
         :url => self.endpoint,
         :ssl => { :verify => false },
+        :params => {},
         :headers => {
           :accept => 'application/json',
           :user_agent => user_agent,
@@ -122,7 +123,7 @@ module Gemfury
       end
 
       if self.account
-        options[:params] = { :as => self.account }
+        options[:params][:as] = self.account
       end
 
       Faraday.new(options) do |builder|
