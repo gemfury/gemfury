@@ -14,8 +14,8 @@ module Gemfury
     DEFAULT_ADAPTER = :net_http
 
     # The endpoint that will be used to connect if none is set
-    DEFAULT_ENDPOINT = 'https://www.gemfury.com/1/'.freeze
-    DEFAULT_ENDPOINT2 = 'https://www.gemfury.com/2/'.freeze
+    DEFAULT_ENDPOINT  = 'https://api.fury.io/1/'.freeze
+    DEFAULT_ENDPOINT2 = 'https://api.fury.io/2/'.freeze
 
     # The value sent in the 'User-Agent' header if none is set
     DEFAULT_USER_AGENT = "Gemfury RubyGem #{Gemfury::VERSION}".freeze
