@@ -141,6 +141,7 @@ module Gemfury
         error = (response.body || {})['error'] || {}
         error_class = case response.status
         when 401 then Gemfury::Unauthorized
+        when 403 then Gemfury::Forbidden
         when 404 then Gemfury::NotFound
         when 503 then Gemfury::TimeoutError
         when 400
