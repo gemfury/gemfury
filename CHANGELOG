@@ -1,3 +1,9 @@
+*0.4.24*
+
+* Upgrade to Faraday 0.9
+* Switch to api.fury.io endpoint
+* Better error handling
+
 *0.4.23*
 
 * Fix uninitialized constant URI::Parser::Generic error
