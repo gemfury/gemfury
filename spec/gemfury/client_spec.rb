@@ -5,12 +5,12 @@ describe Gemfury::Client do
     @client = Gemfury::Client.new
   end
 
-  describe '#get_access_token' do
+  describe '#login' do
     it 'should return the access token for correct' do
       stub_post("access_token").to_return(:body => access_token_fixture)
 
-      token = @client.get_access_token('test@test.com', '123')
-      token.should eq('TestToken')
+      token = @client.login('test@test.com', '123')
+      token.should eq('access_token' => 'TestToken')
 
       a_post("access_token").with(
         :body => { :email => 'test@test.com', :password => '123' }
@@ -21,6 +21,24 @@ describe Gemfury::Client do
       stub_post("access_token").to_return(:status => 401)
 
       lambda do
+        @client.login('test@test.com', '123')
+      end.should raise_error(Gemfury::Unauthorized)
+    end
+  end
+
+  describe '#get_access_token' do
+    it 'should wrap #login with same args' do
+      @client.should_receive(:login).
+              with('test@test.com', '123', :as => 't123').
+              and_return('access_token' => 'TestToken')
+
+      token = @client.get_access_token('test@test.com', '123', :as => 't123')
+      token.should eq('TestToken')
+    end
+
+    it 'should proxy #login exceptions' do
+      lambda do
+        stub_post("access_token").to_return(:status => 401)
         @client.get_access_token('test@test.com', '123')
       end.should raise_error(Gemfury::Unauthorized)
     end

@@ -62,14 +62,16 @@ module Gemfury
       checked_response_body(response)
     end
 
-    # Get Authentication token via email/password
-    def get_access_token(email, password, options = {})
-      ensure_ready!
-      response = connection.post('access_token', options.merge(
-        :email => email, :password => password
-      ))
+    # LEGACY: Authentication token via email/password
+    def get_access_token(*args)
+      login(*args)['access_token']
+    end
 
-      checked_response_body(response)['access_token']
+    # Get authentication info via email/password
+    def login(email, password, opts = {})
+      ensure_ready!
+      opts = opts.merge(:email => email, :password => password)
+      checked_response_body(connection.post('access_token', opts))
     end
 
     # List collaborators for this account
