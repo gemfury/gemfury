@@ -14,8 +14,8 @@ module Gemfury::Command::Authorization
 
 private
   def with_authorization(&block)
-    # Load up the credentials
-    load_credentials!
+    # Load up the credentials if user_api_key is not already set
+    load_credentials! if @user_api_key.nil?
 
     # Attempt the operation and prompt user in case of
     # lack of authorization or a 401 response from the server
