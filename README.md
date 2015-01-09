@@ -1,8 +1,9 @@
 Gemfury CLI
 ===========
 
-<a href="http://badge.fury.io/rb/gemfury"><img src="https://badge.fury.io/rb/gemfury.svg" alt="Gem Version" height="18"></a>
+[![Gem Version](https://badge.fury.io/rb/gemfury.svg)](http://badge.fury.io/rb/gemfury)
 [![Build Status](https://secure.travis-ci.org/gemfury/gemfury.svg?branch=master)](https://travis-ci.org/gemfury/gemfury)
+[![Code Climate](https://codeclimate.com/github/gemfury/gemfury/badges/gpa.svg)](https://codeclimate.com/github/gemfury/gemfury)
 
 This is the Gemfury CLI used to manage your Gemfury packages from the command line.  If you're
 familiar with the service and want to jump straight into command line action, please proceed to
