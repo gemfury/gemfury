@@ -4,7 +4,7 @@ require 'gemfury/command'
 
 namespace 'fury' do
   desc "Build gem and push it to Gemfury"
-  task :release, :gemspec do |t, args|
+  task :release, [:gemspec, :as] do |t, args|
     gemspec = args[:gemspec] ||
               FileList["#{Dir.pwd}/*.gemspec"][0]
 
@@ -22,7 +22,11 @@ namespace 'fury' do
       end
 
       gemfile = File.basename(spec.cache_file)
-      Gemfury::Command::App.start(['push', gemfile])
+
+      params = ['push', gemfile]
+      params << "--as=#{args[:as]}" if args[:as]
+
+      Gemfury::Command::App.start(params)
     end
   end
 end
