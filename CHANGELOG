@@ -1,3 +1,8 @@
+*0.4.26*
+
+* Use Client#login that returns account object
+* Add "as" argument to "fury:release" task
+
 *0.4.25*
 
 * Upgrade to Faraday 0.9
