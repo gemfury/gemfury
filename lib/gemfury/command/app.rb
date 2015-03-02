@@ -136,6 +136,28 @@ class Gemfury::Command::App < Thor
     end
   end
 
+  ### GIT REPOSITORY MANAGEMENT ###
+  map "git:list"   => 'git_list'
+  map "git:reset"  => 'git_reset'
+
+  desc "git:list", "List Git repositories"
+  def git_list
+    with_checks_and_rescues do
+      repos = client.git_repos['repos']
+      shell.say "\n*** GEMFURY GIT REPOS ***\n\n"
+      names = repos.map { |r| r['name'] }
+      names.sort.each { |n| shell.say(n) }
+    end
+  end
+
+  desc "git:reset", "Remove a Git repository"
+  def git_reset(repo)
+    with_checks_and_rescues do
+      client.git_reset(repo)
+      shell.say "\n*** Yanked #{repo} repository ***\n\n"
+    end
+  end
+
 private
   def client
     opts = {}

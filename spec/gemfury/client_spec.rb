@@ -168,7 +168,7 @@ describe Gemfury::Client do
         stub_api_method
       end
 
-      it 'should upload valid gems' do
+      it 'should delete selected package version' do
         send_api_request
         a_delete("gems/example/versions/0.0.1").should have_been_made
       end
@@ -231,6 +231,46 @@ describe Gemfury::Client do
       end
 
       it_should_behave_like 'graceful handler of errors'
+    end
+  end
+
+  describe '#git_repos' do
+    let(:stub_api_method)  { stub_get("git/repos/me") }
+    let(:send_api_request) { @client.git_repos }
+
+    it_should_behave_like 'API without authentication'
+
+    describe 'while authenticated' do
+      before do
+        stub_api_method.to_return(:body => fixture('repos.json'))
+        @client.user_api_key = 'MyAuthKey'
+      end
+
+      it 'should list git repos' do
+        repo_list = send_api_request['repos']
+        a_get("git/repos/me").should have_been_made
+        repo_list.size.should eq(1)
+        repo_list.first['name'].should eq('example')
+      end
+    end
+  end
+
+  describe '#git_reset' do
+    let(:stub_api_method)  { stub_delete("git/repos/me/example") }
+    let(:send_api_request) { @client.git_reset('example') }
+
+    it_should_behave_like 'API without authentication'
+
+    describe 'while authenticated' do
+      before do
+        @client.user_api_key = 'MyAuthKey'
+        stub_api_method
+      end
+
+      it 'should yank specified git repo' do
+        send_api_request
+        a_delete("git/repos/me/example").should have_been_made
+      end
     end
   end
 

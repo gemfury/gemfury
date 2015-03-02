@@ -98,9 +98,28 @@ module Gemfury
       checked_response_body(response)
     end
 
+    # List Git repos for this account
+    def git_repos(options = {})
+      ensure_ready!(:authorization)
+      response = connection.get(git_repo_path, options)
+      checked_response_body(response)
+    end
+
+    # Reset repository to initial state
+    def git_reset(repo, options = {})
+      ensure_ready!(:authorization)
+      response = connection.delete(git_repo_path(repo), options)
+      checked_response_body(response)
+    end
+
   private
     def escape(str)
       CGI.escape(str)
+    end
+
+    def git_repo_path(*args)
+      rest = args.map { |a| escape(a) }
+      ['git/repos', self.account || 'me'].concat(rest).join('/')
     end
 
     def connection(options = {})
