@@ -175,6 +175,8 @@ private
     else
       shell.say %q(No problem. You can also run "gem update gemfury")
     end
+  rescue Gemfury::Conflict => e
+    die!("Oops! Locked for another user. Try again later.", e)
   rescue Gemfury::Forbidden => e
     die!("Oops! You're not allowed to access this", e)
   rescue Gemfury::NotFound => e

@@ -161,6 +161,7 @@ module Gemfury
         when 401 then Gemfury::Unauthorized
         when 403 then Gemfury::Forbidden
         when 404 then Gemfury::NotFound
+        when 409 then Gemfury::Conflict
         when 503 then Gemfury::TimeoutError
         when 400
           case error['type']

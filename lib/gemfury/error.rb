@@ -11,6 +11,9 @@ module Gemfury
   # Client is not allowed to perform this operation
   Forbidden = Class.new(Error)
 
+  # Account is locked for another operation
+  Conflict = Class.new(Error)
+
   # Returned if something is not found
   NotFound = Class.new(Error)
 

@@ -69,6 +69,13 @@ describe Gemfury::Client do
         send_api_request
       }.should raise_exception(Gemfury::NotFound)
     end
+
+    it 'should throw a conflict error when resource is locked' do
+      stub_api_method.to_return(:status => 409)
+      lambda {
+        send_api_request
+      }.should raise_exception(Gemfury::Conflict)
+    end
   end
 
   describe '#account_info' do
@@ -266,6 +273,8 @@ describe Gemfury::Client do
         @client.user_api_key = 'MyAuthKey'
         stub_api_method
       end
+
+      it_should_behave_like 'graceful handler of errors'
 
       it 'should yank specified git repo' do
         send_api_request
