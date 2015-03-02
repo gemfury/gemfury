@@ -6,19 +6,21 @@ module Gemfury
       :user_api_key,
       :adapter,
       :endpoint,
-      :endpoint2,
       :user_agent,
+      :http_accept,
       :account].freeze
 
     # The adapter that will be used to connect if none is set
     DEFAULT_ADAPTER = :net_http
 
     # The endpoint that will be used to connect if none is set
-    DEFAULT_ENDPOINT  = 'https://api.fury.io/1/'.freeze
-    DEFAULT_ENDPOINT2 = 'https://api.fury.io/2/'.freeze
+    DEFAULT_ENDPOINT  = 'https://api.fury.io/'.freeze
 
     # The value sent in the 'User-Agent' header if none is set
     DEFAULT_USER_AGENT = "Gemfury RubyGem #{Gemfury::VERSION}".freeze
+
+    # The value sent in the 'Accept' header for versioning
+    DEFAULT_HTTP_ACCEPT = "application/vnd.fury.v1+json".freeze
 
     # Default user API key
     DEFAULT_API_KEY = nil
@@ -51,8 +53,8 @@ module Gemfury
       self.user_api_key       = DEFAULT_API_KEY
       self.adapter            = DEFAULT_ADAPTER
       self.endpoint           = DEFAULT_ENDPOINT
-      self.endpoint2          = DEFAULT_ENDPOINT2
       self.user_agent         = DEFAULT_USER_AGENT
+      self.http_accept        = DEFAULT_HTTP_ACCEPT
       self.account            = DEFAULT_ACCOUNT
       self
     end

@@ -1,18 +1,17 @@
 # Define a_get, a_post, etc and stub_get, stub_post, etc
 [:delete, :get, :post, :put].each do |method|
   self.class.send(:define_method, "a_#{method}") do |path, *opts|
-    prefix = Gemfury.send(opts == [2] ? :endpoint2 : :endpoint)
-    a_request(method, prefix + path).with(
+    http_accept = "application/vnd.fury.v#{opts.first || 1}+json"
+    a_request(method, Gemfury.endpoint + path).with(
       :headers => {
-        'Accept'        => 'application/json',
+        'Accept' => http_accept,
         'X-Gem-Version' => Gemfury::VERSION
       }
     )
   end
 
   self.class.send(:define_method, "stub_#{method}") do |path, *opts|
-    prefix = Gemfury.send(opts == [2] ? :endpoint2 : :endpoint)
-    stub_request(method, prefix + path)
+    stub_request(method, Gemfury.endpoint + path)
   end
 end
 

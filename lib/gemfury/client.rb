@@ -23,7 +23,8 @@ module Gemfury
       ensure_ready!(:authorization)
 
       # Generate upload link
-      api2 = connection(:url => self.endpoint2)
+      headers = { :accept => "application/vnd.fury.v2+json" }
+      api2 = connection(:headers => headers)
       response = api2.post('uploads')
       checked_response_body(response)
 
@@ -108,10 +109,10 @@ module Gemfury
         :ssl => { :verify => false },
         :params => {},
         :headers => {
-          :accept => 'application/json',
           :user_agent => user_agent,
-          :x_gem_version => Gemfury::VERSION
-        }
+          :x_gem_version => Gemfury::VERSION,
+          :accept => self.http_accept || 'application/json',
+        }.merge(options.delete(:headers) || {})
       }.merge(options)
 
       if self.user_api_key
