@@ -1,0 +1,9 @@
+machine api.fury.io
+  login    api_email
+  password api_pass
+machine git.fury.io
+  login git_email
+  password git_pass
+machine nop.fury.io
+  login nop_email
+  password nop_pass

@@ -3,12 +3,12 @@ module Gemfury::Command::Authorization
 
   def wipe_credentials!
     FileUtils.rm(config_path, :force => true) # never raises exception
-    netrc_conf.delete(netrc_host)
+    each_netrc_host { |h| netrc_conf.delete(h) }
     netrc_conf.save
   end
 
   def has_credentials?
-    !!netrc_conf[netrc_host] ||
+    !!netrc_conf[netrc_api_host] ||
     read_config_file.key?(:gemfury_api_key)
   end
 
@@ -49,14 +49,13 @@ private
 
   def load_credentials!
     # Get credentials from ~/.netrc
-    email, @user_api_key = netrc_conf[netrc_host]
+    email, @user_api_key = netrc_conf[netrc_api_host]
     # Legacy loading from ~/.gem/gemfury
-    conf = read_config_file
-    @user_api_key = conf[:gemfury_api_key] if conf[:gemfury_api_key]
+    @user_api_key ||= read_config_file[:gemfury_api_key]
   end
 
   def write_credentials!(email)
-    netrc_conf[netrc_host] = email, @user_api_key
+    each_netrc_host { |h| netrc_conf[h] = email, @user_api_key }
     netrc_conf.save
   end
 
@@ -68,7 +67,13 @@ private
     @netrc ||= Netrc.read
   end
 
-  def netrc_host
+  def netrc_api_host
     URI.parse(client.endpoint).host
+  end
+
+  def each_netrc_host
+    [:endpoint, :gitpoint].each do |c|
+      yield(URI.parse(client.send(c)).host)
+    end
   end
 end

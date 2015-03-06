@@ -6,6 +6,7 @@ module Gemfury
       :user_api_key,
       :adapter,
       :endpoint,
+      :gitpoint,
       :user_agent,
       :http_accept,
       :account].freeze
@@ -15,6 +16,9 @@ module Gemfury
 
     # The endpoint that will be used to connect if none is set
     DEFAULT_ENDPOINT  = 'https://api.fury.io/'.freeze
+
+    # The HTTP endpoint for git repo (used for .netrc credentials)
+    DEFAULT_GITPOINT  = 'https://git.fury.io/'.freeze
 
     # The value sent in the 'User-Agent' header if none is set
     DEFAULT_USER_AGENT = "Gemfury RubyGem #{Gemfury::VERSION}".freeze
@@ -53,6 +57,7 @@ module Gemfury
       self.user_api_key       = DEFAULT_API_KEY
       self.adapter            = DEFAULT_ADAPTER
       self.endpoint           = DEFAULT_ENDPOINT
+      self.gitpoint           = DEFAULT_GITPOINT
       self.user_agent         = DEFAULT_USER_AGENT
       self.http_accept        = DEFAULT_HTTP_ACCEPT
       self.account            = DEFAULT_ACCOUNT

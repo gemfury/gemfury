@@ -1,3 +1,4 @@
+require 'fakefs/spec_helpers'
 require 'webmock/rspec'
 require 'gemfury'
 require 'gemfury/command'
@@ -11,6 +12,8 @@ RSpec.configure do |config|
   config.mock_with :rspec
   # == Suppress Thor Errors
   config.before(:each) do
-    MyApp.instance_variable_set(:@no_commands, true)
+    if defined?(MyApp)
+      MyApp.instance_variable_set(:@no_commands, true)
+    end
   end
 end
