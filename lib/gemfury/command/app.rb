@@ -4,7 +4,7 @@ class Gemfury::Command::App < Thor
 
   # Impersonation
   class_option :as, :desc => 'Access an account other than your own'
-  class_option :user_api_key, :desc => 'API token to use for commands'
+  class_option :api_token, :desc => 'API token to use for commands'
 
   map "-v" => :version
   desc "version", "Show Gemfury version", :hide => true
@@ -168,7 +168,7 @@ private
   end
 
   def with_checks_and_rescues(&block)
-    @user_api_key = options[:user_api_key] if options[:user_api_key]
+    @user_api_key = options[:api_token] if options[:api_token]
     with_authorization(&block)
   rescue Gemfury::InvalidGemVersion => e
     shell.say "You have a deprecated Gemfury client", :red

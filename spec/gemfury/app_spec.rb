@@ -37,10 +37,10 @@ describe Gemfury::Command::App do
       ensure_gem_uploads(out, 'bar', 'fury')
     end
 
-    context 'when passing user_api_key via the commandline' do
+    context 'when passing api_token via the commandline' do
       it 'should upload a valid gem' do
         stub_uploads
-        args = ['push', fixture('fury-0.0.2.gem'), "--user_api_key='DEADBEEF'"]
+        args = ['push', fixture('fury-0.0.2.gem'), "--api_token='DEADBEEF'"]
         out = capture(:stdout) { Gemfury::Command::App.start(args) }
         ensure_gem_uploads(out, 'fury')
       end
@@ -80,12 +80,12 @@ describe Gemfury::Command::App do
       ensure_gem_uploads(out, 'bar', 'fury')
     end
 
-    context 'when passing user_api_key via the commandline' do
+    context 'when passing api_token via the commandline' do
       it 'should upload gems after confirmation' do
         stub_uploads
         sh = Thor::Base.shell.new
         sh.should_receive(:yes?).and_return(true)
-        args = ['migrate', fixture_path, "--user_api_key='DEADBEEF'"]
+        args = ['migrate', fixture_path, "--api_token='DEADBEEF'"]
         out = capture(:stdout) { Gemfury::Command::App.start(args, :shell => sh) }
         ensure_gem_uploads(out, 'bar', 'fury')
       end
