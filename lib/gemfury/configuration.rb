@@ -8,7 +8,7 @@ module Gemfury
       :endpoint,
       :gitpoint,
       :user_agent,
-      :http_accept,
+      :api_version,
       :account].freeze
 
     # The adapter that will be used to connect if none is set
@@ -23,8 +23,8 @@ module Gemfury
     # The value sent in the 'User-Agent' header if none is set
     DEFAULT_USER_AGENT = "Gemfury RubyGem #{Gemfury::VERSION}".freeze
 
-    # The value sent in the 'Accept' header for versioning
-    DEFAULT_HTTP_ACCEPT = "application/vnd.fury.v1+json".freeze
+    # Default API version
+    DEFAULT_API_VERSION = 1
 
     # Default user API key
     DEFAULT_API_KEY = nil
@@ -59,7 +59,7 @@ module Gemfury
       self.endpoint           = DEFAULT_ENDPOINT
       self.gitpoint           = DEFAULT_GITPOINT
       self.user_agent         = DEFAULT_USER_AGENT
-      self.http_accept        = DEFAULT_HTTP_ACCEPT
+      self.api_version        = DEFAULT_API_VERSION
       self.account            = DEFAULT_ACCOUNT
       self
     end

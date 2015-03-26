@@ -23,8 +23,7 @@ module Gemfury
       ensure_ready!(:authorization)
 
       # Generate upload link
-      headers = { :accept => "application/vnd.fury.v2+json" }
-      api2 = connection(:headers => headers)
+      api2 = connection(:api_version => 2)
       response = api2.post('uploads')
       checked_response_body(response)
 
@@ -123,14 +122,21 @@ module Gemfury
     end
 
     def connection(options = {})
+      # The 'Accept' HTTP header for API versioning
+      http_accept = begin
+        v = options.delete(:api_version) || self.api_version
+        "application/vnd.fury.v#{v.to_i}+json"
+      end
+
+      # Faraday client options
       options = {
         :url => self.endpoint,
         :ssl => { :verify => false },
         :params => {},
         :headers => {
-          :user_agent => user_agent,
+          :accept => http_accept,
+          :user_agent => self.user_agent,
           :x_gem_version => Gemfury::VERSION,
-          :accept => self.http_accept || 'application/json',
         }.merge(options.delete(:headers) || {})
       }.merge(options)
 

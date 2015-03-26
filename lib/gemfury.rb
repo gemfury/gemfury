@@ -29,7 +29,7 @@ module Gemfury
       Gemfury::Client.new(options)
     end
 
-    # Delegate to Twitter::Client
+    # Delegate to Gemfury::Client
     def method_missing(method, *args, &block)
       return super unless new.respond_to?(method)
       new.send(method, *args, &block)
