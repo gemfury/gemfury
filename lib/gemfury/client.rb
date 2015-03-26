@@ -131,7 +131,6 @@ module Gemfury
       # Faraday client options
       options = {
         :url => self.endpoint,
-        :ssl => { :verify => false },
         :params => {},
         :headers => {
           :accept => http_accept,
