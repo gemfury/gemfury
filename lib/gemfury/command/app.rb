@@ -12,18 +12,7 @@ class Gemfury::Command::App < Thor
     shell.say Gemfury::VERSION
   end
 
-  desc "whoami", "Show current user"
-  def whoami
-    if !has_credentials?
-      shell.say %Q(You are not logged in), :green
-    else
-      with_checks_and_rescues do
-        me = client.account_info['username']
-        shell.say %Q(You are logged in as "#{me}"), :green
-      end
-    end
-  end
-
+  ### PACKAGE MANAGEMENT ###
   desc "push FILE", "Upload a new version of a package"
   def push(*gems)
     with_checks_and_rescues do
@@ -65,6 +54,7 @@ class Gemfury::Command::App < Thor
     end
   end
 
+  ### AUTHENTICATION ###
   desc "logout", "Remove Gemfury credentials"
   def logout
     if !has_credentials?
@@ -72,6 +62,21 @@ class Gemfury::Command::App < Thor
     elsif shell.yes? "Are you sure you want to log out? [yN]"
       wipe_credentials!
       shell.say "You have been logged out"
+    end
+  end
+
+  desc "login", "Populate Gemfury credentials"
+  def login
+    with_checks_and_rescues do
+      me = client.account_info['name']
+      shell.say %Q(You are logged in as "#{me}"), :green
+    end
+  end
+
+  desc "whoami", "Show current user"
+  def whoami
+    has_credentials? ? self.login : begin
+      shell.say %Q(You are not logged in), :green
     end
   end
 
