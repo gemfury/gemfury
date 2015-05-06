@@ -7,7 +7,7 @@ Gemfury CLI
 
 This is the Gemfury CLI used to manage your Gemfury packages from the command line.  If you're
 familiar with the service and want to jump straight into command line action, please proceed to
-the [CLI documentation](http://devcenter.gemfury.com/articles/gemfury-cli.html).
+the [CLI documentation](https://gemfury.com/help/gemfury-cli).
 
 Gemfury is your personal cloud for your private and custom RubyGems, Python packages, and NPM
 modules.  Once you upload your packages and enable Gemfury as a source, you can securely deploy
@@ -15,20 +15,20 @@ any package to any host. It's simple, reliable, and hassle-free.
 
 
 ### Introduction to Gemfury
-* [Gemfury homepage](http://www.gemfury.com)
-* [Getting started with Gemfury](http://devcenter.gemfury.com/articles/getting-started.html)
+* [Gemfury homepage](https://gemfury.com/)
+* [Getting started with Gemfury](https://gemfury.com/help/getting-started)
 
 ### Using Gemfury CLI
-* [CLI documentation](http://devcenter.gemfury.com/articles/gemfury-cli.html)
-* [Uploading private packages](http://devcenter.gemfury.com/articles/gemfury-cli.html#uploading_packages)
-* [Manage collaborators](http://devcenter.gemfury.com/articles/gemfury-cli.html#collaboration)
+* [CLI documentation](https://gemfury.com/help/gemfury-cli)
+* [Uploading private packages](https://gemfury.com/help/gemfury-cli#uploading-packages)
+* [Manage collaborators](https://gemfury.com/help/gemfury-cli#collaboration)
 
 ### Putting Gemfury to work
-* [Install private RubyGems](http://devcenter.gemfury.com/articles/install-gems.html)
-* [Install private Python packages](http://devcenter.gemfury.com/articles/pypi-server.html)
-* [Install private NPM modules](http://devcenter.gemfury.com/articles/npm-registry.html)
-* [Private RubyGems on Heroku](http://devcenter.gemfury.com/articles/private-gems-on-heroku.html)
-
+* [Install private RubyGems](https://gemfury.com/help/install-gems)
+* [Install private NPM modules](https://gemfury.com/help/npm-registry)
+* [Install private Python packages](https://gemfury.com/help/pypi-server)
+* [Install private Composer packages](https://gemfury.com/help/php-composer-server)
+* [Private RubyGems on Heroku](https://gemfury.com/help/private-gems-on-heroku)
 
 ## Contribution and Improvements
 
