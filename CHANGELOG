@@ -1,3 +1,14 @@
+*0.5.0*
+
+* Add "login" command to save credentials
+* Add "git:list" and "git:reset" commands
+* Add --api_token CLI option for stateless calls (#22, @jaredbro)
+* Switch from path to "Accept" header API versioning
+* Enhance .netrc management with Git support
+* Gracefully handle locked Git repo errors
+* Add Ruby 2.2 support and test suite
+* Fix SSL certificate validation
+
 *0.4.26*
 
 * Use Client#login that returns account object
