@@ -92,6 +92,23 @@ describe Gemfury::Command::App do
     end
   end
 
+  describe '#git_rebuild' do
+    it 'should cause errors for no repo specified' do
+      MyApp.start(['git:rebuild'])
+      a_request(:any, Endpoint).should_not have_been_made
+    end
+
+    it 'should rebuild repo and print output' do
+      url  = "git/repos/me/example/builds"
+      opts = { :body => 'Package build output & success :)' }
+      stub_post(url, :api_format => :text).to_return(opts)
+      sh, args = Thor::Base.shell.new, ['git:rebuild', 'example']
+      out = capture(:stdout) { MyApp.start(args, :shell => sh) }
+      a_post(url, :api_format => :text).should have_been_made
+      out.should include(opts[:body])
+    end
+  end
+
 private
   def app_should_die(*args)
     MyApp.any_instance.should_receive(:die!).with(*args)

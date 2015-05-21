@@ -143,8 +143,9 @@ class Gemfury::Command::App < Thor
   end
 
   ### GIT REPOSITORY MANAGEMENT ###
-  map "git:list"   => 'git_list'
-  map "git:reset"  => 'git_reset'
+  map "git:list"    => 'git_list'
+  map "git:reset"   => 'git_reset'
+  map "git:rebuild" => 'git_rebuild'
 
   desc "git:list", "List Git repositories"
   def git_list
@@ -161,6 +162,14 @@ class Gemfury::Command::App < Thor
     with_checks_and_rescues do
       client.git_reset(repo)
       shell.say "\n*** Yanked #{repo} repository ***\n\n"
+    end
+  end
+
+  desc "git:rebuild", "Rebuild a Git repository"
+  def git_rebuild(repo)
+    with_checks_and_rescues do
+      shell.say "\n*** Rebuilding #{repo} repository ***\n\n"
+      shell.say client.git_rebuild(repo)
     end
   end
 

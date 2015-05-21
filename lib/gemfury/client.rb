@@ -111,6 +111,14 @@ module Gemfury
       checked_response_body(response)
     end
 
+    # Rebuild Git repository package
+    def git_rebuild(repo, options = {})
+      ensure_ready!(:authorization)
+      url = "#{git_repo_path(repo)}/builds"
+      api = connection(:api_format => :text)
+      checked_response_body(api.post(url, options))
+    end
+
   private
     def escape(str)
       CGI.escape(str)
@@ -125,7 +133,8 @@ module Gemfury
       # The 'Accept' HTTP header for API versioning
       http_accept = begin
         v = options.delete(:api_version) || self.api_version
-        "application/vnd.fury.v#{v.to_i}+json"
+        f = options.delete(:api_format)  || :json
+        "application/vnd.fury.v#{v.to_i}+#{f}"
       end
 
       # Faraday client options

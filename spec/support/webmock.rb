@@ -1,16 +1,18 @@
 # Define a_get, a_post, etc and stub_get, stub_post, etc
 [:delete, :get, :post, :put].each do |method|
-  self.class.send(:define_method, "a_#{method}") do |path, *opts|
-    http_accept = "application/vnd.fury.v#{opts.first || 1}+json"
+  self.class.send(:define_method, "a_#{method}") do |path, *args|
+    opts = args.last.is_a?(Hash) ? args.pop : {}
+    ver = args.first || opts[:api_version] || 1
+    fmt = opts[:api_format] || :json
     a_request(method, Gemfury.endpoint + path).with(
       :headers => {
-        'Accept' => http_accept,
+        'Accept' => "application/vnd.fury.v#{ver}+#{fmt}",
         'X-Gem-Version' => Gemfury::VERSION
       }
     )
   end
 
-  self.class.send(:define_method, "stub_#{method}") do |path, *opts|
+  self.class.send(:define_method, "stub_#{method}") do |path, *args|
     stub_request(method, Gemfury.endpoint + path)
   end
 end

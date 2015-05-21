@@ -15,7 +15,8 @@ module Gemfury
       end
 
       def on_complete(response)
-        response.body = parse(response.body)
+        ok = response.request_headers['Accept'] =~ /json\z/
+        response.body = parse(response.body) if ok
       end
     end
   end

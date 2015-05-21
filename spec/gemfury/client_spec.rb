@@ -283,6 +283,30 @@ describe Gemfury::Client do
     end
   end
 
+  describe '#git_rebuild' do
+    let(:stub_api_method)  { stub_post("git/repos/me/example/builds") }
+    let(:send_api_request) { @client.git_rebuild('example') }
+
+    it_should_behave_like 'API without authentication'
+
+    describe 'while authenticated' do
+      before do
+        @client.user_api_key = 'MyAuthKey'
+        stub_api_method
+      end
+
+      it_should_behave_like 'graceful handler of errors'
+
+      it 'should rebuild specified git repo' do
+        send_api_request
+        a_post("git/repos/me/example/builds", {
+          :api_format => :text
+        }).should have_been_made
+      end
+    end
+  end
+
+
   def access_token_fixture
     ::MultiJson.encode(:access_token => 'TestToken')
   end
