@@ -162,7 +162,7 @@ module Gemfury
         builder.use Faraday::Request::UrlEncoded
         builder.use ParseJson
         builder.use Handle503
-        builder.adapter :net_http
+        builder.adapter :fury_http
       end
     end
 

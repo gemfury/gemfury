@@ -7,6 +7,7 @@ require 'uri'
 require 'netrc'
 require 'multi_json'
 require 'faraday'
+require 'faraday/adapter/fury_http'
 require 'faraday/request/multipart_with_file'
 
 require 'gemfury/version'
