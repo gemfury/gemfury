@@ -104,6 +104,13 @@ module Gemfury
       checked_response_body(response)
     end
 
+    # Update repository name and settings
+    def git_update(repo, options = {})
+      ensure_ready!(:authorization)
+      response = connection.patch(git_repo_path(repo), options)
+      checked_response_body(response)
+    end
+
     # Reset repository to initial state
     def git_reset(repo, options = {})
       ensure_ready!(:authorization)

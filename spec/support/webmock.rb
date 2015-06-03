@@ -1,5 +1,5 @@
 # Define a_get, a_post, etc and stub_get, stub_post, etc
-[:delete, :get, :post, :put].each do |method|
+[:delete, :get, :post, :put, :patch].each do |method|
   self.class.send(:define_method, "a_#{method}") do |path, *args|
     opts = args.last.is_a?(Hash) ? args.pop : {}
     ver = args.first || opts[:api_version] || 1

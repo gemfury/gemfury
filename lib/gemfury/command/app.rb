@@ -145,6 +145,7 @@ class Gemfury::Command::App < Thor
   ### GIT REPOSITORY MANAGEMENT ###
   map "git:list"    => 'git_list'
   map "git:reset"   => 'git_reset'
+  map "git:rename"  => 'git_rename'
   map "git:rebuild" => 'git_rebuild'
 
   desc "git:list", "List Git repositories"
@@ -154,6 +155,14 @@ class Gemfury::Command::App < Thor
       shell.say "\n*** GEMFURY GIT REPOS ***\n\n"
       names = repos.map { |r| r['name'] }
       names.sort.each { |n| shell.say(n) }
+    end
+  end
+
+  desc "git:rename", "Rename a Git repository"
+  def git_rename(repo, new_name)
+    with_checks_and_rescues do
+      client.git_update(repo, :repo => { :name => new_name })
+      shell.say "Renamed #{repo} repository to #{new_name}\n"
     end
   end
 

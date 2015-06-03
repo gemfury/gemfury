@@ -283,6 +283,29 @@ describe Gemfury::Client do
     end
   end
 
+  describe '#git_rename' do
+    let(:stub_api_method)  { stub_patch("git/repos/me/example") }
+    let(:send_api_request) { @client.git_update('example', {
+      :repo => { :name => 'new_example' }
+    }) }
+
+    it_should_behave_like 'API without authentication'
+
+    describe 'while authenticated' do
+      before do
+        @client.user_api_key = 'MyAuthKey'
+        stub_api_method
+      end
+
+      it_should_behave_like 'graceful handler of errors'
+
+      it 'should update specified git repo' do
+        send_api_request
+        a_patch("git/repos/me/example").should have_been_made
+      end
+    end
+  end
+
   describe '#git_rebuild' do
     let(:stub_api_method)  { stub_post("git/repos/me/example/builds") }
     let(:send_api_request) { @client.git_rebuild('example') }
