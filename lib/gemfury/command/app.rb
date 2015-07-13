@@ -65,7 +65,7 @@ class Gemfury::Command::App < Thor
     end
   end
 
-  desc "login", "Populate Gemfury credentials"
+  desc "login", "Save Gemfury credentials"
   def login
     with_checks_and_rescues do
       me = client.account_info['name']

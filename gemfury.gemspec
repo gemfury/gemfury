@@ -5,9 +5,9 @@ Gem::Specification.new do |s|
   s.name              = "gemfury"
   s.version           = Gemfury::VERSION
   s.date              = Time.now.strftime('%Y-%m-%d')
-  s.summary           = "Cloud Gem Server for your private RubyGems"
-  s.homepage          = "http://www.gemfury.com"
-  s.email             = "mrykov@gmail.com"
+  s.summary           = "Hosted repo for your public and private packages"
+  s.homepage          = "https://gemfury.com"
+  s.email             = "hello@gemfury.com"
   s.authors           = [ "Michael Rykov" ]
   s.license           = 'MIT'
   s.has_rdoc          = false
@@ -24,7 +24,7 @@ Gem::Specification.new do |s|
   s.add_dependency    "faraday", ">= 0.9.0", "< 0.10.0.pre"
 
   s.description = <<DESCRIPTION
-Cloud Gem Server for your private RubyGems at http://gemfury.com
+Hosted repo for your public and private packages at https://gemfury.com
 DESCRIPTION
 
   s.post_install_message =<<POSTINSTALL
