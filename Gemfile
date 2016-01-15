@@ -4,7 +4,7 @@ source "http://rubygems.org"
 gemspec
 
 # Lock rake
-gem 'rake', '~> 10.0.0'
+gem 'rake', '~> 10.0'
 
 # Development dependencies
 group :development do
@@ -13,8 +13,11 @@ group :development do
   gem "multi_json"
   gem "json"
 
-  # FakeFS 0.6+ doesn't support Ruby 1.8
+  # Versions 0.6+ don't support Ruby 1.8
   gem "fakefs", "< 0.6", :require => "fakefs/safe"
+
+  # Versions 2.4+ don't support Ruby 1.8
+  gem "addressable", "~> 2.3.0"
 
   # For testing on Ruby 1.8
   platforms :mri_18 do
