@@ -15,6 +15,7 @@ group :development do
   # Restrict for Ruby 1.8 compatibility
   gem "fakefs", "< 0.6", :require => "fakefs/safe"
   gem "addressable", "~> 2.3.0"
+  gem 'highline', '< 1.7.0.pre'
   gem 'faraday', '< 0.10.0.pre'
   gem 'json', '< 2.0.0.pre'
 

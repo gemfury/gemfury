@@ -1,5 +1,5 @@
-gem "highline", "~> 1.6.0"
-gem "thor",     ">= 0.14.0", "< 1.0"
+gem "highline", "~> 1.6"
+gem "thor",     ">= 0.14.0", "< 1.0.0.pre"
 
 require 'thor'
 require 'yaml'
