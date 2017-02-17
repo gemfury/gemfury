@@ -1,3 +1,7 @@
+*Unreleased*
+
+* Upgrade to Faraday 0.11
+
 *0.6.0*
 
 * Support for text responses w/ streaming
