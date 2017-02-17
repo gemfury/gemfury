@@ -1,6 +1,6 @@
 gem "multi_json",         "~> 1.10"
 gem "faraday",            ">= 0.9.0", "< 0.12.0.pre"
-gem "netrc",              "~> 0.10.0"
+gem "netrc",              ">= 0.10.0", "< 0.12.0.pre"
 
 require 'cgi'
 require 'uri'

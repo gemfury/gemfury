@@ -18,9 +18,9 @@ Gem::Specification.new do |s|
                         Dir.glob("lib/**/*")
 
   s.add_dependency    "highline", "~> 1.6.0"
-  s.add_dependency    "netrc", "~> 0.10.0"
   s.add_dependency    "multi_json", "~> 1.10"
   s.add_dependency    "thor", ">= 0.14.0", "< 1.0.0.pre"
+  s.add_dependency    "netrc", ">= 0.10.0", "< 0.12.0.pre"
   s.add_dependency    "faraday", ">= 0.9.0", "< 0.12.0.pre"
 
   s.description = <<DESCRIPTION
