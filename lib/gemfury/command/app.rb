@@ -1,6 +1,6 @@
 class Gemfury::Command::App < Thor
   include Gemfury::Command::Authorization
-  PackageExtensions = %w(gem egg tar.gz tgz)
+  PackageExtensions = %w(gem egg tar.gz tgz nupkg)
 
   # Impersonation
   class_option :as, :desc => 'Access an account other than your own'
