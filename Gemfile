@@ -8,7 +8,7 @@ gem 'rake', '~> 12.0'
 
 # Development dependencies
 group :development do
-  gem "webmock", "~> 1.8.7"
+  gem "webmock", "~> 3.0.1"
   gem "rspec", "~> 3.0"
   gem "multi_json"
   gem 'fakefs'
