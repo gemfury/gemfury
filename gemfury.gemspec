@@ -3,8 +3,8 @@ require 'gemfury/version'
 
 Gem::Specification.new do |s|
   s.name              = "gemfury"
-  s.version           = Gemfury::VERSION
   s.date              = Time.now.strftime('%Y-%m-%d')
+  s.version           = ENV["BUILD_VERSION"] || Gemfury::VERSION
   s.summary           = "Hosted repo for your public and private packages"
   s.homepage          = "https://gemfury.com"
   s.email             = "hello@gemfury.com"
