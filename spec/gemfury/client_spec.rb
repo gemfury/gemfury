@@ -308,7 +308,7 @@ describe Gemfury::Client do
 
   describe '#git_rebuild' do
     let(:stub_api_method)  { stub_post("git/repos/me/example/builds") }
-    let(:send_api_request) { @client.git_rebuild('example') }
+    let(:send_api_request) { @client.git_rebuild('example', @params) }
 
     it_should_behave_like 'API without authentication'
 
@@ -326,9 +326,18 @@ describe Gemfury::Client do
           :api_format => :text
         }).should have_been_made
       end
+
+      context 'with specified revision' do
+        before { @params = { :build => { :revision => 'tag-name' }} }
+        it 'should rebuild git repo at specified revision' do
+          send_api_request
+          a_post("git/repos/me/example/builds", {
+            :api_format => :text
+          }).with(:body => @params).should have_been_made
+        end
+      end
     end
   end
-
 
   def access_token_fixture
     ::MultiJson.encode(:access_token => 'TestToken')

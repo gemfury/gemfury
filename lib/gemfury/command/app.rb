@@ -175,10 +175,12 @@ class Gemfury::Command::App < Thor
   end
 
   desc "git:rebuild", "Rebuild a Git repository"
+  method_options %w(revision -r) => :string
   def git_rebuild(repo)
     with_checks_and_rescues do
+      params = { :revision => options[:revision] }
       shell.say "\n*** Rebuilding #{repo} repository ***\n\n"
-      shell.say client.git_rebuild(repo)
+      shell.say client.git_rebuild(repo, :build => params)
     end
   end
 
