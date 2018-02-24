@@ -24,7 +24,18 @@ namespace 'fury' do
       gemfile = File.basename(spec.cache_file)
 
       params = ['push', gemfile]
-      params << "--as=#{args[:as]}" if args[:as]
+
+      if args[:as]
+        as = args[:as]
+      elsif ENV.include?('FURY_AS')
+        as = ENV['FURY_AS']
+      else
+        as = nil
+      end
+
+      unless as.nil?
+        params << "--as=%s" % as
+      end
 
       Gemfury::Command::App.start(params)
     end
