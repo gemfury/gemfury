@@ -22,20 +22,11 @@ module Gemfury
     def push_gem(gem_file, options = {})
       ensure_ready!(:authorization)
 
-      # Generate upload link
-      api2 = connection(:api_version => 2)
-      response = api2.post('uploads')
-      checked_response_body(response)
+      push_api = connection(:api_version => 2,
+                            :http_accept => 'application/json',
+                            :use_url => self.pushpoint)
 
-      # Upload to S3
-      upload = response.body['upload']
-      id, s3url = upload['id'], upload['blob']['put']
-      response = s3_put_file(s3url, gem_file)
-      checked_response_body(response)
-
-      # Notify Gemfury that the upload is ready
-      options[:name] ||= File.basename(gem_file.path)
-      response = api2.put("uploads/#{id}", options)
+      response = push_api.post(self.account, { :file => gem_file })
       checked_response_body(response)
     end
 
@@ -144,9 +135,19 @@ module Gemfury
         "application/vnd.fury.v#{v.to_i}+#{f}"
       end
 
+      if options.include?(:http_accept)
+        http_accept = '%s, %s' % [ options.delete(:http_accept), http_accept ]
+      end
+
+      if options.include?(:use_url)
+        use_url = options.delete(:use_url)
+      else
+        use_url = self.endpoint
+      end
+
       # Faraday client options
       options = {
-        :url => self.endpoint,
+        :url => use_url,
         :params => {},
         :headers => {
           :accept => http_accept,
@@ -177,7 +178,15 @@ module Gemfury
       if response.success?
         return response.body
       else
-        error = (response.body || {})['error'] || {}
+        case response.body
+        when Hash
+          error = response.body['error'] || { }
+        when Array
+          error = response.body[0]['error'] || { }
+        else
+          error = { }
+        end
+
         error_class = case response.status
         when 401 then Gemfury::Unauthorized
         when 403 then Gemfury::Forbidden
