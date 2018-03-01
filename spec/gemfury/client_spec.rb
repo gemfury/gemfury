@@ -101,25 +101,56 @@ describe Gemfury::Client do
   end
 
   describe '#push_gems' do
-    let(:stub_api_method)  do
-      stub_put("uploads/WTFBBQ123", 2).to_return(:body => fixture('upload.json'))
-      stub_post("uploads", 2) # Do this last so we can extend it
+    let(:fixture_gem) do
+      fixture('fury-0.0.2.gem')
     end
 
-    it_should_behave_like 'API without authentication' do
-      let(:send_api_request) { @client.push_gem(['gemfile']) }
+    let(:stub_api_method) do
+      stub = stub_post(@client.account, :endpoint => Gemfury.pushpoint)
+
+      if @client.account
+        stub.with(:query => { :as => @client.account })
+      else
+        stub
+      end
+    end
+
+    let(:send_api_request) { @client.push_gem(fixture_gem) }
+
+    it_should_behave_like 'API without authentication'
+
+    shared_examples 'uploading gems' do
+      it 'should upload successfully' do
+        @client.push_gem(fixture_gem)
+
+        post_opts = { :endpoint => Gemfury.pushpoint }
+
+        if @client.account
+          post_opts[:query] = { :as => @client.account }
+        end
+
+        expect(a_post(@client.account, post_opts)).to have_been_made
+      end
     end
 
     describe 'while authenticated' do
       before do
         @client.user_api_key = 'MyAuthKey'
-        stub_api_method.to_return(:body => fixture('upload.json'))
+        stub_api_method.to_return(:body => fixture('push.json'))
       end
 
-      it 'should upload valid gems' do
-        @client.push_gem(fixture('fury-0.0.2.gem'))
-        expect(a_post("uploads", 2)).to have_been_made
+      it_should_behave_like 'uploading gems'
+    end
+
+    describe 'while authenticated and using another account' do
+      before do
+        @client.account = 'me'
+        @client.user_api_key = 'MyAuthKey'
+
+        stub_api_method.to_return(:body => fixture('push.json'))
       end
+
+      it_should_behave_like 'uploading gems'
     end
   end
 
