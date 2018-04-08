@@ -7,6 +7,7 @@ module Gemfury
       :adapter,
       :endpoint,
       :gitpoint,
+      :pushpoint,
       :user_agent,
       :api_version,
       :account].freeze
@@ -19,6 +20,9 @@ module Gemfury
 
     # The HTTP endpoint for git repo (used for .netrc credentials)
     DEFAULT_GITPOINT  = 'https://git.fury.io/'.freeze
+
+    # The endpoint for the Push API if not set
+    DEFAULT_PUSHPOINT = 'https://push.fury.io/'.freeze
 
     # The value sent in the 'User-Agent' header if none is set
     DEFAULT_USER_AGENT = "Gemfury RubyGem #{Gemfury::VERSION}".freeze
@@ -58,6 +62,7 @@ module Gemfury
       self.adapter            = DEFAULT_ADAPTER
       self.endpoint           = DEFAULT_ENDPOINT
       self.gitpoint           = DEFAULT_GITPOINT
+      self.pushpoint          = DEFAULT_PUSHPOINT
       self.user_agent         = DEFAULT_USER_AGENT
       self.api_version        = DEFAULT_API_VERSION
       self.account            = DEFAULT_ACCOUNT
@@ -65,4 +70,3 @@ module Gemfury
     end
   end
 end
-

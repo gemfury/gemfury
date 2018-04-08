@@ -72,7 +72,7 @@ private
   end
 
   def each_netrc_host
-    [:endpoint, :gitpoint].each do |c|
+    [:endpoint, :gitpoint, :pushpoint].each do |c|
       yield(URI.parse(client.send(c)).host)
     end
   end
