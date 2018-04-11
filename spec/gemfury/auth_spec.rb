@@ -72,7 +72,6 @@ describe Gemfury::Command::Authorization do
 
   describe 'with existing credentials' do
     before do
-      puts SampleNetrc.inspect
       File.open(Netrc.default_path, "w") { |f| f.write(SampleNetrc) }
     end
 
