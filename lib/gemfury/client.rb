@@ -23,7 +23,7 @@ module Gemfury
       ensure_ready!(:authorization)
 
       push_api = connection(:url => self.pushpoint)
-      response = push_api.post(self.account, options.merge(:file => file))
+      response = push_api.post('uploads', options.merge(:file => file))
       checked_response_body(response)
     end
 
@@ -165,22 +165,22 @@ module Gemfury
       if response.success?
         return response.body
       else
-        error = (response.body || { })['error'] || { }
+        error = (response.body || {})['error'] || {}
         error_class = case error['type']
-                      when 'Forbidden'       then Gemfury::Forbidden
-                      when 'GemVersionError' then Gemfury::InvalidGemVersion
-                      when 'InvalidGemFile'  then Gemfury::CorruptGemFile
-                      when 'DupeVersion'     then Gemfury::DupeVersion
-                      else                        Gemfury::Error
-                        case response.status
-                        when 401 then Gemfury::Unauthorized
-                        when 403 then Gemfury::Forbidden
-                        when 404 then Gemfury::NotFound
-                        when 409 then Gemfury::Conflict
-                        when 503 then Gemfury::TimeoutError
-                        else          Gemfury::Error
-                        end
-                      end
+        when 'Forbidden'       then Gemfury::Forbidden
+        when 'GemVersionError' then Gemfury::InvalidGemVersion
+        when 'InvalidGemFile'  then Gemfury::CorruptGemFile
+        when 'DupeVersion'     then Gemfury::DupeVersion
+        else
+          case response.status
+          when 401 then Gemfury::Unauthorized
+          when 403 then Gemfury::Forbidden
+          when 404 then Gemfury::NotFound
+          when 409 then Gemfury::Conflict
+          when 503 then Gemfury::TimeoutError
+          else          Gemfury::Error
+          end
+        end
 
         raise(error_class, error['message'])
       end
@@ -190,9 +190,9 @@ module Gemfury
       Faraday::Connection.new(uri) do |f|
         f.adapter :net_http
       end.put(uri, file, {
-                :content_length => file.stat.size.to_s,
-                :content_type => ''
-              })
+        :content_length => file.stat.size.to_s,
+        :content_type => ''
+      })
     end
   end
 end

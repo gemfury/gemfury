@@ -5,30 +5,22 @@
 
     ver = args.first || opts[:api_version] || 1
     fmt = opts[:api_format] || :json
-    http_accept = 'application/vnd.fury.v%s+%s' % [ ver, fmt ]
-    if opts.include?(:http_accept)
-      http_accept = '%s, %s' % [ opts[:http_accept], http_accept ]
-    end
-
     endpoint = opts[:endpoint] || Gemfury.endpoint
-
-    with_opts = {
-      :headers => { 'Accept' => http_accept,
-                    'X-Gem-Version' => Gemfury::VERSION }
-    }
+    with_opts = { :headers => { 'Accept' => 'application/vnd.fury.v%s+%s' % [ ver, fmt ],
+                                'X-Gem-Version' => Gemfury::VERSION } }
 
     if opts.include?(:query)
       with_opts[:query] = opts[:query]
     end
 
-    a_request(method, endpoint + (path || '')).with(with_opts)
+    a_request(method, endpoint + path).with(with_opts)
   end
 
   self.class.send(:define_method, "stub_#{method}") do |path, *args|
     opts = args.last.is_a?(Hash) ? args.pop : {}
     endpoint = opts[:endpoint] || Gemfury.endpoint
 
-    stub_request(method, endpoint + (path || ''))
+    stub_request(method, endpoint + path)
   end
 end
 

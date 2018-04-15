@@ -130,12 +130,12 @@ private
   end
 
   def stub_uploads
-    stub_post(nil, :endpoint => Gemfury.pushpoint).
-      to_return(:body => fixture('push.json'))
+    stub_post('uploads', :endpoint => Gemfury.pushpoint).
+      to_return(:body => fixture('uploads.json'))
   end
 
   def ensure_gem_uploads(out, *gems)
-    expect(a_post(nil, :endpoint => Gemfury.pushpoint)).
+    expect(a_post('uploads', :endpoint => Gemfury.pushpoint)).
       to have_been_made.times(gems.size)
 
     gems.each do |g|

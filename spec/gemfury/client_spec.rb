@@ -106,7 +106,7 @@ describe Gemfury::Client do
     end
 
     let(:stub_api_method) do
-      stub = stub_post(@client.account, :endpoint => Gemfury.pushpoint)
+      stub = stub_post('uploads', :endpoint => Gemfury.pushpoint)
 
       if @client.account
         stub.with(:query => { :as => @client.account })
@@ -129,14 +129,14 @@ describe Gemfury::Client do
           post_opts[:query] = { :as => @client.account }
         end
 
-        expect(a_post(@client.account, post_opts)).to have_been_made
+        expect(a_post('uploads', post_opts)).to have_been_made
       end
     end
 
     describe 'while authenticated' do
       before do
         @client.user_api_key = 'MyAuthKey'
-        stub_api_method.to_return(:body => fixture('push.json'))
+        stub_api_method.to_return(:body => fixture('uploads.json'))
       end
 
       it_should_behave_like 'uploading gems'
@@ -144,10 +144,10 @@ describe Gemfury::Client do
 
     describe 'while authenticated and using another account' do
       before do
-        @client.account = 'me'
+        @client.account = 'username'
         @client.user_api_key = 'MyAuthKey'
 
-        stub_api_method.to_return(:body => fixture('push.json'))
+        stub_api_method.to_return(:body => fixture('uploads.json'))
       end
 
       it_should_behave_like 'uploading gems'
