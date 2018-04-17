@@ -21,7 +21,6 @@ module Gemfury
     # Uploading a gem file
     def push_gem(file, options = {})
       ensure_ready!(:authorization)
-
       push_api = connection(:url => self.pushpoint)
       response = push_api.post('uploads', options.merge(:file => file))
       checked_response_body(response)

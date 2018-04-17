@@ -122,7 +122,6 @@ describe Gemfury::Client do
     shared_examples 'uploading gems' do
       it 'should upload successfully' do
         @client.push_gem(fixture_gem)
-
         post_opts = { :endpoint => Gemfury.pushpoint }
 
         if @client.account
@@ -146,7 +145,6 @@ describe Gemfury::Client do
       before do
         @client.account = 'username'
         @client.user_api_key = 'MyAuthKey'
-
         stub_api_method.to_return(:body => fixture('uploads.json'))
       end
 
