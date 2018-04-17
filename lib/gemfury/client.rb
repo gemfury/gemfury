@@ -19,23 +19,10 @@ module Gemfury
     end
 
     # Uploading a gem file
-    def push_gem(gem_file, options = {})
+    def push_gem(file, options = {})
       ensure_ready!(:authorization)
-
-      # Generate upload link
-      api2 = connection(:api_version => 2)
-      response = api2.post('uploads')
-      checked_response_body(response)
-
-      # Upload to S3
-      upload = response.body['upload']
-      id, s3url = upload['id'], upload['blob']['put']
-      response = s3_put_file(s3url, gem_file)
-      checked_response_body(response)
-
-      # Notify Gemfury that the upload is ready
-      options[:name] ||= File.basename(gem_file.path)
-      response = api2.put("uploads/#{id}", options)
+      push_api = connection(:url => self.pushpoint)
+      response = push_api.post('uploads', options.merge(:file => file))
       checked_response_body(response)
     end
 

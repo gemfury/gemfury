@@ -130,14 +130,13 @@ private
   end
 
   def stub_uploads
-    body = fixture('upload.json').read
-    stub_post("uploads", 2).to_return(:body => body)
-    stub_put("uploads/WTFBBQ123", 2).to_return(:body => body)
+    stub_post('uploads', :endpoint => Gemfury.pushpoint).
+      to_return(:body => fixture('uploads.json'))
   end
 
   def ensure_gem_uploads(out, *gems)
-    expect(a_post("uploads", 2)).to have_been_made.times(gems.size)
-    expect(a_put("uploads/WTFBBQ123", 2)).to have_been_made.times(gems.size)
+    expect(a_post('uploads', :endpoint => Gemfury.pushpoint)).
+      to have_been_made.times(gems.size)
 
     gems.each do |g|
       expect(out).to match(/Uploading #{g}.*done/)
