@@ -1,4 +1,9 @@
-*Unreleased*
+*0.8.0*
+
+* Migrate to Push API (#35, @markjeee)
+* Prioritize payload when handling error responses
+* Update tests for RSpec 3 and Ruby 2.5
+* Upgrade to Faraday 0.14
 
 *0.7.0*
 
