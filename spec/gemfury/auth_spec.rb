@@ -26,7 +26,7 @@ describe Gemfury::Command::Authorization do
     allow(FakeFS::File).to receive(:stat).and_return(double('stat', :mode => "0600".to_i(8)))
     allow(FakeFS::FileUtils).to receive(:chmod)
 
-    Netrc.stub(:default_path).and_return(File.expand_path('../.netrc', __FILE__))
+    allow(Netrc).to receive(:default_path).and_return(File.expand_path('../.netrc', __FILE__))
     FileUtils.mkdir_p(File.dirname(Netrc.default_path))
   end
 
