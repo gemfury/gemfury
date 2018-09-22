@@ -1,3 +1,3 @@
 module Gemfury
-  VERSION = '0.8.0.rc1'
+  VERSION = '0.8.0'
 end
