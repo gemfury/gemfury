@@ -13,6 +13,7 @@ class Gemfury::Command::App < Thor
   end
 
   ### PACKAGE MANAGEMENT ###
+  option :public, :type => :boolean, :desc => "Create as public package"
   desc "push FILE", "Upload a new version of a package"
   def push(*gems)
     with_checks_and_rescues do
@@ -208,6 +209,8 @@ private
     die!("Oops! You're not allowed to access this", e)
   rescue Gemfury::NotFound => e
     die!("Oops! Doesn't look like this exists", e)
+  rescue Gemfury::Error => e
+    die!("Oops! %s" % e.message, e)
   rescue StandardError => e
     die!("Oops! Something went wrong. Please contact support.", e)
   end
@@ -221,11 +224,16 @@ private
       die!("Problem: No valid packages found", nil, command)
     end
 
+    push_options = { }
+    unless options[:public].nil?
+      push_options[:public] = options[:public]
+    end
+
     # Let's get uploading
     files.each do |file|
       begin
         shell.say "Uploading #{File.basename(file.path)} "
-        client.push_gem(file)
+        client.push_gem(file, push_options)
         shell.say "- done"
       rescue Gemfury::CorruptGemFile
         shell.say "- problem processing this package", :red
