@@ -11,9 +11,10 @@
       }
     }
 
-    if opts.include?(:query)
-      with_opts[:query] = opts[:query]
-    end
+    # Older Ruby doesn't have #slice, so this will do
+    with_opts.merge!(opts.reject do |k, _|
+      ![:query, :body].include?(k)
+    end)
 
     endpoint = opts[:endpoint] || Gemfury.endpoint
     a_request(method, endpoint + path).with(with_opts)

@@ -7,18 +7,18 @@ describe Gemfury::Client do
 
   describe '#login' do
     it 'should return the access token for correct' do
-      stub_post("access_token").to_return(:body => access_token_fixture)
+      stub_post("login").to_return(:body => access_token_fixture)
 
       token = @client.login('test@test.com', '123')
-      expect(token).to eq('access_token' => 'TestToken')
+      expect(token).to eq('token' => 'TestToken')
 
-      expect(a_post("access_token").with(
+      expect(a_post("login").with(
                :body => { :email => 'test@test.com', :password => '123' }
              )).to have_been_made.once
     end
 
     it 'should raise an unauthorized error for bad credentials' do
-      stub_post("access_token").to_return(:status => 401)
+      stub_post("login").to_return(:status => 401)
 
       expect(lambda {
                @client.login('test@test.com', '123')
@@ -30,7 +30,7 @@ describe Gemfury::Client do
     it 'should wrap #login with same args' do
       expect(@client).to receive(:login).
                            with('test@test.com', '123', :as => 't123').
-                           and_return('access_token' => 'TestToken')
+                           and_return('token' => 'TestToken')
 
       token = @client.get_access_token('test@test.com', '123', :as => 't123')
       expect(token).to eq('TestToken')
@@ -38,7 +38,7 @@ describe Gemfury::Client do
 
     it 'should proxy #login exceptions' do
       expect(lambda {
-               stub_post("access_token").to_return(:status => 401)
+               stub_post("login").to_return(:status => 401)
                @client.get_access_token('test@test.com', '123')
              }).to raise_error(Gemfury::Unauthorized)
     end
@@ -377,6 +377,6 @@ describe Gemfury::Client do
   end
 
   def access_token_fixture
-    ::MultiJson.encode(:access_token => 'TestToken')
+    ::MultiJson.encode(:token => 'TestToken')
   end
 end

@@ -51,14 +51,14 @@ module Gemfury
 
     # LEGACY: Authentication token via email/password
     def get_access_token(*args)
-      login(*args)['access_token']
+      login(*args)['token']
     end
 
     # Get authentication info via email/password
     def login(email, password, opts = {})
       ensure_ready!
       opts = opts.merge(:email => email, :password => password)
-      checked_response_body(connection.post('access_token', opts))
+      checked_response_body(connection.post('login', opts))
     end
 
     # List collaborators for this account

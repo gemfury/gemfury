@@ -10,6 +10,49 @@ describe Gemfury::Command::App do
     end
   end
 
+  class LoginTestApp < Gemfury::Command::App
+    no_commands do
+      def load_credentials!
+        @user_api_key = nil
+      end
+    end
+  end
+
+  describe '#login' do
+    let(:thor_sh) { Thor::Base.shell.new }
+
+    it 'should print current user if already logged in' do
+      body = MultiJson.encode(:name => 'my-name')
+      stub_get("users/me").to_return(:body => body)
+
+      out = capture(:stdout) { MyApp.start(['login'], :shell => thor_sh) }
+      expect(a_get("users/me")).to have_been_made
+      expect(out).to include(%Q(You are logged in as "my-name"))
+    end
+
+    it 'should prompt user if no credentials' do
+      highline = double('HighLine')
+      expect(highline).to receive(:say).with("Please enter your Gemfury credentials.")
+      expect(highline).to receive(:ask).with('Email: ').and_return("me@example.com")
+      expect(highline).to receive(:ask).with('Password: ').and_return("example123")
+      expect(HighLine).to receive(:new).and_return(highline)
+
+      # Issue get_access_token request with credentials
+      body = MultiJson.encode(:token => 'boom')
+      stub_post("login", :api_format => :text).to_return(:body => body)
+
+      # Issue request to get account information
+      body = MultiJson.encode(:name => 'my-name')
+      stub_get("users/me").to_return(:body => body)
+
+      out = capture(:stdout) { LoginTestApp.start(['login'], :shell => thor_sh) }
+      expect(out).to include(%Q(You are logged in as "my-name"))
+
+      expect(a_post("login", :body => 'email=me%40example.com&password=example123')).to have_been_made
+      expect(a_get("users/me")).to have_been_made
+    end
+  end
+
   describe '#push' do
     it 'should cause errors for no gems specified' do
       app_should_die(/No valid packages/, nil, :push)

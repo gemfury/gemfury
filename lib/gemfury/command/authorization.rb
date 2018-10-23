@@ -49,7 +49,7 @@ private
 
   def load_credentials!
     # Get credentials from ~/.netrc
-    email, @user_api_key = netrc_conf[netrc_api_host]
+    _, @user_api_key = netrc_conf[netrc_api_host]
     # Legacy loading from ~/.gem/gemfury
     @user_api_key ||= read_config_file[:gemfury_api_key]
   end
