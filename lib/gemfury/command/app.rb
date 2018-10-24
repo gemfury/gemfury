@@ -61,6 +61,7 @@ class Gemfury::Command::App < Thor
     if !has_credentials?
       shell.say "You are logged out"
     elsif shell.yes? "Are you sure you want to log out? [yN]"
+      with_checks_and_rescues { client.logout }
       wipe_credentials!
       shell.say "You have been logged out"
     end

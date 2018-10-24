@@ -53,6 +53,25 @@ describe Gemfury::Command::App do
     end
   end
 
+  describe '#logout' do
+    let(:thor_sh) { Thor::Base.shell.new }
+
+    it 'should ignore command if without user confirmation' do
+      expect(thor_sh).to receive(:yes?).with("Are you sure you want to log out? [yN]").and_return(false)
+      out = capture(:stdout) { MyApp.start(['logout'], :shell => thor_sh) }
+      expect(a_post("logout")).to_not have_been_made
+      expect(out).to be_empty
+    end
+
+    it 'should ignore command if without user confirmation' do
+      expect(thor_sh).to receive(:yes?).with("Are you sure you want to log out? [yN]").and_return(true)
+      stub_post("logout").to_return(:body => '')
+      out = capture(:stdout) { MyApp.start(['logout'], :shell => thor_sh) }
+      expect(a_post("logout")).to have_been_made
+      expect(out).to eq("You have been logged out\n")
+    end
+  end
+
   describe '#push' do
     it 'should cause errors for no gems specified' do
       app_should_die(/No valid packages/, nil, :push)

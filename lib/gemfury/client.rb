@@ -61,6 +61,13 @@ module Gemfury
       checked_response_body(connection.post('login', opts))
     end
 
+    # Invalidate session token
+    def logout
+      ensure_ready!(:authorization)
+      response = connection.post('logout')
+      checked_response_body(response)
+    end
+
     # List collaborators for this account
     def list_collaborators(options = {})
       ensure_ready!(:authorization)
