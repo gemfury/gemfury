@@ -1,7 +1,9 @@
-*UNRELEASED*
+*0.9.0*
 
+* Migrate to Login/Logout API for session management
+* Support “public” flag for “push” command (#40, @markjeee)
 * Upgrade to Faraday 0.15
-* Upgrade to highline 2.0
+* Upgrade to HighLine 2.0
 
 *0.8.0*
 
