@@ -1,4 +1,4 @@
-*0.9.0*
+*0.9.1*
 
 * Migrate to Login/Logout API for session management
 * Support “public” flag for “push” command (#40, @markjeee)
