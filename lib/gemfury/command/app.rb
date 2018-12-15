@@ -83,6 +83,59 @@ class Gemfury::Command::App < Thor
     end
   end
 
+  desc "info", "Show useful info about your Gemfury account"
+  def info
+    with_checks_and_rescues do
+      account = client.account_info
+
+      username = account['username']
+      token = account['authentication_token']
+      push_url = 'https://%s@push.fury.io/%s/' % [ token, username ]
+      git_url = 'https://%s@git.fury.io/%s/<package-name>.git' % [ username, username ]
+
+      repo_urls = {
+        'ruby' => 'https://gem.fury.io/%s/',
+        'javascript' => 'https://npm.fury.io/%s/',
+        'npm proxy' => 'https://npm-proxy.fury.io/%s/',
+        'python' => 'https://pypi.fury.io/%s/',
+        'php' => { :url => 'https://php.fury.io/%s/%s/', :token => true },
+        'apt' => { :url => 'https://%s@apt.fury.io/%s/', :token => true },
+        'yum' => { :url => 'https://%s@yum.fury.io/%s/', :token => true },
+        'nuget' => { :url => 'https://nuget.fury.io/%s/%s/', :token => true }
+      }
+
+      shell.say "Your Gemfury account"
+      shell.say "\n"
+
+      shell.say "repo urls:"
+      shell.say "\n"
+
+      repo_urls.each do |repo, repo_url|
+        case repo_url
+        when Hash
+          if repo_url[:token]
+            shell.say "  %s: %s" % [ repo.rjust(10), repo_url[:url] % [ token, username ] ]
+          else
+            shell.say "  %s: %s" % [ repo.rjust(10), repo_url[:url] % username ]
+          end
+        when String
+          shell.say "  %s: %s" % [ repo.rjust(10), repo_url % username ]
+        end
+      end
+
+      shell.say "\n"
+
+      shell.say "upload urls:"
+      shell.say "\n"
+      shell.say "  Curl: #{push_url}"
+      shell.say "    e.g. curl -F package=@<file> #{push_url}"
+      shell.say "\n"
+      shell.say "  Git: #{git_url}"
+      shell.say "    e.g. git remote add fury #{git_url}"
+      shell.say "\n"
+    end
+  end
+
   ### COLLABORATION MANAGEMENT ###
   map "sharing:add" => 'sharing_add'
   map "sharing:remove" => 'sharing_remove'
