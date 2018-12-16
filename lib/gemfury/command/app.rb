@@ -44,9 +44,15 @@ class Gemfury::Command::App < Thor
     with_checks_and_rescues do
       versions = client.versions(gem_name)
       shell.say "\n*** #{gem_name.capitalize} Versions ***\n\n"
+
+      va = []
+      va = [ %w{ version uploaded uploaded_by } ]
       versions.each do |v|
-        shell.say v['version']
+        uploaded = Time.parse(v['created_at']).strftime('%F %R %z')
+        va << [ v['version'], uploaded, v['created_by']['name'] ]
       end
+
+      shell.print_table(va)
     end
   end
 
