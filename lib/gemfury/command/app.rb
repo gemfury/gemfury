@@ -1,5 +1,6 @@
 class Gemfury::Command::App < Thor
   include Gemfury::Command::Authorization
+  UserAgent = "Gemfury CLI #{Gemfury::VERSION}".freeze
   PackageExtensions = %w(gem egg tar.gz tgz nupkg)
 
   # Impersonation
@@ -191,7 +192,9 @@ private
     opts = {}
     opts[:user_api_key] = @user_api_key if @user_api_key
     opts[:account] = options[:as] if options[:as]
-    Gemfury::Client.new(opts)
+    client = Gemfury::Client.new(opts)
+    client.user_agent = UserAgent
+    return client
   end
 
   def with_checks_and_rescues(&block)
