@@ -232,7 +232,8 @@ private
     unless options[:public].nil?
       push_options[:public] = options[:public]
     end
-
+    
+    encountered_error = false
     # Let's get uploading
     files.each do |file|
       begin
@@ -241,16 +242,20 @@ private
         shell.say "- done"
       rescue Gemfury::CorruptGemFile
         shell.say "- problem processing this package", :red
+        encountered_error = true
       rescue Gemfury::DupeVersion
         shell.say "- this version already exists", :red
+        encountered_error = true
       rescue Gemfury::TimeoutError, Errno::EPIPE
         shell.say "- this file is too much to handle", :red
         shell.say "  Visit http://www.gemfury.com/large-package for more info"
+        encountered_error = true
       rescue => e
         shell.say "- oops", :red
         raise e
       end
     end
+    exit(1) if encountered_error
   end
 
   def die!(msg, err = nil, command = nil)
