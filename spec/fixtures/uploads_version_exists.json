@@ -1,0 +1,4 @@
+{ "errors": { "base": "Version already exists" },
+  "error": { "type": "DupeVersion",
+             "message": "Version already exists"}
+}

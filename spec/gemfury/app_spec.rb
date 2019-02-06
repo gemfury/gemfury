@@ -92,11 +92,28 @@ describe Gemfury::Command::App do
       ensure_gem_uploads(out, 'fury')
     end
 
+    it 'should fail if a version already exists' do
+      stub_uploads_to_return_version_exists
+      app_should_die(/There was a problem uploading at least 1 package/, Gemfury::DupeVersion)
+      args = ['push', fixture('fury-0.0.2.gem')]
+      out = capture(:stdout) { MyApp.start(args) }
+      ensure_gem_uploads_with_error(out, [], [ 'fury' ])
+    end
+
     it 'should upload multiple packages' do
       stub_uploads
       args = ['push', fixture('fury-0.0.2.gem'), fixture('bar-0.0.2.gem')]
       out = capture(:stdout) { MyApp.start(args) }
       ensure_gem_uploads(out, 'bar', 'fury')
+    end
+
+    it 'should fail if at least 1 failed while others should succeed' do
+      stub_uploads
+      stub_uploads_to_return_version_exists('fury-0.0.2.gem')
+      app_should_die(/There was a problem uploading at least 1 package/, Gemfury::DupeVersion)
+      args = ['push', fixture('fury-0.0.2.gem'), fixture('bar-0.0.2.gem')]
+      out = capture(:stdout) { MyApp.start(args) }
+      ensure_gem_uploads_with_error(out, [ 'bar' ], [ 'fury' ])
     end
 
     context 'when passing api_token via the commandline' do
@@ -196,12 +213,33 @@ private
       to_return(:body => fixture('uploads.json'))
   end
 
+  def stub_uploads_to_return_version_exists(only_gem = nil)
+    stub = stub_post('uploads', :endpoint => Gemfury.pushpoint)
+    unless only_gem.nil?
+      stub = stub.with{ |req| req.body =~ /Content-Disposition\: form\-data\;.+ filename=\"#{only_gem}\"/ }
+    end
+    stub.to_return(:status => 409, :body => fixture('uploads_version_exists.json'))
+  end
+
   def ensure_gem_uploads(out, *gems)
     expect(a_post('uploads', :endpoint => Gemfury.pushpoint)).
       to have_been_made.times(gems.size)
 
     gems.each do |g|
       expect(out).to match(/Uploading #{g}.*done/)
+    end
+  end
+
+  def ensure_gem_uploads_with_error(out, ok_gems, error_gems)
+    expect(a_post('uploads', :endpoint => Gemfury.pushpoint)).
+      to have_been_made.times((ok_gems + error_gems).size)
+
+    ok_gems.each do |g|
+      expect(out).to match(/Uploading #{g}.+\- done/)
+    end
+
+    error_gems.each do |g|
+      expect(out).to_not match(/Uploading #{g}.+\- done/)
     end
   end
 end
