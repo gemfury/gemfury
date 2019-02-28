@@ -100,6 +100,31 @@ describe Gemfury::Client do
     end
   end
 
+  describe '#accounts' do
+    let(:stub_api_method)  { stub_get('accounts') }
+    let(:send_api_request) { @client.accounts }
+
+    it_should_behave_like 'API without authentication'
+
+    describe 'while authenticated' do
+      before do
+        stub_api_method.to_return(:body => fixture('accounts.json'))
+        @client.user_api_key = 'MyAuthKey'
+      end
+
+      it 'should list accounts' do
+        account_list = send_api_request
+        first_account = account_list.first
+        expect(a_get('accounts')).to have_been_made
+
+        expect(account_list.size).to eq(1)
+        expect(first_account['username']).to eq('user1')
+        expect(first_account['type']).to eq('user')
+        expect(first_account['viewer_permission']).to eq('OWNER')
+      end
+    end
+  end
+
   describe '#push_gems' do
     let(:fixture_gem) do
       fixture('fury-0.0.2.gem')

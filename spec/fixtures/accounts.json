@@ -1,0 +1,11 @@
+[{
+  "id":"acct_123ABC",
+  "username": "user1",
+  "authentication_token":"secrettoken123",
+  "ref_slug":"ref456",
+  "ref_count":0,
+  "ref_clicks":0,
+  "type": "user",
+  "is_viewer": true,
+  "viewer_permission": "OWNER"
+}]

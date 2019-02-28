@@ -18,6 +18,13 @@ module Gemfury
       checked_response_body(response)
     end
 
+    # Get the information for the current account
+    def accounts
+      ensure_ready!(:authorization)
+      response = connection.get('accounts')
+      checked_response_body(response)
+    end
+
     # Uploading a gem file
     def push_gem(file, options = {})
       ensure_ready!(:authorization)

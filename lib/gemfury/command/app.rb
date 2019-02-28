@@ -83,6 +83,20 @@ class Gemfury::Command::App < Thor
     end
   end
 
+  desc "accounts", "Show info about your Gemfury accounts"
+  def accounts
+    with_checks_and_rescues do
+      accounts = client.accounts
+
+      va = [ %w{ name kind permission } ]
+      accounts.each do |a|
+        va << [ a['name'], a['type'], a['viewer_permission'].downcase ]
+      end
+
+      shell.print_table(va)
+    end
+  end
+
   ### COLLABORATION MANAGEMENT ###
   map "sharing:add" => 'sharing_add'
   map "sharing:remove" => 'sharing_remove'
