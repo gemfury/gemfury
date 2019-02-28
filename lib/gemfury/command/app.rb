@@ -27,11 +27,15 @@ class Gemfury::Command::App < Thor
     with_checks_and_rescues do
       gems = client.list
       shell.say "\n*** GEMFURY PACKAGES ***\n\n"
+
+      va = [ %w{ name kind version privacy } ]
       gems.each do |g|
-        desc, version = g['name'], g.path('latest_version.version')
-        desc << " (#{version ? version : 'beta'})"
-        shell.say desc
+        va << [ g['name'], g['language'],
+                g.path('latest_version.version') || 'beta',
+                g['private'] ? 'private' : 'public ' ]
       end
+
+      shell.print_table(va)
     end
   end
 
