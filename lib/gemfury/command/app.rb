@@ -247,23 +247,32 @@ private
       push_options[:public] = options[:public]
     end
 
+    error_ex = nil
+
     # Let's get uploading
     files.each do |file|
       begin
         shell.say "Uploading #{File.basename(file.path)} "
         client.push_gem(file, push_options)
         shell.say "- done"
-      rescue Gemfury::CorruptGemFile
+      rescue Gemfury::CorruptGemFile => e
         shell.say "- problem processing this package", :red
-      rescue Gemfury::DupeVersion
+        error_ex = e
+      rescue Gemfury::DupeVersion => e
         shell.say "- this version already exists", :red
-      rescue Gemfury::TimeoutError, Errno::EPIPE
+        error_ex = e
+      rescue Gemfury::TimeoutError, Errno::EPIPE => e
         shell.say "- this file is too much to handle", :red
         shell.say "  Visit http://www.gemfury.com/large-package for more info"
+        error_ex = e
       rescue => e
         shell.say "- oops", :red
-        raise e
+        error_ex = e
       end
+    end
+
+    unless error_ex.nil?
+      die!('There was a problem uploading at least 1 package', error_ex)
     end
   end
 
