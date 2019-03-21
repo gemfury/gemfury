@@ -1,3 +1,12 @@
+*0.10.0.rc1*
+
+* Table view for "versions" command with more info (#43)
+* Table view for "list" command with more info (#43)
+* Return non-zero exit codes when "push" fails (#50)
+* Added "accounts" command to list memberships (#47)
+* Fixed Travis issues related to Bundler 2.0 and safe_yaml
+* Separate user agent for CLI vs. API clients
+
 *0.9.1*
 
 * Migrate to Login/Logout API for session management
