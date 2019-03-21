@@ -217,6 +217,7 @@ describe Gemfury::Client do
 
         expect(versions.size).to eq(2)
         expect(versions.first['slug']).to eq('example-0.0.1')
+        expect(versions.first['created_by']['username']).to eq('user1')
       end
     end
   end
