@@ -258,7 +258,8 @@ describe Gemfury::Client do
         expect(a_get("collaborators")).to have_been_made
 
         expect(gems_list.size).to eq(2)
-        expect(gems_list.first['username']).to eq('user1')
+        expect(gems_list.first['username']).to eq('user2')
+        expect(gems_list.first['permission']).to eq('push')
       end
     end
   end

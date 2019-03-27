@@ -1,0 +1,9 @@
+{ "id":1,
+  "authentication_token":"secrettoken456",
+  "gravatar_id":"f9a9d3abb776b48fb1da5d6d255d5fe4",
+  "username":"org1",
+  "ref_slug":"ref789",
+  "ref_count":0,
+  "ref_clicks":0,
+  "type":"org"
+}

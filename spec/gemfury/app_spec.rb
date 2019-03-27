@@ -72,6 +72,32 @@ describe Gemfury::Command::App do
     end
   end
 
+  describe '#sharing' do
+    let(:thor_sh) { Thor::Base.shell.new }
+
+    it 'should list collaborators with permissions info' do
+      stub_get("users/me").to_return(:body => fixture("me.json"))
+      stub_get("collaborators").to_return(:body => fixture("collaborators.json"))
+
+      out = capture(:stdout) { MyApp.start(['sharing'], :shell => thor_sh) }
+      lines = out.split(/\s*\n/)[1..-1]
+
+      expect(lines[2]).to match(/^user1\s+owner$/)
+      expect(lines[3]).to match(/^user2\s+push$/)
+    end
+
+    it 'should list collaborators of org with permissions info' do
+      stub_get("users/me").to_return(:body => fixture("org.json"))
+      stub_get("collaborators").to_return(:body => fixture("collaborators.json"))
+
+      out = capture(:stdout) { MyApp.start(['sharing'], :shell => thor_sh) }
+      lines = out.split(/\s*\n/)[1..-1]
+
+      expect(lines[2]).to match(/^user2\s+push$/)
+      expect(lines[3]).to match(/^user3\s+push$/)
+    end
+  end
+
   describe '#push' do
     it 'should cause errors for no gems specified' do
       app_should_die(/No valid packages/, nil, :push)
