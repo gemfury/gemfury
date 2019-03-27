@@ -215,9 +215,9 @@ describe Gemfury::Client do
         versions = send_api_request
         expect(a_get("gems/example/versions")).to have_been_made
 
-        expect(versions.size).to eq(2)
+        expect(versions.size).to eq(5)
         expect(versions.first['slug']).to eq('example-0.0.1')
-        expect(versions.first['created_by']['username']).to eq('user1')
+        expect(versions.first['created_by']['name']).to eq('user1')
       end
     end
   end

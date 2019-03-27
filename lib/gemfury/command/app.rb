@@ -46,10 +46,10 @@ class Gemfury::Command::App < Thor
       shell.say "\n*** #{gem_name.capitalize} Versions ***\n\n"
 
       va = []
-      va = [ %w{ version uploaded uploaded_by } ]
+      va = [ %w{ version uploaded_by uploaded } ]
       versions.each do |v|
-        uploaded = Time.parse(v['created_at']).strftime('%F %R %z')
-        va << [ v['version'], uploaded, v['created_by']['name'] ]
+        uploaded = time_ago(Time.parse(v['created_at']).getlocal)
+        va << [ v['version'], v['created_by']['name'], uploaded ]
       end
 
       shell.print_table(va)
@@ -300,5 +300,20 @@ private
     help(command) if command
     shell.say %Q(#{err.class.name}: #{err}\n#{err.backtrace.join("\n")}) if err && ENV['DEBUG']
     exit(1)
+  end
+
+  def time_ago(tm)
+    ago = tm.strftime('%F %R')
+
+    in_secs = Time.now - tm
+    if in_secs < 60
+      ago += ' (~ %ds ago)' % in_secs
+    elsif in_secs < 3600
+      ago += ' (~ %sm ago)' % (in_secs / 60).floor
+    elsif in_secs < (3600 * 24)
+      ago += ' (~ %sh ago)' % (in_secs / 3600).floor
+    end
+
+    ago
   end
 end
