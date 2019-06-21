@@ -4,5 +4,6 @@
   "username":"user1",
   "ref_slug":"ref456",
   "ref_count":0,
-  "ref_clicks":0
+  "ref_clicks":0,
+  "type":"user"
 }
