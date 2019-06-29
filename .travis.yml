@@ -15,10 +15,12 @@ before_install: # https://docs.travis-ci.com/user/languages/ruby/#bundler-20
 matrix:
   include:
     - rvm: 1.8.7
+      dist: trusty
       gemfile: spec/gemfiles/Gemfile.18
     - rvm: jruby-18mode
       gemfile: spec/gemfiles/Gemfile.18
     - rvm: 1.9.3
+      dist: trusty
       gemfile: spec/gemfiles/Gemfile.19
     - rvm: jruby-19mode
       gemfile: spec/gemfiles/Gemfile.19
