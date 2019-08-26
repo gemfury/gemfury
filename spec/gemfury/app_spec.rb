@@ -201,8 +201,9 @@ describe Gemfury::Command::App do
     let(:thor_sh) { Thor::Base.shell.new }
 
     it 'should cause errors for no repo specified' do
-      MyApp.start(['git:rebuild'])
+      out = capture(:stderr) { MyApp.start(['git:rebuild'], :shell => thor_sh) }
       expect(a_request(:any, Endpoint)).not_to have_been_made
+      expect(out).to match(/^ERROR\:/)
     end
 
     it 'should rebuild repo and print output' do
@@ -229,7 +230,74 @@ describe Gemfury::Command::App do
     end
   end
 
+  describe '#versions' do
+    let(:thor_sh) { Thor::Base.shell.new }
+    let(:dtformat) { "\"%FT%T%:z\"" }
+
+    it 'should return created at in date and time format' do
+      stub_get('gems/example/versions').to_return(:body => fixture('versions.json'))
+
+      out = capture(:stdout) { MyApp.start(['versions', 'example'], :shell => thor_sh) }
+      expect(a_get('gems/example/versions')).to have_been_made
+
+      lines = parse_out_lines(out)
+
+      vex = /(^\d+(\.[A-Za-z0-9]+)*)\s+(\S+)\s+(\d{4}\-\d{2}\-\d{2}\s\d{2}\:\d{2})$/
+      expect(lines[2]).to match(vex)
+      expect(lines[3]).to match(vex)
+    end
+
+    context 'reference time of day' do
+      it 'should show ago in secs' do
+        v_fixture = fixture('versions.json').read
+        v_fixture.gsub!(/\"2019\-05\-01T.+\"/, (Time.now - 20).strftime(dtformat))
+
+        stub_get('gems/example/versions').to_return(:body => v_fixture)
+
+        out = capture(:stdout) { MyApp.start(['versions', 'example'], :shell => thor_sh) }
+        lines = parse_out_lines(out)
+
+        vex = /(^\d+(\.[A-Za-z0-9]+)*)\s+(\S+)\s+(\d{4}\-\d{2}\-\d{2} \d{2}\:\d{2}) (\(\~ \d+s ago\))$/
+        expect(lines[4]).to match(vex)
+      end
+
+      it 'should show ago in minutes' do
+        v_fixture = fixture('versions.json').read
+        v_fixture.gsub!(/\"2019\-05\-02T.+\"/, (Time.now - 2000).strftime(dtformat))
+
+        stub_get('gems/example/versions').to_return(:body => v_fixture)
+
+        out = capture(:stdout) { MyApp.start(['versions', 'example'], :shell => thor_sh) }
+        lines = parse_out_lines(out)
+
+        vex = /(^\d+(\.[A-Za-z0-9]+)*)\s+(\S+)\s+(\d{4}\-\d{2}\-\d{2} \d{2}\:\d{2}) (\(\~ \d+m ago\))$/
+        expect(lines[5]).to match(vex)
+      end
+
+      it 'should show ago in hours' do
+        v_fixture = fixture('versions.json').read
+        v_fixture.gsub!(/\"2019\-05\-03T.+\"/, (Time.now - 20000).strftime(dtformat))
+
+        stub_get('gems/example/versions').to_return(:body => v_fixture)
+
+        out = capture(:stdout) { MyApp.start(['versions', 'example'], :shell => thor_sh) }
+        lines = parse_out_lines(out)
+
+        vex = /(^\d+(\.[A-Za-z0-9]+)*)\s+(\S+)\s+(\d{4}\-\d{2}\-\d{2} \d{2}\:\d{2}) (\(\~ \d+h ago\))$/
+        expect(lines[6]).to match(vex)
+      end
+    end
+  end
+
 private
+  def escape(str)
+    CGI.escape(str)
+  end
+
+  def parse_out_lines(out)
+    out.split(/\s*\n/)[1..-1]
+  end
+
   def app_should_die(*args)
     expect_any_instance_of(MyApp).to receive(:die!).with(*args)
   end
