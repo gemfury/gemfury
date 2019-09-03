@@ -22,6 +22,7 @@ Gem::Specification.new do |s|
   s.add_dependency    "netrc", ">= 0.10.0", "< 0.12.0.pre"
   s.add_dependency    "faraday", ">= 0.9.0", "< 0.16.0.pre"
   s.add_dependency    "highline", ">= 1.6.0", "< 2.1.0.pre"
+  s.add_dependency    "progressbar", ">= 1.10.1"
 
   s.description = <<DESCRIPTION
 Hosted repo for your public and private packages at https://gemfury.com

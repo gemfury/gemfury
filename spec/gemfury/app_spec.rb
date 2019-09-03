@@ -8,6 +8,10 @@ describe Gemfury::Command::App do
         { :gemfury_api_key => 'DEADBEEF' }
       end
     end
+
+    def die!(msg, err = nil, command = nil)
+      raise err
+    end
   end
 
   class LoginTestApp < Gemfury::Command::App
@@ -140,6 +144,35 @@ describe Gemfury::Command::App do
       args = ['push', fixture('fury-0.0.2.gem'), fixture('bar-0.0.2.gem')]
       out = capture(:stdout) { MyApp.start(args) }
       ensure_gem_uploads_with_error(out, [ 'bar' ], [ 'fury' ])
+    end
+
+    it 'should upload with progress bar for large files' do
+      stub_uploads
+      gemfile = fixture('fury-0.0.2.gem')
+      fsize = 50001
+      pb = ProgressBar.create(:total => fsize)
+
+      allow($stdout).to receive(:tty?).and_return(true)
+      allow_any_instance_of(StringIO).to receive(:tty?).and_return(true)
+
+      expect(pb).to receive(:"progress=").once
+      expect(ProgressBar).to receive(:create).and_return(pb)
+      expect(gemfile).to receive(:size).and_return(fsize)
+
+      args = ['push', gemfile]
+      out = capture(:stdout) { MyApp.start(args) }
+      ensure_gem_uploads(out, 'fury')
+    end
+
+    it 'should upload quietly for large files' do
+      stub_uploads
+      gemfile = fixture('fury-0.0.2.gem')
+
+      expect(Gemfury::Command::App::ProgressIO).to_not receive(:new).with(gemfile)
+
+      args = ['push', '--quiet', gemfile]
+      out = capture(:stdout) { MyApp.start(args) }
+      ensure_gem_uploads(out, 'fury')
     end
 
     context 'when passing api_token via the commandline' do
@@ -320,7 +353,7 @@ private
       to have_been_made.times(gems.size)
 
     gems.each do |g|
-      expect(out).to match(/Uploading #{g}.*done/)
+      expect(out).to match(/Uploading #{g}(.*)(\.\.\.\n)?\- done/)
     end
   end
 

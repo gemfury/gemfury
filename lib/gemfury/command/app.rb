@@ -1,3 +1,6 @@
+require 'progressbar'
+require 'delegate'
+
 class Gemfury::Command::App < Thor
   include Gemfury::Command::Authorization
   UserAgent = "Gemfury CLI #{Gemfury::VERSION}".freeze
@@ -15,6 +18,7 @@ class Gemfury::Command::App < Thor
 
   ### PACKAGE MANAGEMENT ###
   option :public, :type => :boolean, :desc => "Create as public package"
+  option :quiet, :type => :boolean, :aliases => "-q", :desc => "Do not show progress bar", :default => false
   desc "push FILE", "Upload a new version of a package"
   def push(*gems)
     with_checks_and_rescues do
@@ -257,6 +261,10 @@ private
       g.is_a?(String) ? File.new(g) : g rescue nil
     end.compact
 
+    if !options[:quiet] && !shell.mute? && $stdout.tty?
+      files = files.map { |g| ProgressIO.new(g) }
+    end
+
     if files.empty?
       die!("Problem: No valid packages found", nil, command)
     end
@@ -268,11 +276,23 @@ private
 
     error_ex = nil
 
-    # Let's get uploading
     files.each do |file|
+      show_bar = file.is_a?(ProgressIO) && file.show_bar?
+      title = "Uploading #{File.basename(file.path)} "
+
       begin
-        shell.say "Uploading #{File.basename(file.path)} "
-        client.push_gem(file, push_options)
+        if show_bar
+          begin
+            client.push_gem(file, push_options)
+          ensure
+            shell.say "\e[A\e[0K", nil, false
+            shell.say title
+          end
+        else
+          shell.say title
+          client.push_gem(file, push_options)
+        end
+
         shell.say "- done"
       rescue Gemfury::CorruptGemFile => e
         shell.say "- problem processing this package", :red
@@ -292,6 +312,58 @@ private
 
     unless error_ex.nil?
       die!('There was a problem uploading at least 1 package', error_ex)
+    end
+  end
+
+  C50K = 50000
+
+  class ProgressIO < SimpleDelegator
+    attr_reader :content_type, :original_filename, :local_path
+
+    def initialize(filename_or_io, content_type = 'application/octet-stream', fname = nil)
+      io = filename_or_io
+      local_path = ''
+
+      if io.respond_to? :read
+        local_path = filename_or_io.respond_to?(:path) ? filename_or_io.path : 'local.path'
+      else
+        io = File.open(filename_or_io)
+        local_path = filename_or_io
+      end
+
+      fname ||= local_path
+
+      @content_type = content_type
+      @original_filename = File.basename(fname)
+      @local_path = local_path
+
+      if io.respond_to? :size
+        filesize = io.size
+      else
+        filesize = io.stat.size
+      end
+
+      if filesize > C50K
+        title = 'Uploading %s ' % File.basename(fname)
+        @bar = ProgressBar.create(:title => title, :total => filesize)
+      else
+        @bar = nil
+      end
+
+      super(io)
+    end
+
+    def show_bar?
+      @bar != nil
+    end
+
+    def read(length)
+      buf = __getobj__.read(length)
+      unless @bar.nil? || buf.nil?
+        @bar.progress += buf.bytesize
+      end
+
+      buf
     end
   end
 
