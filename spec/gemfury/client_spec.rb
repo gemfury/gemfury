@@ -20,9 +20,9 @@ describe Gemfury::Client do
     it 'should raise an unauthorized error for bad credentials' do
       stub_post("login").to_return(:status => 401)
 
-      expect(lambda {
-               @client.login('test@test.com', '123')
-             }).to raise_error(Gemfury::Unauthorized)
+      expect do
+        @client.login('test@test.com', '123')
+      end.to raise_error(Gemfury::Unauthorized)
     end
   end
 
@@ -37,10 +37,10 @@ describe Gemfury::Client do
     end
 
     it 'should proxy #login exceptions' do
-      expect(lambda {
-               stub_post("login").to_return(:status => 401)
-               @client.get_access_token('test@test.com', '123')
-             }).to raise_error(Gemfury::Unauthorized)
+      expect do
+        stub_post("login").to_return(:status => 401)
+        @client.get_access_token('test@test.com', '123')
+      end.to raise_error(Gemfury::Unauthorized)
     end
   end
 
@@ -48,17 +48,17 @@ describe Gemfury::Client do
     before { stub_api_method.to_return(:status => 401) }
 
     it 'should throw an authentication error without an api key' do
-      expect(lambda {
-               @client.user_api_key = nil
-               send_api_request
-             }).to raise_error(Gemfury::Unauthorized)
+      expect do
+        @client.user_api_key = nil
+        send_api_request
+      end.to raise_error(Gemfury::Unauthorized)
     end
 
     it 'should throw an authentication error on a bad key' do
-      expect(lambda {
-               @client.user_api_key = 'MyWrongApiKey'
-               send_api_request
-             }).to raise_error(Gemfury::Unauthorized)
+      expect do
+        @client.user_api_key = 'MyWrongApiKey'
+        send_api_request
+      end.to raise_error(Gemfury::Unauthorized)
     end
   end
 
@@ -66,17 +66,17 @@ describe Gemfury::Client do
     it 'should raise NotFound error for a non-existent user' do
       stub_api_method.to_return(:status => 404)
 
-      expect(lambda {
-               send_api_request
-             }).to raise_exception(Gemfury::NotFound)
+      expect do
+        send_api_request
+      end.to raise_exception(Gemfury::NotFound)
     end
 
     it 'should throw a conflict error when resource is locked' do
       stub_api_method.to_return(:status => 409)
 
-      expect(lambda {
-               send_api_request
-             }).to raise_exception(Gemfury::Conflict)
+      expect do
+        send_api_request
+      end.to raise_exception(Gemfury::Conflict)
     end
   end
 
