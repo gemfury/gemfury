@@ -1,3 +1,11 @@
+*0.11.0.rc1*
+
+* Progress bar for pushing packages (#52)
+* Updated rubies for testing in travis. (#57)
+* Updated timestamp for versions to use local timezone. (#53)
+* Use trusty env in Travis for legacy rubies (#55)
+* Updated `fury sharing` to use table format and added permission level. (#54)
+
 *0.10.0*
 
 * No changes
