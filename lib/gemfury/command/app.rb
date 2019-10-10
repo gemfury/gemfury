@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'progressbar'
 require 'delegate'
 
@@ -36,7 +38,7 @@ class Gemfury::Command::App < Thor
       gems.each do |g|
         va << [ g['name'], g['language'],
                 g.path('latest_version.version') || 'beta',
-                g['private'] ? 'private' : 'public ' ]
+                privacy(g['private']) ]
       end
 
       shell.print_table(va)
@@ -387,5 +389,20 @@ private
     end
 
     ago
+  end
+
+  private
+
+  def privacy(p)
+    utf8? ? (p ? '🔒' : '🌐') : (p ? 'private' : 'public ')
+  end
+
+  def utf8?
+    if defined?(::Encoding)
+      ::Encoding.locale_charmap == "UTF-8"
+    else
+      langs = ENV.values_at("LC_ALL","LC_CTYPE","LANG")
+      langs.compact.first.include?("UTF-8")
+    end
   end
 end
