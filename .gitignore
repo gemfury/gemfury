@@ -4,3 +4,5 @@ gemfury-*.gem
 Gemfile.lock
 Gemfile.18.lock
 Gemfile.19.lock
+tmp/*
+pkg/*

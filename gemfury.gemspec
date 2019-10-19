@@ -10,7 +10,6 @@ Gem::Specification.new do |s|
   s.email             = "hello@gemfury.com"
   s.authors           = [ "Michael Rykov" ]
   s.license           = 'MIT'
-  s.has_rdoc          = false
 
   s.executables       = %w(gemfury fury)
   s.files             = %w(README.md) +
