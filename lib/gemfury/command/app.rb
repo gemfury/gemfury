@@ -35,7 +35,7 @@ class Gemfury::Command::App < Thor
       va = [ %w{ name kind version privacy } ]
       gems.each do |g|
         va << [ g['name'], g['language'],
-                g.path('latest_version.version') || 'beta',
+                g.dig('latest_version', 'version') || 'beta',
                 g['private'] ? 'private' : 'public ' ]
       end
 

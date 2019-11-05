@@ -43,11 +43,13 @@ module Gemfury
   end
 end
 
+# Polyfill #dig for Ruby 2.2 and earlier
 class Hash
-  # Access nested hashes as a period-separated path
-  def path(path, separator = '.')
-    path.split(separator).inject(self) do |hash, part|
-      hash.is_a?(Hash) ? hash[part] : nil
+  unless self.instance_methods.include?(:dig)
+    def dig(*parts)
+      parts.inject(self) do |hash, part|
+        hash.is_a?(Hash) ? hash[part] : nil
+      end
     end
   end
 end
