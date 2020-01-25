@@ -32,8 +32,12 @@ def fixture_path
   File.expand_path("../../fixtures", __FILE__)
 end
 
+def path_to_fixture(file)
+  File.join(fixture_path, file)
+end
+
 def fixture(file)
-  File.new(fixture_path + '/' + file)
+  File.new(path_to_fixture(file))
 end
 
 # Always Always Stub S3 Upload to succeed
