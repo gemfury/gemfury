@@ -13,4 +13,5 @@ group :development do
   gem "multi_json"
   gem 'fakefs'
   gem "json"
+  gem "rexml"
 end
