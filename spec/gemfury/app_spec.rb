@@ -7,10 +7,10 @@ describe Gemfury::Command::App do
       def read_config_file
         { :gemfury_api_key => 'DEADBEEF' }
       end
-    end
 
-    def die!(msg, err = nil, command = nil)
-      raise err
+      def die!(msg, err = nil, command = nil)
+        raise err
+      end
     end
   end
 
@@ -117,7 +117,7 @@ describe Gemfury::Command::App do
 
     it 'should upload a valid gem' do
       stub_uploads
-      args = ['push', fixture('fury-0.0.2.gem')]
+      args = ['push', path_to_fixture('fury-0.0.2.gem')]
       out = capture(:stdout) { MyApp.start(args) }
       ensure_gem_uploads(out, 'fury')
     end
@@ -125,14 +125,14 @@ describe Gemfury::Command::App do
     it 'should fail if a version already exists' do
       stub_uploads_to_return_version_exists
       app_should_die(/There was a problem uploading at least 1 package/, Gemfury::DupeVersion)
-      args = ['push', fixture('fury-0.0.2.gem')]
+      args = ['push', path_to_fixture('fury-0.0.2.gem')]
       out = capture(:stdout) { MyApp.start(args) }
       ensure_gem_uploads_with_error(out, [], [ 'fury' ])
     end
 
     it 'should upload multiple packages' do
       stub_uploads
-      args = ['push', fixture('fury-0.0.2.gem'), fixture('bar-0.0.2.gem')]
+      args = ['push', path_to_fixture('fury-0.0.2.gem'), path_to_fixture('bar-0.0.2.gem')]
       out = capture(:stdout) { MyApp.start(args) }
       ensure_gem_uploads(out, 'bar', 'fury')
     end
@@ -141,7 +141,7 @@ describe Gemfury::Command::App do
       stub_uploads
       stub_uploads_to_return_version_exists('fury-0.0.2.gem')
       app_should_die(/There was a problem uploading at least 1 package/, Gemfury::DupeVersion)
-      args = ['push', fixture('fury-0.0.2.gem'), fixture('bar-0.0.2.gem')]
+      args = ['push', path_to_fixture('fury-0.0.2.gem'), path_to_fixture('bar-0.0.2.gem')]
       out = capture(:stdout) { MyApp.start(args) }
       ensure_gem_uploads_with_error(out, [ 'bar' ], [ 'fury' ])
     end
@@ -149,6 +149,8 @@ describe Gemfury::Command::App do
     it 'should upload with progress bar for large files' do
       stub_uploads
       gemfile = fixture('fury-0.0.2.gem')
+      gemfile_path = path_to_fixture('fury-0.0.2.gem')
+
       fsize = 50001
       pb = ProgressBar.create(:total => fsize)
 
@@ -157,18 +159,19 @@ describe Gemfury::Command::App do
 
       expect(pb).to receive(:"progress=").once
       expect(ProgressBar).to receive(:create).and_return(pb)
+      expect(File).to receive(:new).with(gemfile_path).and_return(gemfile)
       expect(gemfile).to receive(:size).and_return(fsize)
 
-      args = ['push', gemfile]
+      args = ['push', gemfile_path]
       out = capture(:stdout) { MyApp.start(args) }
       ensure_gem_uploads(out, 'fury')
     end
 
     it 'should upload quietly for large files' do
       stub_uploads
-      gemfile = fixture('fury-0.0.2.gem')
+      gemfile = path_to_fixture('fury-0.0.2.gem')
 
-      expect(Gemfury::Command::App::ProgressIO).to_not receive(:new).with(gemfile)
+      expect(Gemfury::Command::App::ProgressIO).to_not receive(:new)
 
       args = ['push', '--quiet', gemfile]
       out = capture(:stdout) { MyApp.start(args) }
@@ -178,7 +181,7 @@ describe Gemfury::Command::App do
     context 'when passing api_token via the commandline' do
       it 'should upload a valid gem' do
         stub_uploads
-        args = ['push', fixture('fury-0.0.2.gem'), "--api_token='DEADBEEF'"]
+        args = ['push', path_to_fixture('fury-0.0.2.gem'), "--api_token='DEADBEEF'"]
         out = capture(:stdout) { Gemfury::Command::App.start(args) }
         ensure_gem_uploads(out, 'fury')
       end
