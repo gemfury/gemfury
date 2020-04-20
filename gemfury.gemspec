@@ -16,12 +16,16 @@ Gem::Specification.new do |s|
                         Dir.glob("bin/**/*") +
                         Dir.glob("lib/**/*")
 
+  # NOTE: we clamp the upper bound requirement to be below the prerelease
+  # version because a requirement like '< 1.1.0' will still allow '1.1.0.pre'
+  # to be installed and loaded. And we have seen this cause issues.
+
   s.add_dependency    "multi_json", "~> 1.10"
-  s.add_dependency    "thor", ">= 0.14.0", "< 1.1.0"
+  s.add_dependency    "thor", ">= 0.14.0", "< 1.1.0.pre"
   s.add_dependency    "netrc", ">= 0.10.0", "< 0.12.0.pre"
-  s.add_dependency    "faraday", ">= 0.9.0", "< 1.1"
+  s.add_dependency    "faraday", ">= 0.9.0", "< 1.1.0.pre"
   s.add_dependency    "highline", ">= 1.6.0", "< 2.1.0.pre"
-  s.add_dependency    "progressbar", ">= 1.10.1"
+  s.add_dependency    "progressbar", ">= 1.10.1", "< 2.0.0.pre"
 
   s.description = <<DESCRIPTION
 Hosted repo for your public and private packages at https://gemfury.com
