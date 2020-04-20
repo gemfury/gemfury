@@ -7,11 +7,17 @@ describe Gemfury::Command::App do
       def read_config_file
         { :gemfury_api_key => 'DEADBEEF' }
       end
-
-      def die!(msg, err = nil, command = nil)
-        raise err
-      end
     end
+
+    # rspec-mocks re-defines the following methods as part of observing its invocations.
+    # it is pre-empted here, to avoid warnings from Thor for having methods without descriptions.
+    desc "die!", "this is not a command", :hide => true
+    def die!(msg, err = nil, command = nil)
+      raise err
+    end
+
+    desc "__die!_without_any_instance__", "this is not a command", :hide => true
+    alias_method "__die!_without_any_instance__", "die!"
   end
 
   class LoginTestApp < Gemfury::Command::App
