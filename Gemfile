@@ -14,4 +14,5 @@ group :development do
   gem 'fakefs'
   gem "json"
   gem "rexml"
+  gem "yard"
 end
