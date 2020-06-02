@@ -4,6 +4,8 @@ Gemfury CLI
 [![Gem Version](https://badge.fury.io/rb/gemfury.svg)](http://badge.fury.io/rb/gemfury)
 [![Build Status](https://secure.travis-ci.org/gemfury/gemfury.svg?branch=master)](https://travis-ci.org/gemfury/gemfury)
 [![Code Climate](https://codeclimate.com/github/gemfury/gemfury/badges/gpa.svg)](https://codeclimate.com/github/gemfury/gemfury)
+[![Documentation](https://img.shields.io/badge/docs-rdoc.info-blue.svg)](http://www.rubydoc.info/gems/gemfury)
+[![Documentation completeness](https://inch-ci.org/github/gemfury/gemfury.svg?branch=master)](http://inch-ci.org/github/gemfury/gemfury)
 
 This is the Gemfury CLI used to manage your Gemfury packages from the command line.  If you're
 familiar with the service and want to jump straight into command line action, please proceed to
