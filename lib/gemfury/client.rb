@@ -1,7 +1,9 @@
+require 'gemfury/configuration_attributes'
+
 module Gemfury
   class Client
     include Gemfury::Client::Filters
-    attr_accessor *Configuration::VALID_OPTIONS_KEYS
+    include Gemfury::ConfigurationAttributes
 
     # Creates a new API
     def initialize(options={})
