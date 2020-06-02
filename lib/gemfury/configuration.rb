@@ -1,43 +1,54 @@
 module Gemfury
   # Defines constants and methods related to configuration
   module Configuration
+
+    DEFAULTS = {
+      :user_api_key => nil,
+      :adapter => :net_http,
+      :endpoint => 'https://api.fury.io/',
+      :gitpoint => 'https://git.fury.io/',
+      :pushpoint => 'https://push.fury.io/',
+      :user_agent => "Gemfury RubyGem #{Gemfury::VERSION}",
+      :api_version => 1,
+      :account => nil
+    }.freeze
+
     # An array of valid keys in the options hash when configuring
-    VALID_OPTIONS_KEYS = [
-      :user_api_key,
-      :adapter,
-      :endpoint,
-      :gitpoint,
-      :pushpoint,
-      :user_agent,
-      :api_version,
-      :account].freeze
+    VALID_OPTIONS_KEYS = DEFAULTS.keys.freeze
 
-    # The adapter that will be used to connect if none is set
-    DEFAULT_ADAPTER = :net_http
+    # user API key, also known as "full access token"
+    # @return [String]
+    attr_accessor :user_api_key
 
-    # The endpoint that will be used to connect if none is set
-    DEFAULT_ENDPOINT  = 'https://api.fury.io/'.freeze
+    # The adapter that will be used to connect
+    # @return [Symbol]
+    attr_accessor :adapter
+
+    # The endpoint that will be used to connect
+    # @return [String]
+    attr_accessor :endpoint
 
     # The HTTP endpoint for git repo (used for .netrc credentials)
-    DEFAULT_GITPOINT  = 'https://git.fury.io/'.freeze
+    # @return [String]
+    attr_accessor :gitpoint
 
-    # The endpoint for the Push API if not set
-    DEFAULT_PUSHPOINT = 'https://push.fury.io/'.freeze
+    # The endpoint for the Push API
+    # @return [String]
+    attr_accessor :pushpoint
 
-    # The value sent in the 'User-Agent' header if none is set
-    DEFAULT_USER_AGENT = "Gemfury RubyGem #{Gemfury::VERSION}".freeze
+    # The value sent in the 'User-Agent' header
+    # @return [String]
+    attr_accessor :user_agent
 
-    # Default API version
-    DEFAULT_API_VERSION = 1
+    # Gemfury remote API version
+    # @return [Integer]
+    attr_accessor :api_version
 
-    # Default user API key
-    DEFAULT_API_KEY = nil
+    # The account to impersonate, if you have permissions for multiple accounts
+    # (If nil, no impersonation)
+    # @return [String]
+    attr_accessor :account
 
-    # Use the current account (no impersonation)
-    DEFAULT_ACCOUNT = nil
-
-    # @private
-    attr_accessor *VALID_OPTIONS_KEYS
 
     # When this module is extended, set all configuration options to their default values
     def self.extended(base)
@@ -50,6 +61,7 @@ module Gemfury
     end
 
     # Create a hash of options and their values
+    # @return [Hash] the options and their values
     def options
       options = {}
       VALID_OPTIONS_KEYS.each{|k| options[k] = send(k)}
@@ -57,15 +69,9 @@ module Gemfury
     end
 
     # Reset all configuration options to defaults
+    # @return [Configuration] The default configuration
     def reset
-      self.user_api_key       = DEFAULT_API_KEY
-      self.adapter            = DEFAULT_ADAPTER
-      self.endpoint           = DEFAULT_ENDPOINT
-      self.gitpoint           = DEFAULT_GITPOINT
-      self.pushpoint          = DEFAULT_PUSHPOINT
-      self.user_agent         = DEFAULT_USER_AGENT
-      self.api_version        = DEFAULT_API_VERSION
-      self.account            = DEFAULT_ACCOUNT
+      DEFAULTS.each { |k, v| send("#{k}=", v) }
       self
     end
   end
