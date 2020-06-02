@@ -30,6 +30,29 @@ any package to any host. It's simple, reliable, and hassle-free.
 * [Install private Composer packages](https://gemfury.com/help/php-composer-server)
 * [Private RubyGems on Heroku](https://gemfury.com/help/private-gems-on-heroku)
 
+
+## Using the Gemfury Client
+
+You can also use the client directly via Ruby; you will need a "Full access token" (API token) from `https://manage.fury.io/manage/YOUR-ACCOUNT-NAME/tokens/api`
+
+```ruby
+require 'gemfury'
+
+client = Gemfury::Client.new(user_api_key: "YOUR API TOKEN")
+
+all_artifacts = client.list
+puts "Available artifacts:"
+puts all_artifacts
+
+one_artifact = all_artifacts[0]
+puts "Versions of the #{one_artifact['language']} artifact #{one_artifact['name']}:"
+artifact_versions = client.versions(one_artifact["name"])
+puts artifact_versions.map { |v| v["version"] }
+```
+
+More information about the `Gemfury::Client` API is [hosted on rubydoc.info](https://rubydoc.info/gems/gemfury/Gemfury/Client).
+
+
 ## Contribution and Improvements
 
 Please [email us](mailto:support@gemfury.com) if we've missed some key functionality or you have problems installing the CLI client.  Better yet, fork the code, make the changes, and submit a pull request to speed things along.
