@@ -1,15 +1,13 @@
-require 'gemfury/configuration_attributes'
-
 module Gemfury
   class Client
     include Gemfury::Client::Filters
-    include Gemfury::ConfigurationAttributes
+    include Gemfury::Configuration
 
     # Creates a new API
-    # @param options [Hash] values for attributes described in {Gemfury::ConfigurationAttributes}
+    # @param options [Hash] values for attributes described in {Gemfury::Configuration}
     def initialize(options={})
       options = Gemfury.options.merge(options)
-      Configuration::VALID_OPTIONS_KEYS.each do |key|
+      Gemfury::VALID_OPTIONS_KEYS.each do |key|
         send("#{key}=", options[key])
       end
     end

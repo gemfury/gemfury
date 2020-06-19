@@ -23,12 +23,35 @@ require 'gemfury/client'
 
 module Gemfury
   extend Configuration
+  VALID_OPTIONS_KEYS = Configuration::CONFIGURATION_DEFAULTS.keys.freeze
+
   class << self
     # Alias for Gemfury::Client.new
     #
     # @return [Gemfury::Client]
     def new(options={})
       Gemfury::Client.new(options)
+    end
+
+    # Convenience method to allow configuration options to be set in a block
+    def configure
+      yield self
+    end
+
+    # Create a hash of options and their values
+    # @return [Hash] the options and their values
+    def options
+      VALID_OPTIONS_KEYS.inject({}) do |options, k|
+        options[k] = send(k)
+        options
+      end
+    end
+
+    # Reset all configuration options to defaults
+    # @return [Configuration] The default configuration
+    def reset
+      CONFIGURATION_DEFAULTS.each { |k, v| send("#{k}=", v) }
+      self
     end
 
     # Delegate to Gemfury::Client
@@ -40,8 +63,12 @@ module Gemfury
     def respond_to?(method, include_private = false)
       new.respond_to?(method, include_private) || super(method, include_private)
     end
+
   end
 end
+
+# Initialize configuration
+Gemfury.reset
 
 # Polyfill #dig for Ruby 2.2 and earlier
 class Hash
