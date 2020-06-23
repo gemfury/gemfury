@@ -1,31 +1,37 @@
 module Gemfury
   class Client
     include Gemfury::Client::Filters
-    attr_accessor *Configuration::VALID_OPTIONS_KEYS
+    include Gemfury::Configuration
 
     # Creates a new API
+    # @param options [Hash] values for attributes described in {Gemfury::Configuration}
     def initialize(options={})
       options = Gemfury.options.merge(options)
-      Configuration::VALID_OPTIONS_KEYS.each do |key|
+      Gemfury::VALID_OPTIONS_KEYS.each do |key|
         send("#{key}=", options[key])
       end
     end
 
     # Get the information for the current account
+    # @return [Hash]
     def account_info
       ensure_ready!(:authorization)
       response = connection.get('users/me')
       checked_response_body(response)
     end
 
-    # Get the information for the current account
+    # Get the information for the all accounts that this account has some level of access to
+    # @return [Array<Hash>]
     def accounts
       ensure_ready!(:authorization)
       response = connection.get('accounts')
       checked_response_body(response)
     end
 
-    # Uploading a gem file
+    # Upload an artifact file
+    # @param file [String] the filename to upload
+    # @param options [Hash] Faraday client options
+    # @return [Hash]
     def push_gem(file, options = {})
       ensure_ready!(:authorization)
       push_api = connection(:url => self.pushpoint)
@@ -33,14 +39,19 @@ module Gemfury
       checked_response_body(response)
     end
 
-    # List available gems
+    # List available artifacts
+    # @param options [Hash] Faraday client options
+    # @return [Array<Hash>]
     def list(options = {})
       ensure_ready!(:authorization)
       response = connection.get('gems', options)
       checked_response_body(response)
     end
 
-    # List versions for a gem
+    # List versions for an artifact
+    # @param name [String] the name of the artifact
+    # @param options [Hash] Faraday client options
+    # @return [Array<Hash>]
     def versions(name, options = {})
       ensure_ready!(:authorization)
       url = "gems/#{escape(name)}/versions"
@@ -48,7 +59,11 @@ module Gemfury
       checked_response_body(response)
     end
 
-    # Delete a gem version
+    # Delete an artifact version
+    # @param name [String] the name of the artifact
+    # @param version [String] the version of the artifact
+    # @param options [Hash] Faraday client options
+    # @return [Hash]
     def yank_version(name, version, options = {})
       ensure_ready!(:authorization)
       url = "gems/#{escape(name)}/versions/#{escape(version)}"
@@ -62,6 +77,10 @@ module Gemfury
     end
 
     # Get authentication info via email/password
+    # @param email [String] the account email address
+    # @param password [String] the account password
+    # @param opts [Hash] Faraday client options
+    # @return [Hash]
     def login(email, password, opts = {})
       ensure_ready!
       opts = opts.merge(:email => email, :password => password)
@@ -69,6 +88,7 @@ module Gemfury
     end
 
     # Invalidate session token
+    # @return [Hash]
     def logout
       ensure_ready!(:authorization)
       response = connection.post('logout')
@@ -76,6 +96,8 @@ module Gemfury
     end
 
     # List collaborators for this account
+    # @param options [Hash] Faraday client options
+    # @return [Array<Hash>]
     def list_collaborators(options = {})
       ensure_ready!(:authorization)
       response = connection.get('collaborators', options)
@@ -83,6 +105,8 @@ module Gemfury
     end
 
     # Add a collaborator to the account
+    # @param options [Hash] Faraday client options
+    # @return [Hash]
     def add_collaborator(login, options = {})
       ensure_ready!(:authorization)
       url = "collaborators/#{escape(login)}"
@@ -91,6 +115,9 @@ module Gemfury
     end
 
     # Remove a collaborator to the account
+    # @param login [String] the account login
+    # @param options [Hash] Faraday client options
+    # @return [Hash]
     def remove_collaborator(login, options = {})
       ensure_ready!(:authorization)
       url = "collaborators/#{escape(login)}"
@@ -99,6 +126,8 @@ module Gemfury
     end
 
     # List Git repos for this account
+    # @param options [Hash] Faraday client options
+    # @return [Hash]
     def git_repos(options = {})
       ensure_ready!(:authorization)
       response = connection.get(git_repo_path, options)
@@ -106,6 +135,9 @@ module Gemfury
     end
 
     # Update repository name and settings
+    # @param repo [String] the repo name
+    # @param options [Hash] Faraday client options
+    # @return [Hash]
     def git_update(repo, options = {})
       ensure_ready!(:authorization)
       response = connection.patch(git_repo_path(repo), options)
@@ -113,6 +145,9 @@ module Gemfury
     end
 
     # Reset repository to initial state
+    # @param repo [String] the repo name
+    # @param options [Hash] Faraday client options
+    # @return [Hash]
     def git_reset(repo, options = {})
       ensure_ready!(:authorization)
       response = connection.delete(git_repo_path(repo), options)
@@ -120,6 +155,9 @@ module Gemfury
     end
 
     # Rebuild Git repository package
+    # @param repo [String] the repo name
+    # @param options [Hash] Faraday client options
+    # @return [Hash]
     def git_rebuild(repo, options = {})
       ensure_ready!(:authorization)
       url = "#{git_repo_path(repo)}/builds"

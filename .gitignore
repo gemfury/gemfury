@@ -6,3 +6,5 @@ Gemfile.18.lock
 Gemfile.19.lock
 tmp/*
 pkg/*
+.yardoc
+doc/

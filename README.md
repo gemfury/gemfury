@@ -4,6 +4,8 @@ Gemfury CLI
 [![Gem Version](https://badge.fury.io/rb/gemfury.svg)](http://badge.fury.io/rb/gemfury)
 [![Build Status](https://secure.travis-ci.org/gemfury/gemfury.svg?branch=master)](https://travis-ci.org/gemfury/gemfury)
 [![Code Climate](https://codeclimate.com/github/gemfury/gemfury/badges/gpa.svg)](https://codeclimate.com/github/gemfury/gemfury)
+[![Documentation](https://img.shields.io/badge/docs-rdoc.info-blue.svg)](http://www.rubydoc.info/gems/gemfury)
+[![Documentation completeness](https://inch-ci.org/github/gemfury/gemfury.svg?branch=master)](http://inch-ci.org/github/gemfury/gemfury)
 
 This is the Gemfury CLI used to manage your Gemfury packages from the command line.  If you're
 familiar with the service and want to jump straight into command line action, please proceed to
@@ -29,6 +31,29 @@ any package to any host. It's simple, reliable, and hassle-free.
 * [Install private Python packages](https://gemfury.com/help/pypi-server)
 * [Install private Composer packages](https://gemfury.com/help/php-composer-server)
 * [Private RubyGems on Heroku](https://gemfury.com/help/private-gems-on-heroku)
+
+
+## Using the Gemfury Client
+
+You can also use the client directly via Ruby; you will need a "Full access token" (API token) from `https://manage.fury.io/manage/YOUR-ACCOUNT-NAME/tokens/api`
+
+```ruby
+require 'gemfury'
+
+client = Gemfury::Client.new(user_api_key: "YOUR API TOKEN")
+
+all_artifacts = client.list
+puts "Available artifacts:"
+puts all_artifacts
+
+one_artifact = all_artifacts[0]
+puts "Versions of the #{one_artifact['language']} artifact #{one_artifact['name']}:"
+artifact_versions = client.versions(one_artifact["name"])
+puts artifact_versions.map { |v| v["version"] }
+```
+
+More information about the `Gemfury::Client` API is [hosted on rubydoc.info](https://rubydoc.info/gems/gemfury/Gemfury/Client).
+
 
 ## Contribution and Improvements
 
