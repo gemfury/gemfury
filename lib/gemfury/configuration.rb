@@ -7,7 +7,7 @@ module Gemfury
       :endpoint => 'https://api.fury.io/',
       :gitpoint => 'https://git.fury.io/',
       :pushpoint => 'https://push.fury.io/',
-      :user_agent => "Gemfury RubyGem #{Gemfury::VERSION}",
+      :user_agent => "Gemfury RubyGem #{Gemfury::VERSION} (Ruby #{RUBY_VERSION})",
       :api_version => 1,
       :account => nil
     }.freeze
