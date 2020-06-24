@@ -1,5 +1,6 @@
 *Unreleased*
 
+* Added commands: git:config, git:config:set, git:config:unset
 * Added Ruby version to User Agent
 
 *0.11.0*

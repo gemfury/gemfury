@@ -224,6 +224,40 @@ class Gemfury::Command::App < Thor
     end
   end
 
+  ### GIT REPOSITORY BUILD CONFIG ###
+  map 'git:config'       => 'git_config'
+  map 'git:config:set'   => 'git_config_set'
+  map 'git:config:unset' => 'git_config_unset'
+
+  desc "git:config", "List Git repository's build environment"
+  def git_config(repo)
+    with_checks_and_rescues do
+      vars = client.git_config(repo)['config_vars']
+      shell.say "*** #{repo} build config ***\n"
+      shell.print_table(vars.map { |kv|
+        ["#{kv[0]}:", kv[1]]
+      })
+    end
+  end
+
+  desc "git:config:set", "Update Git repository's build environment"
+  def git_config_set(repo, *vars)
+    with_checks_and_rescues do
+      updates = Hash[vars.map { |v| v.split("=", 2) }]
+      client.git_config_update(repo, updates)
+      shell.say "Updated #{repo} build config"
+    end
+  end
+
+  desc "git:config:unset", "Remove variables from Git repository's build environment"
+  def git_config_unset(repo, *vars)
+    with_checks_and_rescues do
+      updates = Hash[vars.map { |v| [v, nil] }]
+      client.git_config_update(repo, updates)
+      shell.say "Updated #{repo} build config"
+    end
+  end
+
 private
   def client
     opts = {}

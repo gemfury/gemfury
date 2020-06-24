@@ -165,6 +165,30 @@ module Gemfury
       checked_response_body(api.post(url, options))
     end
 
+    # List Git repo's build configuration
+    # @param repo [String] the repo name
+    # @param options [Hash] Faraday client options
+    # @return [Hash]
+    def git_config(repo, options = {})
+      ensure_ready!(:authorization)
+      path = "#{git_repo_path(repo)}/config-vars"
+      response = connection.get(path, options)
+      checked_response_body(response)
+    end
+
+    # Update Git repo's build configuration
+    # @param repo [String] the repo name
+    # @param updates [Hash] Updates to configuration
+    # @param options [Hash] Faraday client options
+    # @return [Hash]
+    def git_config_update(repo, updates, options = {})
+      ensure_ready!(:authorization)
+      path = "#{git_repo_path(repo)}/config-vars"
+      opts = options.merge(:config_vars => updates)
+      response = connection.patch(path, opts)
+      checked_response_body(response)
+    end
+
   private
     def escape(str)
       CGI.escape(str)
