@@ -331,6 +331,78 @@ describe Gemfury::Command::App do
     end
   end
 
+  describe '#git_config' do
+    let(:thor_sh) { Thor::Base.shell.new }
+
+    it 'should cause errors for no repo specified' do
+      out = capture(:stderr) { MyApp.start(['git:config'], :shell => thor_sh) }
+      expect(a_request(:any, Endpoint)).not_to have_been_made
+      expect(out).to match(/^ERROR\:/)
+    end
+
+    it 'should print configuration variables' do
+      url  = "git/repos/me/example/config-vars"
+      opts = { :body => fixture('git_config.json') }
+      stub_get(url).to_return(opts)
+
+      args = ['git:config', 'example']
+      out = capture(:stdout) { MyApp.start(args, :shell => thor_sh) }
+      expect(a_get(url)).to have_been_made
+
+      expect(out).to include("example build config")
+      expect(out).to match(/^HELLO\:\s*WORLD$/)
+      expect(out).to match(/^SUPER\:\s*SECRET$/)
+    end
+  end
+
+  describe '#git_config_set' do
+    let(:thor_sh) { Thor::Base.shell.new }
+
+    it 'should cause errors for no repo specified' do
+      out = capture(:stderr) { MyApp.start(['git:config:set'], :shell => thor_sh) }
+      expect(a_request(:any, Endpoint)).not_to have_been_made
+      expect(out).to match(/^ERROR\:/)
+    end
+
+    it 'should update configuration variables' do
+      url  = "git/repos/me/example/config-vars"
+      opts = { :body => fixture('git_config.json') }
+      stub_patch(url).to_return(opts)
+
+      new_vars = { "NEW" => "VAR", "UPDATE" => "NOW" }
+      args = ['git:config:set', 'example'] + new_vars.map { |k, v| "#{k}=#{v}" }
+
+      out = capture(:stdout) { MyApp.start(args, :shell => thor_sh) }
+      body = Faraday::NestedParamsEncoder.encode('config_vars' => new_vars)
+      expect(a_patch(url, :body => body)).to have_been_made
+      expect(out).to include("Updated example build config")
+    end
+  end
+
+  describe '#git_config_unset' do
+    let(:thor_sh) { Thor::Base.shell.new }
+
+    it 'should cause errors for no repo specified' do
+      out = capture(:stderr) { MyApp.start(['git:config:unset'], :shell => thor_sh) }
+      expect(a_request(:any, Endpoint)).not_to have_been_made
+      expect(out).to match(/^ERROR\:/)
+    end
+
+    it 'should remove configuration variables' do
+      url  = "git/repos/me/example/config-vars"
+      opts = { :body => fixture('git_config.json') }
+      stub_patch(url).to_return(opts)
+
+      new_vars = { "NEW" => nil, "UPDATE" => nil }
+      args = ['git:config:unset', 'example'] + new_vars.map { |k, v| k }
+
+      out = capture(:stdout) { MyApp.start(args, :shell => thor_sh) }
+      body = Faraday::NestedParamsEncoder.encode('config_vars' => new_vars)
+      expect(a_patch(url, :body => body)).to have_been_made
+      expect(out).to include("Updated example build config")
+    end
+  end
+
 private
   def escape(str)
     CGI.escape(str)

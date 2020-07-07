@@ -403,6 +403,48 @@ describe Gemfury::Client do
     end
   end
 
+  describe '#git_config' do
+    let(:stub_api_method)  { stub_get('git/repos/me/example/config-vars') }
+    let(:send_api_request) { @client.git_config('example') }
+
+    it_should_behave_like 'API without authentication'
+
+    describe 'while authenticated' do
+      before do
+        stub_api_method.to_return(:body => fixture('git_config.json'))
+        @client.user_api_key = 'MyAuthKey'
+      end
+
+      it 'should list git repo config variables' do
+        vars = send_api_request['config_vars']
+        expect(a_get('git/repos/me/example/config-vars')).to have_been_made
+        expect(vars).to eq({ "HELLO" => "WORLD", "SUPER" => "SECRET" })
+      end
+    end
+  end
+
+  describe '#git_config_update' do
+    let(:update_payload)   { { "NEW" => "VAR"} }
+    let(:stub_api_method)  { stub_patch('git/repos/me/example/config-vars') }
+    let(:send_api_request) { @client.git_config_update('example', update_payload) }
+
+    it_should_behave_like 'API without authentication'
+
+    describe 'while authenticated' do
+      before do
+        stub_api_method.to_return(:body => fixture('git_config.json'))
+        @client.user_api_key = 'MyAuthKey'
+      end
+
+      it 'should list git repo config variables' do
+        vars = send_api_request['config_vars']
+        body = Faraday::NestedParamsEncoder.encode('config_vars' => update_payload)
+        expect(a_patch('git/repos/me/example/config-vars', :body => body)).to have_been_made
+        expect(vars).to eq({ "HELLO" => "WORLD", "SUPER" => "SECRET" })
+      end
+    end
+  end
+
   def access_token_fixture
     ::MultiJson.encode(:token => 'TestToken')
   end

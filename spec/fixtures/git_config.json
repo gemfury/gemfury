@@ -1,0 +1,6 @@
+{
+  "config_vars": {
+    "HELLO": "WORLD",
+    "SUPER": "SECRET"
+  }
+}
