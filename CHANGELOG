@@ -1,7 +1,11 @@
 *Unreleased*
 
+*0.12.0.rc1*
+
 * Added commands: git:config, git:config:set, git:config:unset
 * Added Ruby version to User Agent
+* Improved client documentation
+* Support & testing on Ruby 2.7
 
 *0.11.0*
 
