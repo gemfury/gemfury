@@ -10,6 +10,9 @@ class Gemfury::Command::App < Thor
   class_option :as, :desc => 'Access an account other than your own'
   class_option :api_token, :desc => 'API token to use for commands'
 
+  # Make sure we retain the default exit behaviour of 0 even on argument errors
+  def self.exit_on_failure?; false; end
+
   map "-v" => :version
   desc "version", "Show Gemfury version", :hide => true
   def version
