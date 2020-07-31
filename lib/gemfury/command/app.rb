@@ -201,7 +201,7 @@ class Gemfury::Command::App < Thor
     end
   end
 
-  desc "git:rename", "Rename a Git repository"
+  desc "git:rename REPO_NAME NEW_NAME", "Rename a Git repository"
   def git_rename(repo, new_name)
     with_checks_and_rescues do
       client.git_update(repo, :repo => { :name => new_name })
@@ -209,7 +209,7 @@ class Gemfury::Command::App < Thor
     end
   end
 
-  desc "git:reset", "Remove a Git repository"
+  desc "git:reset REPO_NAME", "Remove a Git repository"
   def git_reset(repo)
     with_checks_and_rescues do
       client.git_reset(repo)
@@ -217,7 +217,7 @@ class Gemfury::Command::App < Thor
     end
   end
 
-  desc "git:rebuild", "Rebuild a Git repository"
+  desc "git:rebuild REPO_NAME", "Rebuild a Git repository"
   method_options %w(revision -r) => :string
   def git_rebuild(repo)
     with_checks_and_rescues do
@@ -232,7 +232,7 @@ class Gemfury::Command::App < Thor
   map 'git:config:set'   => 'git_config_set'
   map 'git:config:unset' => 'git_config_unset'
 
-  desc "git:config", "List Git repository's build environment"
+  desc "git:config REPO_NAME", "List Git repository's build environment"
   def git_config(repo)
     with_checks_and_rescues do
       vars = client.git_config(repo)['config_vars']
@@ -243,7 +243,7 @@ class Gemfury::Command::App < Thor
     end
   end
 
-  desc "git:config:set", "Update Git repository's build environment"
+  desc "git:config:set REPO_NAME KEY=VALUE ...", "Update Git repository's build environment"
   def git_config_set(repo, *vars)
     with_checks_and_rescues do
       updates = Hash[vars.map { |v| v.split("=", 2) }]
@@ -252,7 +252,7 @@ class Gemfury::Command::App < Thor
     end
   end
 
-  desc "git:config:unset", "Remove variables from Git repository's build environment"
+  desc "git:config:unset REPO_NAME KEY ...", "Remove variables from Git repository's build environment"
   def git_config_unset(repo, *vars)
     with_checks_and_rescues do
       updates = Hash[vars.map { |v| [v, nil] }]
