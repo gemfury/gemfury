@@ -2,10 +2,12 @@
 
 *0.12.0.rc1*
 
-* Added commands: git:config, git:config:set, git:config:unset
-* Added Ruby version to User Agent
-* Improved client documentation
-* Support & testing on Ruby 2.7
+* Added commands: git:config, git:config:set, git:config:unset (#69)
+* Added Ruby version to User Agent (#69)
+* Improved client documentation (#68)
+* Support for Faraday 1.0 (#67)
+* Support for Thor 1.0 (#64)
+* Support & testing on Ruby 2.7 (#62)
 
 *0.11.0*
 
