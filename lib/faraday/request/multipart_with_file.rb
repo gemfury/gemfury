@@ -5,9 +5,15 @@ module Faraday
   # @private
   class Request::MultipartWithFile < Faraday::Middleware
     def call(env)
+
+      # Faraday seems to expect a few IO methods to be available, but that's all:
+      # https://github.com/lostisland/faraday/blob/master/lib/faraday/file_part.rb
+      # :length seems to be an optional one
+      file_like_objects_respond_to = ["rewind", "read", "close"].map(&:to_sym)
+
       if env[:body].is_a?(Hash)
         env[:body].each do |key, value|
-          if value.is_a?(File)
+          if file_like_objects_respond_to.all? { |m| value.respond_to? (m) }
             env[:body][key] = Faraday::UploadIO.new(value, mime_type(value), value.path)
           end
         end
