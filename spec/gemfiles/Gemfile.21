@@ -16,6 +16,6 @@ group :development do
   gem "rexml"
   gem "yard"
 
-  # Restrict for Ruby 2.0 compatibility
-  gem 'public_suffix', '< 3.0.0.pre'
+  # Restrict for Ruby 2.1 compatibility
+  gem 'public_suffix', '< 4.0.0.pre'
 end
