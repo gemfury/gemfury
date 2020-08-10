@@ -22,9 +22,7 @@ module Faraday
           # We attempt to make our duck typing compatible with their duck typing
           if value.respond_to?(:read) && value.respond_to?(:rewind) && value.respond_to?(:close)
             # Mimic UploadIO's handling of inputs like StringIO, which don't have a :path method
-            local_path = value.respond_to?(:path) ? value.path : 'local.path'
-
-            env[:body][key] = Faraday::UploadIO.new(value, mime_type(value), local_path)
+            env[:body][key] = Faraday::UploadIO.new(value, mime_type(value))
           end
         end
       end
