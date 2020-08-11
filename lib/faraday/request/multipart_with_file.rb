@@ -5,10 +5,24 @@ module Faraday
   # @private
   class Request::MultipartWithFile < Faraday::Middleware
     def call(env)
+
       if env[:body].is_a?(Hash)
+
+        # Check for IO (and IO-like objects, like Zip::InputStream) in the request,
+        # which represent data to be uploaded.  Replace these with Faraday
         env[:body].each do |key, value|
-          if value.is_a?(File)
-            env[:body][key] = Faraday::UploadIO.new(value, mime_type(value), value.path)
+
+          # Faraday seems to expect a few IO methods to be available, but that's all:
+          # https://github.com/lostisland/faraday/blob/master/lib/faraday/file_part.rb
+          # :length seems to be an optional one
+          #
+          # UploadIO also seems to do a duck typing check for :read, with :path optional
+          # https://www.rubydoc.info/gems/multipart-post/2.0.0/UploadIO:initialize
+          #
+          # We attempt to make our duck typing compatible with their duck typing
+          if value.respond_to?(:read) && value.respond_to?(:rewind) && value.respond_to?(:close)
+            # Mimic UploadIO's handling of inputs like StringIO, which don't have a :path method
+            env[:body][key] = Faraday::UploadIO.new(value, mime_type(value))
           end
         end
       end
@@ -19,6 +33,9 @@ module Faraday
     private
 
     def mime_type(file)
+      default = 'application/octet-stream'
+      return default unless file.respond_to?(:path)
+
       case file.path
       when /\.jpe?g/i
         'image/jpeg'
@@ -27,7 +44,7 @@ module Faraday
       when /\.png$/i
         'image/png'
       else
-        'application/octet-stream'
+        default
       end
     end
   end
