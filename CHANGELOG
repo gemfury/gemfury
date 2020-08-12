@@ -1,5 +1,12 @@
 *Unreleased*
 
+*0.12.0.rc2*
+
+* Allow IO-like objects to be used for uploading (#74)
+* Show Ruby 2.7 warnings only in DEBUG mode (#73)
+* Updated help text for git:config commands (#71)
+* Fixed Thor exit deprecation warning (#72)
+
 *0.12.0.rc1*
 
 * Added commands: git:config, git:config:set, git:config:unset (#69)
