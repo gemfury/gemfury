@@ -30,19 +30,49 @@ class Gemfury::Command::App < Thor
   end
 
   desc "list", "List your packages"
+  option :kind, :type => :string, :desc => "List only by 'kind'", :defaul => nil
+  option :by, :type => :string, :enum => [ 'kind' ], :desc => "List by attributes", :default => nil
   def list
     with_checks_and_rescues do
       gems = client.list
       shell.say "\n*** GEMFURY PACKAGES ***\n\n"
 
-      va = [ %w{ name kind version privacy } ]
-      gems.each do |g|
-        va << [ g['name'], g['language'],
-                g.dig('latest_version', 'version') || 'beta',
-                g['private'] ? 'private' : 'public ' ]
+      unless options[:kind].nil? || options[:kind].empty?
+        gems = gems.select { |g| g['language'] == options[:kind] }
       end
 
-      shell.print_table(va)
+      if options[:by] == 'kind' || !(options[:kind].nil? || options[:kind].empty?)
+        by_kind = gems.inject({ }) do |h,g|
+          k = g['language']
+          (h[k] ||= [ ]) << g
+          h
+        end
+
+        by_kind.keys.sort.map.with_index do |kind, i|
+          shell.say "\n" if i > 0
+
+          gems_in_k = by_kind[kind].sort { |g1, g2| g1['name'] <=> g2['name'] }
+
+          shell.say "%s\n%s" % [ kind, '=' * kind.length ]
+
+          va = [ ]
+          gems_in_k.each do |g|
+            va << [ g['name'], g.dig('latest_version', 'version') || 'beta',
+                    g['private'] ? 'private' : 'public ' ]
+          end
+
+          shell.print_table(va)
+        end
+      else
+        va = [ %w{ name kind version privacy } ]
+        gems.each do |g|
+          va << [ g['name'], g['language'],
+                  g.dig('latest_version', 'version') || 'beta',
+                  g['private'] ? 'private' : 'public ' ]
+        end
+
+        shell.print_table(va)
+      end
     end
   end
 
