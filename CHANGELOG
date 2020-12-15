@@ -1,5 +1,7 @@
 *Unreleased*
 
+* Dropped support for Ruby 1.8.x
+
 *0.12.0.rc2*
 
 * Allow IO-like objects to be used for uploading (#74)
