@@ -18,5 +18,5 @@ group :development do
   # Restrict for Ruby 1.9 compatibility
   gem 'public_suffix', '< 1.5.0.pre'
   gem 'faraday', '< 0.12.0.pre'
-  gem "rexml", "3.1.7.3"
+  gem 'crack', '0.4.3'
 end
