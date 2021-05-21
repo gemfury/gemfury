@@ -11,11 +11,13 @@ group :development do
   gem "webmock", "~> 3.8.3"
   gem "rspec", "~> 3.0"
   gem "multi_json"
-  gem 'fakefs'
+
   gem "json"
-  gem "rexml"
   gem "yard"
 
   # Restrict for Ruby 2.1 compatibility
   gem 'public_suffix', '< 4.0.0.pre'
+  gem 'fakefs', '< 0.14.0'
+  gem 'faraday', '< 1.0.0'
+  gem 'rexml', '< 3.2.5'
 end
