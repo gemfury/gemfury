@@ -1,5 +1,6 @@
 *Unreleased*
 
+* More insightful push errors
 * Dropped support for Ruby 1.9.x
 
 *0.12.0*

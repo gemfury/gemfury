@@ -341,6 +341,9 @@ private
         shell.say "- this file is too much to handle", :red
         shell.say "  Visit http://www.gemfury.com/large-package for more info"
         error_ex = e
+      rescue Gemfury::Error => e
+        shell.say "- #{e.message.downcase}", :red
+        error_ex = e
       rescue => e
         shell.say "- oops", :red
         error_ex = e
