@@ -1,3 +1,5 @@
+require 'rbconfig'
+
 module Gemfury
   class Client
     include Gemfury::Client::Filters
@@ -213,7 +215,7 @@ module Gemfury
         :params => {},
         :headers => {
           :accept => http_accept,
-          :user_agent => self.user_agent,
+          :user_agent => finalize_user_agent(self.user_agent),
           :x_gem_version => Gemfury::VERSION,
         }.merge(options.delete(:headers) || {})
       }.merge(options)
@@ -268,6 +270,36 @@ module Gemfury
         :content_length => file.stat.size.to_s,
         :content_type => ''
       })
+    end
+
+    def finalize_user_agent(ua)
+      if defined?(@final_ua)
+        @final_ua
+      else
+        @final_ua = '%s (%s) ruby/%s (%s)' % [ ua, determine_system_info,
+                                               RUBY_VERSION, RUBY_PLATFORM ]
+      end
+    end
+
+    def determine_system_info
+      host_os = RbConfig::CONFIG['host_os']
+
+      case host_os
+      when /darwin/i
+        os_type = 'Macintosh'
+        rel = '' #TODO
+      when /linux/i
+        os_type = 'Linux'
+        rel = '' #TODO
+      when /windows/i
+        os_type = 'Windows'
+        rel = '' #TODO
+      else
+        os_type = ''
+        rel = '' #TODO
+      end
+
+      '%s; %s; %s' % [ os_type, rel, host_os ]
     end
   end
 end
