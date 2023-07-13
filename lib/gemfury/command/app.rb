@@ -273,7 +273,12 @@ private
 
   def with_checks_and_rescues(&block)
     @user_api_key = options[:api_token] if options[:api_token]
+
+    msg = '[DEPRECATED] This CLI is no longer supported. Please upgrade to the new CLI: https://gemfury.com/guide/cli'
+    shell.say(msg, :yellow) if !options[:quiet] && !current_command_chain.include?(:logout)
+
     with_authorization(&block)
+
   rescue Gemfury::InvalidGemVersion => e
     shell.say "You have a deprecated Gemfury client", :red
     if shell.yes? "Would you like to update it now? [yN]"
