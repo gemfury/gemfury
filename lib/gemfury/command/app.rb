@@ -3,7 +3,7 @@ require 'delegate'
 
 class Gemfury::Command::App < Thor
   include Gemfury::Command::Authorization
-  UserAgent = "Gemfury CLI #{Gemfury::VERSION}".freeze
+  UserAgent = "GemfuryCLI/#{Gemfury::VERSION}".freeze
   PackageExtensions = %w(gem egg tar.gz tgz nupkg)
 
   # Impersonation
