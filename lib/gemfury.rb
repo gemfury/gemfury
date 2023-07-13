@@ -1,6 +1,10 @@
 gem "multi_json",         "~> 1.10"
-gem "faraday",            ">= 0.9.0", "< 1.5.0.pre"
 gem "netrc",              ">= 0.10.0", "< 0.12.0.pre"
+gem "faraday",            ">= 0.9.0", begin
+  is_new = Gem::Dependency.new('ruby', '>= 2.3.0')
+  is_new = is_new.match?('ruby', RUBY_VERSION)
+  is_new ? "< 2.0.0.pre" : "< 1.5.0.pre"
+end
 
 require 'time'
 require 'cgi'
