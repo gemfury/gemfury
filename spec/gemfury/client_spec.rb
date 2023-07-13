@@ -29,7 +29,7 @@ describe Gemfury::Client do
   describe '#get_access_token' do
     it 'should wrap #login with same args' do
       expect(@client).to receive(:login).
-                           with('test@test.com', '123', :as => 't123').
+                           with('test@test.com', '123', { :as => 't123' }).
                            and_return('token' => 'TestToken')
 
       token = @client.get_access_token('test@test.com', '123', :as => 't123')
