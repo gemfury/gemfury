@@ -1,5 +1,7 @@
-*Unreleased*
+*0.12.1*
 
+* Extended Faraday 1.x support
+* Migrated to GitHub Actions
 * More insightful push errors
 * Dropped support for Ruby 1.9.x
 
