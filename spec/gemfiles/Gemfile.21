@@ -3,6 +3,9 @@ source "http://rubygems.org"
 # Pull runtime dependencies from Gemspec
 gemspec :path => '../../'
 
+# Version restrictions
+gem 'multipart-post', '< 2.2.0'
+
 # Lock rake
 gem 'rake', '~> 12.0'
 
