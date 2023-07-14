@@ -183,7 +183,7 @@ describe Gemfury::Command::App do
 
       args = ['push', '--quiet', gemfile]
       out = capture(:stdout) { MyApp.start(args) }
-      ensure_gem_uploads(out, 'fury')
+      ensure_gem_uploads(out, 'fury', quiet: true)
     end
 
     context 'when passing api_token via the commandline' do
@@ -432,12 +432,16 @@ describe Gemfury::Command::App do
     stub.to_return(status: 409, body: fixture('uploads_version_exists.json'))
   end
 
-  def ensure_gem_uploads(out, *gems)
+  def ensure_gem_uploads(out, *gems, quiet: false)
     expect(a_post('uploads', endpoint: Gemfury.pushpoint))
       .to have_been_made.times(gems.size)
 
-    gems.each do |g|
-      expect(out).to match(/Uploading #{g}(.*)(\.\.\.\n)?- done/)
+    if quiet
+      expect(out).to be_empty
+    else
+      gems.each do |g|
+        expect(out).to match(/Uploading #{g}(.*)(\.\.\.\n)?- done/)
+      end
     end
   end
 
