@@ -9,6 +9,7 @@ class Gemfury::Command::App < Thor
   # Impersonation
   class_option :as, :desc => 'Access an account other than your own'
   class_option :api_token, :desc => 'API token to use for commands'
+  class_option :no_warnings, :hide => true, :type => :boolean
 
   # Make sure we retain the default exit behaviour of 0 even on argument errors
   def self.exit_on_failure?; false; end
@@ -275,7 +276,7 @@ private
     @user_api_key = options[:api_token] if options[:api_token]
 
     msg = '[DEPRECATED] This CLI is no longer supported. Please upgrade to the new CLI: https://gemfury.com/guide/cli'
-    shell.say(msg, :yellow) if !options[:quiet] && !current_command_chain.include?(:logout)
+    shell.say(msg, :yellow) if !options[:quiet] && !options[:no_warnings] && !current_command_chain.include?(:logout)
 
     with_authorization(&block)
 
