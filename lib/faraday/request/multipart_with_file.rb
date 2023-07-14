@@ -21,7 +21,7 @@ module Faraday
           #
           # We attempt to make our duck typing compatible with their duck typing
           if value.respond_to?(:read) && value.respond_to?(:rewind) && value.respond_to?(:close)
-            env[:body][key] = Faraday::UploadIO.new(value, mime_type(value))
+            env[:body][key] = Faraday::Multipart::FilePart.new(value, mime_type(value))
           end
         end
       end

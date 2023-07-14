@@ -3,28 +3,19 @@
 
 class Faraday::Adapter
   class FuryHttp < NetHttp
-    def perform_request(http, env)
-      accept = env.request_headers['Accept']
-      return super if accept !~ /text\z/
+    def request_with_wrapped_block(http, env, &block)
+      is_text = env.request_headers['Accept'] =~ /text\z/
+      return super if !block.nil? || !is_text
 
-      # Stream response body to STDOUT on success
-      http.request(create_request(env)) do |resp|
-        unless resp.is_a?(Net::HTTPSuccess)
-          resp.body # Cache error body
-        else
-          resp.read_body do |chunk|
-            $stdout.print(chunk)
-            $stdout.flush
-          end
-
-          # Prevent #body from calling #read_body again
-          klass = (class << resp; self; end)
-          klass.send(:define_method, :body) { nil }
-        end
-
-        # Return response to NetHttp adapter
-        return resp
+      # Stream chunks directly to STDOUT
+      resp = super(http, env) do |chunk|
+        $stdout.print(chunk)
+        $stdout.flush
       end
+
+      # Client sees nil body
+      resp.body = nil
+      resp
     end
   end
 

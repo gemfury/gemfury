@@ -228,7 +228,7 @@ module Gemfury
 
       Faraday.new(options) do |builder|
         builder.use Faraday::Request::MultipartWithFile
-        builder.use Faraday::Request::Multipart
+        builder.use Faraday::Multipart::Middleware
         builder.use Faraday::Request::UrlEncoded
         builder.use ParseJson
         builder.use Handle503

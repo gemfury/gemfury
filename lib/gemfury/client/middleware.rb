@@ -9,7 +9,7 @@ module Gemfury
       end
     end
 
-    class ParseJson < Faraday::Response::Middleware
+    class ParseJson < Faraday::Middleware
       def parse(body)
         body =~ /\A\s*\z/ ? nil : MultiJson.decode(body)
       end

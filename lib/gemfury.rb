@@ -1,10 +1,7 @@
 gem "multi_json",         "~> 1.10"
 gem "netrc",              ">= 0.10.0", "< 0.12.0.pre"
-gem "faraday",            ">= 0.9.0", begin
-  is_new = Gem::Dependency.new('ruby', '>= 2.3.0')
-  is_new = is_new.match?('ruby', RUBY_VERSION)
-  is_new ? "< 2.0.0.pre" : "< 1.5.0.pre"
-end
+gem "faraday",            ">= 2.0.0", "< 3.0.0.pre"
+gem "faraday-multipart",  ">= 1.0.0", "< 2.0.0.pre"
 
 require 'time'
 require 'cgi'
@@ -12,6 +9,7 @@ require 'uri'
 require 'netrc'
 require 'multi_json'
 require 'faraday'
+require 'faraday/multipart'
 require 'faraday/adapter/fury_http'
 require 'faraday/request/multipart_with_file'
 
