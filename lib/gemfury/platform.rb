@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 module Gemfury
   module Platform
     def home_directory
-      on_windows? ? ENV['USERPROFILE'] : ENV['HOME']
+      on_windows? ? ENV.fetch('USERPROFILE', nil) : Dir.home
     end
 
     def config_path

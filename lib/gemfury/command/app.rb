@@ -1,71 +1,75 @@
+# frozen_string_literal: true
+
 require 'progressbar'
 require 'delegate'
 
 class Gemfury::Command::App < Thor
   include Gemfury::Command::Authorization
-  UserAgent = "Gemfury CLI #{Gemfury::VERSION}".freeze
-  PackageExtensions = %w(gem egg tar.gz tgz nupkg)
+  UserAgent = "Gemfury CLI #{Gemfury::VERSION}"
+  PackageExtensions = %w[gem egg tar.gz tgz nupkg].freeze
 
   # Impersonation
-  class_option :as, :desc => 'Access an account other than your own'
-  class_option :api_token, :desc => 'API token to use for commands'
-  class_option :no_warnings, :hide => true, :type => :boolean
+  class_option :as, desc: 'Access an account other than your own'
+  class_option :api_token, desc: 'API token to use for commands'
+  class_option :no_warnings, hide: true, type: :boolean
 
   # Make sure we retain the default exit behaviour of 0 even on argument errors
-  def self.exit_on_failure?; false; end
+  def self.exit_on_failure?
+    false
+  end
 
-  map "-v" => :version
-  desc "version", "Show Gemfury version", :hide => true
+  map '-v' => :version
+  desc 'version', 'Show Gemfury version', hide: true
   def version
     shell.say Gemfury::VERSION
   end
 
   ### PACKAGE MANAGEMENT ###
-  option :public, :type => :boolean, :desc => "Create as public package"
-  option :quiet, :type => :boolean, :aliases => "-q", :desc => "Do not show progress bar", :default => false
-  desc "push FILE", "Upload a new version of a package"
+  option :public, type: :boolean, desc: 'Create as public package'
+  option :quiet, type: :boolean, aliases: '-q', desc: 'Do not show progress bar', default: false
+  desc 'push FILE', 'Upload a new version of a package'
   def push(*gems)
     with_checks_and_rescues do
       push_files(:push, gems)
     end
   end
 
-  desc "list", "List your packages"
+  desc 'list', 'List your packages'
   def list
     with_checks_and_rescues do
       gems = client.list
       shell.say "\n*** GEMFURY PACKAGES ***\n\n"
 
-      va = [ %w{ name kind version privacy } ]
+      va = [%w[name kind version privacy]]
       gems.each do |g|
-        va << [ g['name'], g['language'],
-                g.dig('latest_version', 'version') || 'beta',
-                g['private'] ? 'private' : 'public ' ]
+        va << [g['name'], g['language'],
+               g.dig('latest_version', 'version') || 'beta',
+               g['private'] ? 'private' : 'public ']
       end
 
       shell.print_table(va)
     end
   end
 
-  desc "versions NAME", "List all the package versions"
+  desc 'versions NAME', 'List all the package versions'
   def versions(gem_name)
     with_checks_and_rescues do
       versions = client.versions(gem_name)
       shell.say "\n*** #{gem_name.capitalize} Versions ***\n\n"
 
       va = []
-      va = [ %w{ version uploaded_by uploaded } ]
+      va = [%w[version uploaded_by uploaded]]
       versions.each do |v|
         uploaded = time_ago(Time.parse(v['created_at']).getlocal)
-        va << [ v['version'], v['created_by']['name'], uploaded ]
+        va << [v['version'], v['created_by']['name'], uploaded]
       end
 
       shell.print_table(va)
     end
   end
 
-  desc "yank NAME", "Delete a package version"
-  method_options %w(version -v) => :required
+  desc 'yank NAME', 'Delete a package version'
+  method_options %w[version -v] => :required
   def yank(gem_name)
     with_checks_and_rescues do
       version = options[:version]
@@ -75,40 +79,44 @@ class Gemfury::Command::App < Thor
   end
 
   ### AUTHENTICATION ###
-  desc "logout", "Remove Gemfury credentials"
+  desc 'logout', 'Remove Gemfury credentials'
   def logout
     if !has_credentials?
-      shell.say "You are logged out"
-    elsif shell.yes? "Are you sure you want to log out? [yN]"
+      shell.say 'You are logged out'
+    elsif shell.yes? 'Are you sure you want to log out? [yN]'
       with_checks_and_rescues { client.logout }
       wipe_credentials!
-      shell.say "You have been logged out"
+      shell.say 'You have been logged out'
     end
   end
 
-  desc "login", "Save Gemfury credentials"
+  desc 'login', 'Save Gemfury credentials'
   def login
     with_checks_and_rescues do
       me = client.account_info['name']
-      shell.say %Q(You are logged in as "#{me}"), :green
+      shell.say %(You are logged in as "#{me}"), :green
     end
   end
 
-  desc "whoami", "Show current user"
+  desc 'whoami', 'Show current user'
   def whoami
-    has_credentials? ? self.login : begin
-      shell.say %Q(You are not logged in), :green
+    if has_credentials?
+      login
+    else
+
+      shell.say 'You are not logged in', :green
+
     end
   end
 
-  desc "accounts", "Show info about your Gemfury accounts"
+  desc 'accounts', 'Show info about your Gemfury accounts'
   def accounts
     with_checks_and_rescues do
       accounts = client.accounts
 
-      va = [ %w{ name kind permission } ]
+      va = [%w[name kind permission]]
       accounts.each do |a|
-        va << [ a['name'], a['type'], a['viewer_permission'].downcase ]
+        va << [a['name'], a['type'], a['viewer_permission'].downcase]
       end
 
       shell.print_table(va)
@@ -116,10 +124,10 @@ class Gemfury::Command::App < Thor
   end
 
   ### COLLABORATION MANAGEMENT ###
-  map "sharing:add" => 'sharing_add'
-  map "sharing:remove" => 'sharing_remove'
+  map 'sharing:add' => 'sharing_add'
+  map 'sharing:remove' => 'sharing_remove'
 
-  desc "sharing", "List collaborators"
+  desc 'sharing', 'List collaborators'
   def sharing
     with_checks_and_rescues do
       account_info = client.account_info
@@ -127,24 +135,22 @@ class Gemfury::Command::App < Thor
 
       collaborators = client.list_collaborators
       if collaborators.empty?
-        shell.say %Q(You (#{me}) are the only collaborator\n), :green
+        shell.say %(You (#{me}) are the only collaborator\n), :green
       else
-        shell.say %Q(\n*** Collaborators for "#{me}" ***\n), :green
+        shell.say %(\n*** Collaborators for "#{me}" ***\n), :green
 
-        va = [ %w{ username permission } ]
+        va = [%w[username permission]]
 
-        if account_info['type'] == 'user'
-          va << [ me, 'owner' ]
-        end
+        va << [me, 'owner'] if account_info['type'] == 'user'
 
-        collaborators.each { |c| va << [ c['username'], c['permission'] ] }
+        collaborators.each { |c| va << [c['username'], c['permission']] }
 
         shell.print_table(va)
       end
     end
   end
 
-  desc "sharing:add EMAIL", "Add a collaborator"
+  desc 'sharing:add EMAIL', 'Add a collaborator'
   def sharing_add(username)
     with_checks_and_rescues do
       client.add_collaborator(username)
@@ -152,7 +158,7 @@ class Gemfury::Command::App < Thor
     end
   end
 
-  desc "sharing:remove EMAIL", "Remove a collaborator"
+  desc 'sharing:remove EMAIL', 'Remove a collaborator'
   def sharing_remove(username)
     with_checks_and_rescues do
       client.remove_collaborator(username)
@@ -161,7 +167,7 @@ class Gemfury::Command::App < Thor
   end
 
   ### MIGRATION (Pushing directories) ###
-  desc "migrate DIR", "Upload all packages within a directory"
+  desc 'migrate DIR', 'Upload all packages within a directory'
   def migrate(*paths)
     with_checks_and_rescues do
       gem_paths = Dir.glob(paths.map do |p|
@@ -169,30 +175,26 @@ class Gemfury::Command::App < Thor
           PackageExtensions.map { |ext| "#{p}/**/*.#{ext}" }
         elsif File.file?(p)
           p
-        else
-          nil
         end
       end.flatten.compact)
 
       if gem_paths.empty?
-        die!("Problem: No valid packages found", nil, :migrate)
+        die!('Problem: No valid packages found', nil, :migrate)
       else
-        shell.say "Found the following packages:"
+        shell.say 'Found the following packages:'
         gem_paths.each { |p| shell.say "  #{File.basename(p)}" }
-        if shell.yes? "Upload these files to Gemfury? [yN]", :green
-          push_files(:migrate, gem_paths)
-        end
+        push_files(:migrate, gem_paths) if shell.yes? 'Upload these files to Gemfury? [yN]', :green
       end
     end
   end
 
   ### GIT REPOSITORY MANAGEMENT ###
-  map "git:list"    => 'git_list'
-  map "git:reset"   => 'git_reset'
-  map "git:rename"  => 'git_rename'
-  map "git:rebuild" => 'git_rebuild'
+  map 'git:list'    => 'git_list'
+  map 'git:reset'   => 'git_reset'
+  map 'git:rename'  => 'git_rename'
+  map 'git:rebuild' => 'git_rebuild'
 
-  desc "git:list", "List Git repositories"
+  desc 'git:list', 'List Git repositories'
   def git_list
     with_checks_and_rescues do
       repos = client.git_repos['repos']
@@ -202,15 +204,15 @@ class Gemfury::Command::App < Thor
     end
   end
 
-  desc "git:rename REPO_NAME NEW_NAME", "Rename a Git repository"
+  desc 'git:rename REPO_NAME NEW_NAME', 'Rename a Git repository'
   def git_rename(repo, new_name)
     with_checks_and_rescues do
-      client.git_update(repo, :repo => { :name => new_name })
+      client.git_update(repo, repo: { name: new_name })
       shell.say "Renamed #{repo} repository to #{new_name}\n"
     end
   end
 
-  desc "git:reset REPO_NAME", "Remove a Git repository"
+  desc 'git:reset REPO_NAME', 'Remove a Git repository'
   def git_reset(repo)
     with_checks_and_rescues do
       client.git_reset(repo)
@@ -218,13 +220,13 @@ class Gemfury::Command::App < Thor
     end
   end
 
-  desc "git:rebuild REPO_NAME", "Rebuild a Git repository"
-  method_options %w(revision -r) => :string
+  desc 'git:rebuild REPO_NAME', 'Rebuild a Git repository'
+  method_options %w[revision -r] => :string
   def git_rebuild(repo)
     with_checks_and_rescues do
-      params = { :revision => options[:revision] }
+      params = { revision: options[:revision] }
       shell.say "\n*** Rebuilding #{repo} repository ***\n\n"
-      shell.say client.git_rebuild(repo, :build => params)
+      shell.say client.git_rebuild(repo, build: params)
     end
   end
 
@@ -233,43 +235,44 @@ class Gemfury::Command::App < Thor
   map 'git:config:set'   => 'git_config_set'
   map 'git:config:unset' => 'git_config_unset'
 
-  desc "git:config REPO_NAME", "List Git repository's build environment"
+  desc 'git:config REPO_NAME', "List Git repository's build environment"
   def git_config(repo)
     with_checks_and_rescues do
       vars = client.git_config(repo)['config_vars']
       shell.say "*** #{repo} build config ***\n"
-      shell.print_table(vars.map { |kv|
+      shell.print_table(vars.map do |kv|
         ["#{kv[0]}:", kv[1]]
-      })
+      end)
     end
   end
 
-  desc "git:config:set REPO_NAME KEY=VALUE ...", "Update Git repository's build environment"
+  desc 'git:config:set REPO_NAME KEY=VALUE ...', "Update Git repository's build environment"
   def git_config_set(repo, *vars)
     with_checks_and_rescues do
-      updates = Hash[vars.map { |v| v.split("=", 2) }]
+      updates = vars.to_h { |v| v.split('=', 2) }
       client.git_config_update(repo, updates)
       shell.say "Updated #{repo} build config"
     end
   end
 
-  desc "git:config:unset REPO_NAME KEY ...", "Remove variables from Git repository's build environment"
+  desc 'git:config:unset REPO_NAME KEY ...', "Remove variables from Git repository's build environment"
   def git_config_unset(repo, *vars)
     with_checks_and_rescues do
-      updates = Hash[vars.map { |v| [v, nil] }]
+      updates = vars.to_h { |v| [v, nil] }
       client.git_config_update(repo, updates)
       shell.say "Updated #{repo} build config"
     end
   end
 
-private
+  private
+
   def client
     opts = {}
     opts[:user_api_key] = @user_api_key if @user_api_key
     opts[:account] = options[:as] if options[:as]
     client = Gemfury::Client.new(opts)
     client.user_agent = UserAgent
-    return client
+    client
   end
 
   def with_checks_and_rescues(&block)
@@ -279,43 +282,38 @@ private
     shell.say(msg, :yellow) if !options[:quiet] && !options[:no_warnings] && !current_command_chain.include?(:logout)
 
     with_authorization(&block)
-
   rescue Gemfury::InvalidGemVersion => e
-    shell.say "You have a deprecated Gemfury client", :red
-    if shell.yes? "Would you like to update it now? [yN]"
-      exec("gem update gemfury")
+    shell.say 'You have a deprecated Gemfury client', :red
+    if shell.yes? 'Would you like to update it now? [yN]'
+      exec('gem update gemfury')
     else
-      shell.say %q(No problem. You can also run "gem update gemfury")
+      shell.say 'No problem. You can also run "gem update gemfury"'
     end
   rescue Gemfury::Conflict => e
-    die!("Oops! Locked for another user. Try again later.", e)
+    die!('Oops! Locked for another user. Try again later.', e)
   rescue Gemfury::Forbidden => e
     die!("Oops! You're not allowed to access this", e)
   rescue Gemfury::NotFound => e
     die!("Oops! Doesn't look like this exists", e)
   rescue Gemfury::Error => e
-    die!("Oops! %s" % e.message, e)
+    die!('Oops! %s' % e.message, e)
   rescue StandardError => e
-    die!("Oops! Something went wrong. Please contact support.", e)
+    die!('Oops! Something went wrong. Please contact support.', e)
   end
 
   def push_files(command, gem_paths)
     files = gem_paths.map do |g|
-      g.is_a?(String) ? File.new(g) : g rescue nil
+      g.is_a?(String) ? File.new(g) : g
+    rescue StandardError
+      nil
     end.compact
 
-    if !options[:quiet] && !shell.mute? && $stdout.tty?
-      files = files.map { |g| ProgressIO.new(g) }
-    end
+    files = files.map { |g| ProgressIO.new(g) } if !options[:quiet] && !shell.mute? && $stdout.tty?
 
-    if files.empty?
-      die!("Problem: No valid packages found", nil, command)
-    end
+    die!('Problem: No valid packages found', nil, command) if files.empty?
 
-    push_options = { }
-    unless options[:public].nil?
-      push_options[:public] = options[:public]
-    end
+    push_options = {}
+    push_options[:public] = options[:public] unless options[:public].nil?
 
     error_ex = nil
 
@@ -336,32 +334,32 @@ private
           client.push_gem(file, push_options)
         end
 
-        shell.say "- done"
+        shell.say '- done'
       rescue Gemfury::CorruptGemFile => e
-        shell.say "- problem processing this package", :red
+        shell.say '- problem processing this package', :red
         error_ex = e
       rescue Gemfury::DupeVersion => e
-        shell.say "- this version already exists", :red
+        shell.say '- this version already exists', :red
         error_ex = e
       rescue Gemfury::TimeoutError, Errno::EPIPE => e
-        shell.say "- this file is too much to handle", :red
-        shell.say "  Visit http://www.gemfury.com/large-package for more info"
+        shell.say '- this file is too much to handle', :red
+        shell.say '  Visit http://www.gemfury.com/large-package for more info'
         error_ex = e
       rescue Gemfury::Error => e
         shell.say "- #{e.message.downcase}", :red
         error_ex = e
-      rescue => e
-        shell.say "- oops", :red
+      rescue StandardError => e
+        shell.say '- oops', :red
         error_ex = e
       end
     end
 
-    unless error_ex.nil?
-      die!('There was a problem uploading at least 1 package', error_ex)
-    end
+    return if error_ex.nil?
+
+    die!('There was a problem uploading at least 1 package', error_ex)
   end
 
-  C50K = 50000
+  C50K = 50_000
 
   class ProgressIO < SimpleDelegator
     attr_reader :content_type, :original_filename, :local_path
@@ -383,15 +381,15 @@ private
       @original_filename = File.basename(fname)
       @local_path = local_path
 
-      if io.respond_to? :size
-        filesize = io.size
-      else
-        filesize = io.stat.size
-      end
+      filesize = if io.respond_to? :size
+                   io.size
+                 else
+                   io.stat.size
+                 end
 
       if filesize > C50K
         title = 'Uploading %s ' % File.basename(fname)
-        @bar = ProgressBar.create(:title => title, :total => filesize)
+        @bar = ProgressBar.create(title: title, total: filesize)
       else
         @bar = nil
       end
@@ -405,9 +403,7 @@ private
 
     def read(length)
       buf = __getobj__.read(length)
-      unless @bar.nil? || buf.nil?
-        @bar.progress += buf.bytesize
-      end
+      @bar.progress += buf.bytesize unless @bar.nil? || buf.nil?
 
       buf
     end
@@ -416,7 +412,7 @@ private
   def die!(msg, err = nil, command = nil)
     shell.say msg, :red
     help(command) if command
-    shell.say %Q(#{err.class.name}: #{err}\n#{err.backtrace.join("\n")}) if err && ENV['DEBUG']
+    shell.say %(#{err.class.name}: #{err}\n#{err.backtrace.join("\n")}) if err && ENV['DEBUG']
     exit(1)
   end
 

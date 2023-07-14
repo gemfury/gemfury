@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Gemfury::Command::Authorization do
@@ -23,25 +25,27 @@ describe Gemfury::Command::Authorization do
   end
 
   before do
-    allow(FakeFS::File).to receive(:stat).and_return(double('stat', :mode => "0600".to_i(8)))
+    allow(FakeFS::File).to receive(:stat).and_return(double('stat', mode: '0600'.to_i(8)))
     allow(FakeFS::FileUtils).to receive(:chmod)
 
-    allow(Netrc).to receive(:default_path).and_return(File.expand_path('../.netrc', __FILE__))
+    allow(Netrc).to receive(:default_path).and_return(File.expand_path('.netrc', __dir__))
     FileUtils.mkdir_p(File.dirname(Netrc.default_path))
   end
 
   after do
-    FileUtils.rm(Netrc.default_path) rescue nil
+    FileUtils.rm(Netrc.default_path)
+  rescue StandardError
+    nil
   end
 
   shared_examples 'Authorization#write_credentials' do
     it 'should overwrite credentials to .netrc' do
       auth = AuthClass.new('pass123')
       auth.send(:write_credentials!, 'email@spec.com')
-      expect(Netrc.read["api.fury.io"].login).to eq('email@spec.com')
-      expect(Netrc.read["git.fury.io"].login).to eq('email@spec.com')
-      expect(Netrc.read["api.fury.io"].password).to eq('pass123')
-      expect(Netrc.read["git.fury.io"].password).to eq('pass123')
+      expect(Netrc.read['api.fury.io'].login).to eq('email@spec.com')
+      expect(Netrc.read['git.fury.io'].login).to eq('email@spec.com')
+      expect(Netrc.read['api.fury.io'].password).to eq('pass123')
+      expect(Netrc.read['git.fury.io'].password).to eq('pass123')
     end
   end
 
@@ -72,7 +76,7 @@ describe Gemfury::Command::Authorization do
 
   describe 'with existing credentials' do
     before do
-      File.open(Netrc.default_path, "w") { |f| f.write(SampleNetrc) }
+      File.write(Netrc.default_path, SampleNetrc)
     end
 
     it_should_behave_like 'Authorization#write_credentials'
@@ -90,9 +94,9 @@ describe Gemfury::Command::Authorization do
 
     it 'should erase credentials with #wipe_credentials!' do
       AuthClass.new(nil).wipe_credentials!
-      expect(Netrc.read["api.fury.io"]).to be_nil
-      expect(Netrc.read["git.fury.io"]).to be_nil
-      expect(Netrc.read["nop.fury.io"]).to_not be_nil
+      expect(Netrc.read['api.fury.io']).to be_nil
+      expect(Netrc.read['git.fury.io']).to be_nil
+      expect(Netrc.read['nop.fury.io']).to_not be_nil
     end
   end
 end

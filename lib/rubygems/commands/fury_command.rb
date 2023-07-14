@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'gemfury'
 require 'gemfury/command'
 
@@ -7,7 +9,7 @@ class Gem::Commands::FuryCommand < Gem::Command
   end
 
   def arguments
-    "GEM       built gem file to push"
+    'GEM       built gem file to push'
   end
 
   def usage
@@ -24,6 +26,6 @@ class Gem::Commands::FuryCommand < Gem::Command
   def execute
     opts = options.dup
     args = opts.delete(:args)
-    Gemfury::Command::App.send(:dispatch, "push", args, opts, {})
+    Gemfury::Command::App.send(:dispatch, 'push', args, opts, {})
   end
 end

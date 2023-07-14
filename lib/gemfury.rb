@@ -1,7 +1,9 @@
-gem "multi_json",         "~> 1.10"
-gem "netrc",              ">= 0.10.0", "< 0.12.0.pre"
-gem "faraday",            ">= 2.0.0", "< 3.0.0.pre"
-gem "faraday-multipart",  ">= 1.0.0", "< 2.0.0.pre"
+# frozen_string_literal: true
+
+gem 'multi_json',         '~> 1.10'
+gem 'netrc',              '>= 0.10.0', '< 0.12.0.pre'
+gem 'faraday',            '>= 2.0.0', '< 3.0.0.pre'
+gem 'faraday-multipart',  '>= 1.0.0', '< 2.0.0.pre'
 
 require 'time'
 require 'cgi'
@@ -31,7 +33,7 @@ module Gemfury
     # Alias for Gemfury::Client.new
     #
     # @return [Gemfury::Client]
-    def new(options={})
+    def new(options = {})
       Gemfury::Client.new(options)
     end
 
@@ -43,9 +45,8 @@ module Gemfury
     # Create a hash of options and their values
     # @return [Hash] the options and their values
     def options
-      VALID_OPTIONS_KEYS.inject({}) do |options, k|
+      VALID_OPTIONS_KEYS.each_with_object({}) do |k, options|
         options[k] = send(k)
-        options
       end
     end
 
@@ -59,13 +60,13 @@ module Gemfury
     # Delegate to Gemfury::Client
     def method_missing(method, *args, &block)
       return super unless new.respond_to?(method)
+
       new.send(method, *args, &block)
     end
 
     def respond_to?(method, include_private = false)
       new.respond_to?(method, include_private) || super(method, include_private)
     end
-
   end
 end
 
@@ -74,7 +75,7 @@ Gemfury.reset
 
 # Polyfill #dig for Ruby 2.2 and earlier
 class Hash
-  unless self.instance_methods.include?(:dig)
+  unless instance_methods.include?(:dig)
     def dig(*parts)
       parts.inject(self) do |hash, part|
         hash.is_a?(Hash) ? hash[part] : nil

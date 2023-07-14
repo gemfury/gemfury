@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This is a Faraday adapter that bypasses Faraday's response body
 # processing and streams body to STDOUT for text requests
 
@@ -19,5 +21,5 @@ class Faraday::Adapter
     end
   end
 
-  register_middleware(:fury_http => FuryHttp)
+  register_middleware(fury_http: FuryHttp)
 end

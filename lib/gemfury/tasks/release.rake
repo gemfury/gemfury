@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rubygems/package'
 require 'gemfury'
 require 'gemfury/command'
@@ -8,7 +10,7 @@ namespace 'fury' do
     gemspec = args[:gemspec] || FileList["#{Dir.pwd}/*.gemspec"][0]
 
     if gemspec.nil? || !File.exist?(gemspec)
-      puts "No gemspec found"
+      puts 'No gemspec found'
     else
       puts "Building #{File.basename(gemspec)}"
       spec = Gem::Specification.load(gemspec)
@@ -31,5 +33,5 @@ namespace 'fury' do
 end
 
 namespace 'gemfury' do
-  task :release => 'fury:release'
+  task release: 'fury:release'
 end

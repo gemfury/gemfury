@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gemfury
   # Base Error class
   Error = Class.new(StandardError)

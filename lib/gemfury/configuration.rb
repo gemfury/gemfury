@@ -1,15 +1,16 @@
+# frozen_string_literal: true
+
 module Gemfury
   module Configuration
-
     CONFIGURATION_DEFAULTS = {
-      :user_api_key => nil,
-      :adapter => :net_http,
-      :endpoint => 'https://api.fury.io/',
-      :gitpoint => 'https://git.fury.io/',
-      :pushpoint => 'https://push.fury.io/',
-      :user_agent => "Gemfury RubyGem #{Gemfury::VERSION} (Ruby #{RUBY_VERSION})",
-      :api_version => 1,
-      :account => nil
+      user_api_key: nil,
+      adapter: :net_http,
+      endpoint: 'https://api.fury.io/',
+      gitpoint: 'https://git.fury.io/',
+      pushpoint: 'https://push.fury.io/',
+      user_agent: "Gemfury RubyGem #{Gemfury::VERSION} (Ruby #{RUBY_VERSION})",
+      api_version: 1,
+      account: nil
     }.freeze
 
     # user API key, also known as "full access token"

@@ -1,18 +1,21 @@
+# frozen_string_literal: true
+
 module Gemfury::Command::Authorization
   include Gemfury::Platform
 
   def wipe_credentials!
-    FileUtils.rm(config_path, :force => true) # never raises exception
+    FileUtils.rm(config_path, force: true) # never raises exception
     each_netrc_host { |h| netrc_conf.delete(h) }
     netrc_conf.save
   end
 
   def has_credentials?
     !!netrc_conf[netrc_api_host] ||
-    read_config_file.key?(:gemfury_api_key)
+      read_config_file.key?(:gemfury_api_key)
   end
 
-private
+  private
+
   def with_authorization(&block)
     # Load up the credentials if user_api_key is not already set
     load_credentials! if @user_api_key.nil?
@@ -24,9 +27,9 @@ private
       block.call
     rescue Gemfury::Unauthorized
       if acct = client.account
-        shell.say %Q(Oops! You don't have access to "#{acct}"), :red
+        shell.say %(Oops! You don't have access to "#{acct}"), :red
       else
-        shell.say "Oops! Authentication failure.", :red
+        shell.say 'Oops! Authentication failure.', :red
         @user_api_key = nil
         retry
       end
@@ -41,10 +44,10 @@ private
     passw = highline.ask('Password: ') { |q| q.echo = false }
 
     # Request and save the API access token
-    if !email.empty? && !passw.empty?
-      @user_api_key = client.get_access_token(email, passw)
-      write_credentials!(email)
-    end
+    return unless !email.empty? && !passw.empty?
+
+    @user_api_key = client.get_access_token(email, passw)
+    write_credentials!(email)
   end
 
   def load_credentials!
@@ -72,7 +75,7 @@ private
   end
 
   def each_netrc_host
-    [:endpoint, :gitpoint].each do |c|
+    %i[endpoint gitpoint].each do |c|
       yield(URI.parse(client.send(c)).host)
     end
   end

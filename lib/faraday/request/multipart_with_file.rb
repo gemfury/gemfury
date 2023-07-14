@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'faraday'
 
 # @private
@@ -5,13 +7,11 @@ module Faraday
   # @private
   class Request::MultipartWithFile < Faraday::Middleware
     def call(env)
-
       if env[:body].is_a?(Hash)
 
         # Check for IO (and IO-like objects, like Zip::InputStream) in the request,
         # which represent data to be uploaded.  Replace these with Faraday
         env[:body].each do |key, value|
-
           # Faraday seems to expect a few IO methods to be available, but that's all:
           # https://github.com/lostisland/faraday/blob/master/lib/faraday/file_part.rb
           # :length seems to be an optional one

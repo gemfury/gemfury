@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gemfury
   class Client
     include Gemfury::Client::Filters
@@ -5,7 +7,7 @@ module Gemfury
 
     # Creates a new API
     # @param options [Hash] values for attributes described in {Gemfury::Configuration}
-    def initialize(options={})
+    def initialize(options = {})
       options = Gemfury.options.merge(options)
       Gemfury::VALID_OPTIONS_KEYS.each do |key|
         send("#{key}=", options[key])
@@ -34,8 +36,8 @@ module Gemfury
     # @return [Hash]
     def push_gem(file, options = {})
       ensure_ready!(:authorization)
-      push_api = connection(:url => self.pushpoint)
-      response = push_api.post('uploads', options.merge(:file => file))
+      push_api = connection(url: pushpoint)
+      response = push_api.post('uploads', options.merge(file: file))
       checked_response_body(response)
     end
 
@@ -83,7 +85,7 @@ module Gemfury
     # @return [Hash]
     def login(email, password, opts = {})
       ensure_ready!
-      opts = opts.merge(:email => email, :password => password)
+      opts = opts.merge(email: email, password: password)
       checked_response_body(connection.post('login', opts))
     end
 
@@ -161,7 +163,7 @@ module Gemfury
     def git_rebuild(repo, options = {})
       ensure_ready!(:authorization)
       url = "#{git_repo_path(repo)}/builds"
-      api = connection(:api_format => :text)
+      api = connection(api_format: :text)
       checked_response_body(api.post(url, options))
     end
 
@@ -184,47 +186,44 @@ module Gemfury
     def git_config_update(repo, updates, options = {})
       ensure_ready!(:authorization)
       path = "#{git_repo_path(repo)}/config-vars"
-      opts = options.merge(:config_vars => updates)
+      opts = options.merge(config_vars: updates)
       response = connection.patch(path, opts)
       checked_response_body(response)
     end
 
-  private
+    private
+
     def escape(str)
       CGI.escape(str)
     end
 
     def git_repo_path(*args)
       rest = args.map { |a| escape(a) }
-      ['git/repos', self.account || 'me'].concat(rest).join('/')
+      ['git/repos', account || 'me'].concat(rest).join('/')
     end
 
     def connection(options = {})
       # The 'Accept' HTTP header for API versioning
       http_accept = begin
-        v = options.delete(:api_version) || self.api_version
+        v = options.delete(:api_version) || api_version
         f = options.delete(:api_format)  || :json
         "application/vnd.fury.v#{v.to_i}+#{f}"
       end
 
       # Faraday client options
       options = {
-        :url => self.endpoint,
-        :params => {},
-        :headers => {
-          :accept => http_accept,
-          :user_agent => self.user_agent,
-          :x_gem_version => Gemfury::VERSION,
+        url: endpoint,
+        params: {},
+        headers: {
+          accept: http_accept,
+          user_agent: user_agent,
+          x_gem_version: Gemfury::VERSION
         }.merge(options.delete(:headers) || {})
       }.merge(options)
 
-      if self.user_api_key
-        options[:headers][:authorization] = self.user_api_key
-      end
+      options[:headers][:authorization] = user_api_key if user_api_key
 
-      if self.account
-        options[:params][:as] = self.account
-      end
+      options[:params][:as] = account if account
 
       Faraday.new(options) do |builder|
         builder.use Faraday::Request::MultipartWithFile
@@ -237,37 +236,35 @@ module Gemfury
     end
 
     def checked_response_body(response)
-      if response.success?
-        return response.body
-      else
-        error = (response.body || {})['error'] || {}
-        error_class = case error['type']
-        when 'Forbidden'       then Gemfury::Forbidden
-        when 'GemVersionError' then Gemfury::InvalidGemVersion
-        when 'InvalidGemFile'  then Gemfury::CorruptGemFile
-        when 'DupeVersion'     then Gemfury::DupeVersion
-        else
-          case response.status
-          when 401 then Gemfury::Unauthorized
-          when 403 then Gemfury::Forbidden
-          when 404 then Gemfury::NotFound
-          when 409 then Gemfury::Conflict
-          when 503 then Gemfury::TimeoutError
-          else          Gemfury::Error
-          end
-        end
+      return response.body if response.success?
 
-        raise(error_class, error['message'])
-      end
+      error = (response.body || {})['error'] || {}
+      error_class = case error['type']
+                    when 'Forbidden'       then Gemfury::Forbidden
+                    when 'GemVersionError' then Gemfury::InvalidGemVersion
+                    when 'InvalidGemFile'  then Gemfury::CorruptGemFile
+                    when 'DupeVersion'     then Gemfury::DupeVersion
+                    else
+                      case response.status
+                      when 401 then Gemfury::Unauthorized
+                      when 403 then Gemfury::Forbidden
+                      when 404 then Gemfury::NotFound
+                      when 409 then Gemfury::Conflict
+                      when 503 then Gemfury::TimeoutError
+                      else          Gemfury::Error
+                      end
+                    end
+
+      raise(error_class, error['message'])
     end
 
     def s3_put_file(uri, file)
       Faraday::Connection.new(uri) do |f|
         f.adapter :net_http
       end.put(uri, file, {
-        :content_length => file.stat.size.to_s,
-        :content_type => ''
-      })
+                content_length: file.stat.size.to_s,
+                content_type: ''
+              })
     end
   end
 end
