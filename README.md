@@ -1,29 +1,27 @@
-Gemfury CLI
-===========
+Gemfury Ruby Library
+====================
 
 [![Gem Version](https://badge.fury.io/rb/gemfury.svg)](http://badge.fury.io/rb/gemfury)
 [![Documentation](https://img.shields.io/badge/docs-rdoc.info-blue.svg)](http://www.rubydoc.info/gems/gemfury)
 [![Documentation completeness](https://inch-ci.org/github/gemfury/gemfury.svg?branch=main)](http://inch-ci.org/github/gemfury/gemfury)
 [![Build Status](https://github.com/gemfury/gemfury/actions/workflows/specs.yml/badge.svg?branch=main)](https://github.com/gemfury/gemfury/actions/workflows/specs.yml)
-[![Code Climate](https://codeclimate.com/github/gemfury/gemfury/badges/gpa.svg)](https://codeclimate.com/github/gemfury/gemfury)
 
-This is the Gemfury CLI used to manage your Gemfury packages from the command line.  If you're
-familiar with the service and want to jump straight into command line action, please proceed to
-the [CLI documentation](https://gemfury.com/help/gemfury-cli).
+The Gemfury Ruby library provides convenient access to the Gemfury API from software
+written in the Ruby language.
 
 Gemfury is your personal cloud for your private and custom RubyGems, Python packages, and NPM
 modules.  Once you upload your packages and enable Gemfury as a source, you can securely deploy
 any package to any host. It's simple, reliable, and hassle-free.
 
+> [!IMPORTANT]
+> **Gemfury CLI has moved.** We are migrating to a [native CLI](https://github.com/gemfury/cli), and will
+> be removing the CLI portion of this RubyGem. The API Client portion will remain and continue as the
+> Gemfury Ruby SDK.
+
 
 ### Introduction to Gemfury
 * [Gemfury homepage](https://gemfury.com/)
 * [Getting started with Gemfury](https://gemfury.com/help/getting-started)
-
-### Using Gemfury CLI
-* [CLI documentation](https://gemfury.com/help/gemfury-cli)
-* [Uploading private packages](https://gemfury.com/help/gemfury-cli#uploading-packages)
-* [Manage collaborators](https://gemfury.com/help/gemfury-cli#collaboration)
 
 ### Putting Gemfury to work
 * [Install private RubyGems](https://gemfury.com/help/install-gems)
