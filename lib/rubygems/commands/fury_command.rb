@@ -17,7 +17,7 @@ class Gem::Commands::FuryCommand < Gem::Command
   end
 
   def initialize
-    super 'fury', description
+    super('fury', description)
     add_option('-a', '--as USERNAME', 'Impersonate another account') do |value, options|
       options[:as] = value
     end
