@@ -18,4 +18,5 @@ group :development do
   gem 'rubocop'
   gem 'webmock', '~> 3.24'
   gem 'yard'
+  gem 'irb'
 end
