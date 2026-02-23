@@ -32,7 +32,7 @@ Gem::Specification.new do |s|
   s.add_dependency    'multi_json', '~> 1.10'
   s.add_dependency    'netrc', '>= 0.10.0', '< 0.12.0.pre'
   s.add_dependency    'progressbar', '>= 1.10.1', '< 2.0.0.pre'
-  s.add_dependency    'thor', '>= 0.14.0', '< 1.4.0.pre'
+  s.add_dependency    'thor', '>= 0.14.0', '< 1.5.0.pre'
 
   s.description = <<~DESCRIPTION
     Hosted repo for your public and private packages at https://gemfury.com
